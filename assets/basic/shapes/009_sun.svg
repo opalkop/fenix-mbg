@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <circle
+        id="outline"
+        cx="512"
+        cy="512"
+        r="210"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <g
+        id="rays"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <line x1="512" y1="120" x2="512" y2="230"/>
+        <line x1="512" y1="794" x2="512" y2="904"/>
+
+        <line x1="120" y1="512" x2="230" y2="512"/>
+        <line x1="794" y1="512" x2="904" y2="512"/>
+
+        <line x1="235" y1="235" x2="315" y2="315"/>
+        <line x1="709" y1="709" x2="789" y2="789"/>
+
+        <line x1="789" y1="235" x2="709" y2="315"/>
+        <line x1="315" y1="709" x2="235" y2="789"/>
+
+    </g>
+
+</svg>

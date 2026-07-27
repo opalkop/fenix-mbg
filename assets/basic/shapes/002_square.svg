@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <rect
+        id="outline"
+        x="152"
+        y="152"
+        width="720"
+        height="720"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+</svg>

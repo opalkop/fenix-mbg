@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Wstążki -->
+        <path
+            d="M420 140
+               L500 300
+               L512 260
+               L524 300
+               L604 140"/>
+
+        <!-- Medal -->
+        <circle
+            cx="512"
+            cy="520"
+            r="220"/>
+
+        <!-- Gwiazda w środku -->
+        <polygon
+            points="
+                512,390
+                548,475
+                640,475
+                566,535
+                596,625
+                512,570
+                428,625
+                458,535
+                384,475
+                476,475"/>
+
+    </g>
+
+</svg>

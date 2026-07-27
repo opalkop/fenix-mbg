@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Uzupełnij obrazek</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="complete-picture.css">
+</head>
+<body class="complete-picture-page">
+  <header class="complete-picture-header">
+    <div class="complete-picture-brand">
+      <img class="complete-picture-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="complete-picture-kicker">FENIX</p>
+        <h1>Complete the Picture</h1>
+        <p>Moduł roboczy do przygotowania kart 8.5 x 11 z brakującą częścią obrazka.</p>
+      </div>
+    </div>
+    <div class="complete-picture-header-actions">
+      <span class="complete-picture-badge">Testowy</span>
+      <span class="complete-picture-badge complete-picture-badge-mode">SVG + PNG Mode</span>
+      <a class="complete-picture-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="complete-picture-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="complete-picture-main">
+    <section class="complete-picture-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="complete-picture-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="completePictureStatusText">Brak aktywnego pliku. Wczytaj SVG lub czarno-biały PNG.</span>
+    </section>
+
+    <section class="complete-picture-grid" aria-label="Obszar roboczy modułu Complete the Picture">
+      <form class="complete-picture-workspace">
+      <aside class="complete-picture-card complete-picture-source-panel">
+        <div class="complete-picture-section-heading">
+          <h2>Źródło i pliki</h2>
+          <p>Wczytaj jeden lub wiele plików, a potem wybierz aktywny asset do edycji.</p>
+        </div>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Źródło grafiki</legend>
+            <p class="complete-picture-group-description">SVG daje pełną kontrolę nad linią. PNG jest najlepszy dla czarno-białej grafiki wejściowej.</p>
+            <label class="complete-picture-field">
+              <span>Tryb źródła</span>
+              <select id="completePictureSourceMode">
+                <option value="svg" selected>SVG asset</option>
+                <option value="png">Black & White PNG</option>
+              </select>
+            </label>
+            <label class="complete-picture-field">
+              <span>Pliki SVG lub PNG</span>
+              <input id="completePictureFile" type="file" accept="image/svg+xml,image/png,.svg,.png" multiple>
+            </label>
+            <p class="complete-picture-mode-help" id="completePictureSourceHelp">SVG asset: najlepszy do pełnej kontroli linii, kropek i usuwania ramki.</p>
+            <p class="complete-picture-file-name" id="completePictureFileName">Nie wczytano pliku.</p>
+            <p class="complete-picture-svg-diagnostics" id="completePictureSvgDiagnostics">viewBox: brak aktywnego SVG</p>
+            <button class="complete-picture-button complete-picture-button-compact" id="completePictureClearAssets" type="button">Wyczyść listę</button>
+            <p class="complete-picture-note">Plik jest używany tylko lokalnie w przeglądarce i nie jest zapisywany na dysku.</p>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Załadowane pliki</legend>
+            <div class="complete-picture-asset-list" id="completePictureAssetList" aria-live="polite"></div>
+          </fieldset>
+      </aside>
+
+      <article class="complete-picture-card complete-picture-preview-card">
+        <div class="complete-picture-preview-top">
+          <div class="complete-picture-section-heading">
+            <h2>Podgląd 8.5 x 11</h2>
+            <p>Eksport PNG powinien odpowiadać temu podglądowi.</p>
+          </div>
+          <div class="complete-picture-active-summary" aria-label="Aktywny plik">
+            <span id="completePictureActiveFileName">Brak aktywnego pliku</span>
+            <span id="completePictureActiveFileType">Typ: brak</span>
+            <strong id="completePictureActiveModeBadge">Tryb aktywny: brak</strong>
+          </div>
+        </div>
+
+        <div class="complete-picture-page-preview">
+          <div class="complete-picture-preview" id="completePicturePreview" aria-live="polite"></div>
+        </div>
+        <p class="complete-picture-message" id="completePictureMessage">Wczytaj plik SVG lub PNG, aby rozpocząć.</p>
+      </article>
+
+      <aside class="complete-picture-card complete-picture-settings-panel">
+        <div class="complete-picture-section-heading">
+          <h2>Ustawienia i akcje</h2>
+          <p>Kontrolki dotyczą wyłącznie aktywnego pliku.</p>
+        </div>
+        <div class="complete-picture-active-mode" id="completePictureSettingsModeBadge">Tryb aktywny: brak</div>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Ustawienia aktywnego pliku</legend>
+            <p class="complete-picture-group-description">Wybierz sposób podziału aktualnego SVG lub PNG.</p>
+            <label class="complete-picture-field">
+              <span id="completePictureSplitModeLabel">Podział SVG</span>
+              <select id="completePictureSplitMode">
+                <option value="left-dotted-right-normal" selected>Lewa kropkowana / prawa normalna</option>
+                <option value="left-normal-right-dotted">Lewa normalna / prawa kropkowana</option>
+                <option value="top-dotted-bottom-normal">Góra kropkowana / dół normalna</option>
+                <option value="top-normal-bottom-dotted">Góra normalna / dół kropkowana</option>
+                <option value="normal">Normal</option>
+                <option value="left-normal-right-ghost">Lewa normalna / prawa ghost</option>
+                <option value="left-ghost-right-normal">Lewa ghost / prawa normalna</option>
+                <option value="top-normal-bottom-ghost">Góra normalna / dół ghost</option>
+                <option value="top-ghost-bottom-normal">Góra ghost / dół normalna</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group complete-picture-svg-settings" id="completePictureSvgSettings">
+            <legend>Ustawienia SVG</legend>
+            <p class="complete-picture-group-description">Kontroluje warstwy SVG, grubości linii i kropkowanie.</p>
+            <label class="complete-picture-range-field">
+              <span>Grubość linii normalnej</span>
+              <input id="completePictureNormalStrokeWidth" type="range" min="1" max="16" value="8">
+              <output id="completePictureNormalStrokeWidthValue">8 px</output>
+              <input id="completePictureNormalStrokeWidthNumber" class="complete-picture-number-input" type="number" min="1" max="16" value="8" aria-label="Grubość linii normalnej w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Grubość linii kropkowanej</span>
+              <input id="completePictureDottedStrokeWidth" type="range" min="1" max="16" value="6">
+              <output id="completePictureDottedStrokeWidthValue">6 px</output>
+              <input id="completePictureDottedStrokeWidthNumber" class="complete-picture-number-input" type="number" min="1" max="16" value="6" aria-label="Grubość linii kropkowanej w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Długość kropki / kreski</span>
+              <input id="completePictureDashLength" type="range" min="1" max="40" value="2">
+              <output id="completePictureDashLengthValue">2</output>
+              <input id="completePictureDashLengthNumber" class="complete-picture-number-input" type="number" min="1" max="40" value="2" aria-label="Długość kropki lub kreski">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Odstęp kropek / gap</span>
+              <input id="completePictureDashGap" type="range" min="2" max="60" value="14">
+              <output id="completePictureDashGapValue">14</output>
+              <input id="completePictureDashGapNumber" class="complete-picture-number-input" type="number" min="2" max="60" value="14" aria-label="Odstęp kropek w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-check-field">
+              <input id="completePictureRemoveOuterFrame" type="checkbox" checked>
+              <span>Usuń zewnętrzną ramkę SVG</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group complete-picture-png-settings" id="completePicturePngSettings" hidden>
+            <legend>Ustawienia PNG</legend>
+            <p class="complete-picture-group-description">Dla trybu Black & White PNG najlepiej używać grafiki czarno-białej z wyraźnym kontrastem.</p>
+            <label class="complete-picture-range-field">
+              <span>Próg wykrywania czerni</span>
+              <input id="completePicturePngThreshold" type="range" min="0" max="255" value="120">
+              <output id="completePicturePngThresholdValue">120</output>
+              <input id="completePicturePngThresholdNumber" class="complete-picture-number-input" type="number" min="0" max="255" value="120" aria-label="Próg wykrywania czerni od 0 do 255">
+              <em>0-255</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Przezroczystość / jasność ghost</span>
+              <input id="completePicturePngGhostOpacity" type="range" min="5" max="60" value="20">
+              <output id="completePicturePngGhostOpacityValue">20%</output>
+              <input id="completePicturePngGhostOpacityNumber" class="complete-picture-number-input" type="number" min="5" max="60" value="20" aria-label="Przezroczystość ghost w procentach">
+              <em>%</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Rozmiar kropek PNG</span>
+              <input id="completePicturePngPatternSize" type="range" min="1" max="24" value="6">
+              <output id="completePicturePngPatternSizeValue">6 px</output>
+              <input id="completePicturePngPatternSizeNumber" class="complete-picture-number-input" type="number" min="1" max="24" value="6" aria-label="Rozmiar kropek PNG w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Odstęp kropek PNG</span>
+              <input id="completePicturePngPatternGap" type="range" min="1" max="40" value="10">
+              <output id="completePicturePngPatternGapValue">10 px</output>
+              <input id="completePicturePngPatternGapNumber" class="complete-picture-number-input" type="number" min="1" max="40" value="10" aria-label="Odstęp kropek PNG w pikselach">
+              <em>px</em>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Ustawienia aktywnego obrazka</legend>
+            <p class="complete-picture-group-description">Pozycja i skala obrazka na kartce.</p>
+            <label class="complete-picture-range-field">
+              <span>Skala obrazka</span>
+              <input id="completePictureScale" type="range" min="50" max="200" value="200">
+              <output id="completePictureScaleValue">200%</output>
+              <input id="completePictureScaleNumber" class="complete-picture-number-input" type="number" min="50" max="200" value="200" aria-label="Skala obrazka w procentach">
+              <em>%</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Pozycja X</span>
+              <input id="completePictureOffsetX" type="range" min="-300" max="300" value="0">
+              <output id="completePictureOffsetXValue">0 px</output>
+              <input id="completePictureOffsetXNumber" class="complete-picture-number-input" type="number" min="-300" max="300" value="0" aria-label="Pozycja X w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Pozycja Y</span>
+              <input id="completePictureOffsetY" type="range" min="-300" max="300" value="0">
+              <output id="completePictureOffsetYValue">0 px</output>
+              <input id="completePictureOffsetYNumber" class="complete-picture-number-input" type="number" min="-300" max="300" value="0" aria-label="Pozycja Y w pikselach">
+              <em>px</em>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Linia pomocnicza</legend>
+            <p class="complete-picture-group-description">Linia podziału widoczna na podglądzie i w eksporcie PNG.</p>
+            <label class="complete-picture-check-field">
+              <input id="completePictureGuideVisible" type="checkbox" checked>
+              <span>Pokaż linię pomocniczą</span>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Grubość linii</span>
+              <input id="completePictureGuideWidth" type="range" min="1" max="20" value="3">
+              <output id="completePictureGuideWidthValue">3 px</output>
+              <input id="completePictureGuideWidthNumber" class="complete-picture-number-input" type="number" min="1" max="20" value="3" aria-label="Grubość linii pomocniczej w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-field">
+              <span>Styl linii</span>
+              <select id="completePictureGuideStyle">
+                <option value="solid" selected>ciągła</option>
+                <option value="dotted">kropkowana</option>
+                <option value="dashed">przerywana</option>
+              </select>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Długość kreski</span>
+              <input id="completePictureGuideDash" type="range" min="2" max="40" value="10">
+              <output id="completePictureGuideDashValue">10 px</output>
+              <input id="completePictureGuideDashNumber" class="complete-picture-number-input" type="number" min="2" max="40" value="10" aria-label="Długość kreski linii pomocniczej w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Odstęp</span>
+              <input id="completePictureGuideGap" type="range" min="2" max="40" value="10">
+              <output id="completePictureGuideGapValue">10 px</output>
+              <input id="completePictureGuideGapNumber" class="complete-picture-number-input" type="number" min="2" max="40" value="10" aria-label="Odstęp linii pomocniczej w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Przezroczystość linii</span>
+              <input id="completePictureGuideOpacity" type="range" min="10" max="100" value="100">
+              <output id="completePictureGuideOpacityValue">100%</output>
+              <input id="completePictureGuideOpacityNumber" class="complete-picture-number-input" type="number" min="10" max="100" value="100" aria-label="Przezroczystość linii pomocniczej w procentach">
+              <em>%</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Przesunięcie linii</span>
+              <input id="completePictureGuideOffset" type="range" min="-300" max="300" value="0">
+              <output id="completePictureGuideOffsetValue">0 px</output>
+              <input id="completePictureGuideOffsetNumber" class="complete-picture-number-input" type="number" min="-300" max="300" value="0" aria-label="Przesunięcie linii pomocniczej w pikselach">
+              <em>px</em>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Miniatura poglądowa</legend>
+            <p class="complete-picture-group-description">Mały wzór pełnego obrazka widoczny nad polem pracy.</p>
+            <label class="complete-picture-check-field">
+              <input id="completePictureThumbVisible" type="checkbox" checked>
+              <span>Pokaż miniaturę</span>
+            </label>
+            <label class="complete-picture-check-field">
+              <input id="completePictureThumbAutoFit" type="checkbox" checked>
+              <span>Automatycznie dopasuj miniaturę</span>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Skala miniatury</span>
+              <input id="completePictureThumbScale" type="range" min="30" max="200" value="100">
+              <output id="completePictureThumbScaleValue">100%</output>
+              <input id="completePictureThumbScaleNumber" class="complete-picture-number-input" type="number" min="30" max="200" value="100" aria-label="Skala miniatury w procentach">
+              <em>%</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Pozycja X miniatury</span>
+              <input id="completePictureThumbOffsetX" type="range" min="-400" max="400" value="0">
+              <output id="completePictureThumbOffsetXValue">0 px</output>
+              <input id="completePictureThumbOffsetXNumber" class="complete-picture-number-input" type="number" min="-400" max="400" value="0" aria-label="Pozycja X miniatury w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-range-field">
+              <span>Pozycja Y miniatury</span>
+              <input id="completePictureThumbOffsetY" type="range" min="-300" max="300" value="0">
+              <output id="completePictureThumbOffsetYValue">0 px</output>
+              <input id="completePictureThumbOffsetYNumber" class="complete-picture-number-input" type="number" min="-300" max="300" value="0" aria-label="Pozycja Y miniatury w pikselach">
+              <em>px</em>
+            </label>
+            <label class="complete-picture-field">
+              <span>Położenie bazowe miniatury</span>
+              <select id="completePictureThumbAnchor">
+                <option value="top-left">Lewa góra</option>
+                <option value="top-center" selected>Środek góra</option>
+                <option value="top-right">Prawa góra</option>
+              </select>
+            </label>
+            <label class="complete-picture-check-field">
+              <input id="completePictureThumbFrame" type="checkbox" checked>
+              <span>Ramka miniatury</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="complete-picture-settings-group">
+            <legend>Eksport / Akcje</legend>
+            <p class="complete-picture-group-description">Główne akcje działają na aktywnym pliku.</p>
+            <div class="complete-picture-actions">
+              <button class="complete-picture-button complete-picture-button-primary" id="completePictureExport" type="button">Eksportuj aktywny PNG</button>
+              <button class="complete-picture-button complete-picture-button-primary" id="completePictureAddActiveToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+              <button class="complete-picture-button" id="completePictureAddSelectedToBasket" type="button">Dodaj zaznaczone do Koszyka Feniksa</button>
+              <button class="complete-picture-button complete-picture-button-primary" id="completePictureUpdateBasketPage" type="button" hidden>Zapisz zmiany w koszyku</button>
+              <button class="complete-picture-button complete-picture-button-primary" id="completePictureExportActivePack" type="button">Eksportuj aktywną stronę jako paczkę dla MBG</button>
+              <button class="complete-picture-button" id="completePictureExportSelectedPack" type="button">Eksportuj zaznaczone strony jako paczkę dla MBG</button>
+              <button class="complete-picture-button" id="completePictureReset" type="button">Reset ustawień aktywnego pliku</button>
+              <button class="complete-picture-button" id="completePictureRender" type="button">Odśwież podgląd</button>
+              <button class="complete-picture-button complete-picture-button-danger" id="completePictureClear" type="button">Wyczyść listę</button>
+            </div>
+            <p class="complete-picture-basket-status" id="completePictureBasketStatus">Koszyk Feniksa: gotowy.</p>
+          </fieldset>
+      </aside>
+      </form>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="complete-picture.js"></script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+:root {
+  --launcher-bg: #0f141b;
+  --launcher-panel: #171e27;
+  --launcher-panel-raised: #202936;
+  --launcher-border: #344152;
+  --launcher-text: #edf2f7;
+  --launcher-muted: #9aa8b8;
+  --launcher-accent: #f47b20;
+  --launcher-accent-hover: #ff9648;
+  --launcher-accent-soft: rgba(244, 123, 32, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.fenix-launcher-page {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(180deg, #0b1016, var(--launcher-bg));
+  color: var(--launcher-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.fenix-launcher-header {
+  border-bottom: 1px solid rgba(244, 123, 32, 0.42);
+  background: linear-gradient(180deg, #151c25, #0d1219);
+}
+
+.fenix-launcher-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.fenix-launcher-logo {
+  width: 56px;
+  height: 56px;
+  padding: 8px;
+  border: 1px solid rgba(255, 150, 72, 0.64);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(244, 123, 32, 0.22), rgba(15, 20, 27, 0.9));
+}
+
+.fenix-launcher-brand h1 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 42px);
+  line-height: 1.05;
+  color: var(--launcher-accent-hover);
+  letter-spacing: 0.14em;
+}
+
+.fenix-launcher-subtitle {
+  margin: 5px 0 0;
+  color: var(--launcher-text);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 700;
+}
+
+.fenix-launcher-main {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 36px 0;
+}
+
+.fenix-launcher-intro {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(85, 214, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(20, 27, 39, 0.86);
+}
+
+.fenix-launcher-intro p {
+  max-width: 880px;
+  margin: 0;
+  color: #dce8f6;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.fenix-global-basket {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(85, 214, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(20, 27, 39, 0.86);
+}
+
+.fenix-global-basket p {
+  margin: 0;
+  color: var(--launcher-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.fenix-basket-status-widget {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: #dff7ff;
+}
+
+.fenix-basket-status-widget strong,
+.fenix-basket-status-widget span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid rgba(85, 214, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(85, 214, 255, 0.08);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.fenix-basket-status-widget.is-empty span,
+.fenix-basket-status-widget.is-error span {
+  border-color: rgba(154, 168, 184, 0.28);
+  background: rgba(154, 168, 184, 0.08);
+  color: #cbd5e1;
+}
+
+.fenix-launcher-section {
+  margin-top: 26px;
+}
+
+.fenix-launcher-section-heading {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(154, 168, 184, 0.22);
+}
+
+.fenix-launcher-section-heading span {
+  display: block;
+  margin-bottom: 5px;
+  color: #a5f3fc;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.fenix-launcher-section-heading h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.fenix-launcher-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.fenix-launcher-grid-core,
+.fenix-launcher-grid-tools {
+  grid-template-columns: 1fr;
+}
+
+.fenix-module-card {
+  min-height: 290px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid var(--launcher-border);
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--launcher-panel-raised), var(--launcher-panel));
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+}
+
+.fenix-module-card--core {
+  min-height: 260px;
+  border-color: rgba(255, 150, 72, 0.72);
+  background:
+    linear-gradient(135deg, rgba(244, 123, 32, 0.18), transparent 42%),
+    linear-gradient(180deg, #263143, #171e27);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+}
+
+.fenix-module-card--core h2 {
+  color: #fff7ed;
+  font-size: clamp(30px, 4vw, 46px);
+}
+
+.fenix-module-card--core p {
+  max-width: 760px;
+  color: #f3dbc7;
+  font-size: 18px;
+}
+
+.fenix-module-card--asset-lab {
+  min-height: 250px;
+  border-color: rgba(132, 204, 22, 0.52);
+  background:
+    linear-gradient(135deg, rgba(132, 204, 22, 0.14), transparent 44%),
+    linear-gradient(180deg, #1d2f2a, #131f1e);
+}
+
+.fenix-module-card--asset-lab h2 {
+  color: #ecfccb;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.fenix-module-card--asset-lab p {
+  max-width: 860px;
+  color: #d9f99d;
+}
+
+.fenix-module-marker {
+  width: fit-content;
+  padding: 5px 9px;
+  border: 1px solid rgba(244, 123, 32, 0.54);
+  border-radius: 6px;
+  color: var(--launcher-accent-hover);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.fenix-module-status {
+  width: fit-content;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.fenix-module-status-production {
+  border: 1px solid rgba(74, 222, 128, 0.42);
+  background: rgba(22, 163, 74, 0.14);
+  color: #86efac;
+}
+
+.fenix-module-status-test,
+.fenix-module-status-new {
+  border: 1px solid rgba(85, 214, 255, 0.38);
+  background: rgba(85, 214, 255, 0.12);
+  color: #a5f3fc;
+}
+
+.fenix-module-status-planned {
+  border: 1px solid rgba(154, 168, 184, 0.34);
+  background: rgba(154, 168, 184, 0.1);
+  color: #cbd5e1;
+}
+
+.fenix-module-status-tool {
+  border: 1px solid rgba(132, 204, 22, 0.42);
+  background: rgba(132, 204, 22, 0.14);
+  color: #d9f99d;
+}
+
+.fenix-module-card h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.fenix-module-card p {
+  margin: 0;
+  color: var(--launcher-muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.fenix-module-link {
+  width: fit-content;
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 150, 72, 0.74);
+  border-radius: 7px;
+  background: linear-gradient(180deg, var(--launcher-accent-hover), var(--launcher-accent));
+  color: #111827;
+  font-weight: 900;
+  text-decoration: none;
+  transition: border-color 140ms ease, transform 120ms ease;
+}
+
+.fenix-module-link:hover {
+  border-color: #ffc08a;
+}
+
+.fenix-module-link:active {
+  transform: translateY(1px);
+}
+
+.fenix-module-link:focus-visible {
+  outline: 2px solid rgba(255, 150, 72, 0.72);
+  outline-offset: 3px;
+}
+
+.fenix-module-link-disabled {
+  border-color: rgba(154, 168, 184, 0.34);
+  background: #1a2330;
+  color: #9aa8b8;
+  cursor: not-allowed;
+}
+
+.fenix-coming-soon {
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid var(--launcher-border);
+  border-radius: 10px;
+  background: rgba(23, 30, 39, 0.78);
+}
+
+.fenix-coming-soon h2 {
+  margin: 0 0 14px;
+  color: #fff7ed;
+  font-size: 22px;
+}
+
+.fenix-coming-soon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fenix-coming-soon-grid span {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px dashed rgba(154, 168, 184, 0.36);
+  border-radius: 8px;
+  background: #111a25;
+  color: #cbd5e1;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .fenix-launcher-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fenix-coming-soon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fenix-launcher-brand {
+    align-items: flex-start;
+  }
+
+  .fenix-module-card {
+    min-height: 240px;
+  }
+}

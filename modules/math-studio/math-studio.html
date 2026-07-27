@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Math Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="math-studio.css">
+</head>
+<body class="math-studio-page">
+  <header class="math-studio-header">
+    <div class="math-studio-brand">
+      <img class="math-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="math-studio-kicker">FENIX</p>
+        <h1>Math Studio</h1>
+        <p>Moduł do tworzenia prostych stron matematycznych dla Activity Books.</p>
+      </div>
+    </div>
+    <div class="math-studio-header-actions">
+      <span class="math-studio-badge">MVP</span>
+      <span class="math-studio-badge math-studio-badge-pack">.fenixpack ready</span>
+      <a class="math-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="math-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="math-studio-main">
+    <section class="math-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="math-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="mathStudioStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="math-studio-workspace" aria-label="Obszar roboczy Math Studio">
+      <aside class="math-studio-card math-studio-settings-panel">
+        <div class="math-studio-section-heading">
+          <h2>Typ ćwiczenia</h2>
+          <p>Interfejs jest po polsku, a tekst na stronie może być po angielsku.</p>
+        </div>
+
+        <fieldset class="math-studio-settings-group">
+          <legend>Ustawienia strony</legend>
+          <label class="math-studio-check-field">
+            <input id="mathStudioShowTitle" type="checkbox" checked>
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="math-studio-field">
+            <span>Tytuł strony</span>
+            <input id="mathStudioTitle" type="text" maxlength="80" value="Math Practice">
+          </label>
+          <label class="math-studio-field">
+            <span>Instrukcja na stronie</span>
+            <input id="mathStudioInstruction" type="text" maxlength="120" value="Solve the problems.">
+          </label>
+          <label class="math-studio-field">
+            <span>Typ ćwiczenia</span>
+            <select id="mathStudioExerciseType">
+              <option value="counting">Counting</option>
+              <option value="addition" selected>Addition</option>
+              <option value="subtraction">Subtraction</option>
+              <option value="missing-numbers">Missing Numbers</option>
+              <option value="number-tracing">Number Tracing</option>
+              <option value="count-circle">Count and Circle</option>
+            </select>
+          </label>
+          <label class="math-studio-field">
+            <span>Poziom trudności</span>
+            <select id="mathStudioDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+          <label class="math-studio-check-field">
+            <input id="mathStudioShowAnswers" type="checkbox">
+            <span>Pokaż odpowiedzi</span>
+          </label>
+          <p class="math-studio-note">Domyślnie wyłączone, aby strona była ćwiczeniem dla dziecka. Włącz tylko do sprawdzenia lub stworzenia wersji z odpowiedziami.</p>
+        </fieldset>
+
+        <fieldset class="math-studio-settings-group">
+          <legend>Ustawienia matematyczne</legend>
+          <label class="math-studio-range-field">
+            <span>Minimalna liczba</span>
+            <input id="mathStudioMinNumber" type="range" min="0" max="50" value="1">
+            <output id="mathStudioMinNumberValue">1</output>
+            <input id="mathStudioMinNumberNumber" class="math-studio-number-input" type="number" min="0" max="50" value="1" aria-label="Minimalna liczba">
+          </label>
+          <label class="math-studio-range-field">
+            <span>Maksymalna liczba</span>
+            <input id="mathStudioMaxNumber" type="range" min="1" max="100" value="20">
+            <output id="mathStudioMaxNumberValue">20</output>
+            <input id="mathStudioMaxNumberNumber" class="math-studio-number-input" type="number" min="1" max="100" value="20" aria-label="Maksymalna liczba">
+          </label>
+          <label class="math-studio-range-field">
+            <span>Liczba zadań</span>
+            <input id="mathStudioTaskCount" type="range" min="4" max="30" value="16">
+            <output id="mathStudioTaskCountValue">16</output>
+            <input id="mathStudioTaskCountNumber" class="math-studio-number-input" type="number" min="4" max="30" value="16" aria-label="Liczba zadań">
+          </label>
+          <label class="math-studio-range-field">
+            <span>Liczba kolumn</span>
+            <input id="mathStudioColumns" type="range" min="1" max="3" value="2">
+            <output id="mathStudioColumnsValue">2</output>
+            <input id="mathStudioColumnsNumber" class="math-studio-number-input" type="number" min="1" max="3" value="2" aria-label="Liczba kolumn">
+          </label>
+          <label class="math-studio-field">
+            <span>Zakres Number Tracing</span>
+            <select id="mathStudioTracingRange">
+              <option value="0-9">0-9</option>
+              <option value="1-10" selected>1-10</option>
+              <option value="1-20">1-20</option>
+              <option value="custom">custom</option>
+            </select>
+          </label>
+          <label class="math-studio-field">
+            <span>Custom tracing, np. 2,4,6</span>
+            <input id="mathStudioTracingCustom" type="text" value="1,2,3,4,5">
+          </label>
+        </fieldset>
+      </aside>
+
+      <article class="math-studio-card math-studio-preview-card">
+        <div class="math-studio-preview-top">
+          <div class="math-studio-section-heading">
+            <h2>Podgląd strony</h2>
+            <p>Roboczy format 8.5×11. Eksport tworzy PNG 2550×3300 px.</p>
+          </div>
+          <div class="math-studio-active-summary">
+            <span id="mathStudioPreviewSummary">Addition · Medium · seed 1</span>
+            <strong>Math PNG</strong>
+          </div>
+        </div>
+        <div class="math-studio-page-preview">
+          <canvas id="mathStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony matematycznej"></canvas>
+        </div>
+        <p class="math-studio-message" id="mathStudioMessage">Losuj zadania albo zmień ustawienia przed dodaniem do koszyka.</p>
+      </article>
+
+      <aside class="math-studio-card math-studio-export-panel">
+        <div class="math-studio-section-heading">
+          <h2>Wygląd i eksport</h2>
+          <p>Zadania są renderowane jako gotowa strona PNG.</p>
+        </div>
+
+        <fieldset class="math-studio-settings-group">
+          <legend>Wygląd strony</legend>
+          <label class="math-studio-range-field">
+            <span>Wielkość tekstu</span>
+            <input id="mathStudioTextSize" type="range" min="42" max="110" value="68">
+            <output id="mathStudioTextSizeValue">68 px</output>
+            <input id="mathStudioTextSizeNumber" class="math-studio-number-input" type="number" min="42" max="110" value="68" aria-label="Wielkość tekstu">
+            <em>px</em>
+          </label>
+          <label class="math-studio-range-field">
+            <span>Odstępy między zadaniami</span>
+            <input id="mathStudioTaskSpacing" type="range" min="90" max="240" value="145">
+            <output id="mathStudioTaskSpacingValue">145 px</output>
+            <input id="mathStudioTaskSpacingNumber" class="math-studio-number-input" type="number" min="90" max="240" value="145" aria-label="Odstępy między zadaniami">
+            <em>px</em>
+          </label>
+          <label class="math-studio-range-field">
+            <span>Grubość linii</span>
+            <input id="mathStudioLineWidth" type="range" min="3" max="12" value="5">
+            <output id="mathStudioLineWidthValue">5 px</output>
+            <input id="mathStudioLineWidthNumber" class="math-studio-number-input" type="number" min="3" max="12" value="5" aria-label="Grubość linii">
+            <em>px</em>
+          </label>
+          <label class="math-studio-field">
+            <span>Styl Number Tracing</span>
+            <select id="mathStudioTracingStyle">
+              <option value="dotted" selected>dotted</option>
+              <option value="dashed">dashed</option>
+              <option value="light-solid">light solid</option>
+            </select>
+          </label>
+          <label class="math-studio-check-field">
+            <input id="mathStudioShowFrames" type="checkbox" checked>
+            <span>Pokaż ramki</span>
+          </label>
+          <label class="math-studio-check-field">
+            <input id="mathStudioShowAnswerSpaces" type="checkbox" checked>
+            <span>Pokaż miejsca na odpowiedzi</span>
+          </label>
+          <label class="math-studio-check-field">
+            <input id="mathStudioShowWritingLines" type="checkbox" checked>
+            <span>Pokaż linie do pisania</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="math-studio-settings-group">
+          <legend>Seed i warianty</legend>
+          <label class="math-studio-range-field">
+            <span>Seed / losowanie</span>
+            <input id="mathStudioSeed" type="range" min="1" max="9999" value="1">
+            <output id="mathStudioSeedValue">1</output>
+            <input id="mathStudioSeedNumber" class="math-studio-number-input" type="number" min="1" max="9999" value="1" aria-label="Seed">
+          </label>
+          <label class="math-studio-range-field">
+            <span>Liczba wariantów</span>
+            <input id="mathStudioVariantCount" type="range" min="1" max="20" value="5">
+            <output id="mathStudioVariantCountValue">5</output>
+            <input id="mathStudioVariantCountNumber" class="math-studio-number-input" type="number" min="1" max="20" value="5" aria-label="Liczba wariantów">
+          </label>
+        </fieldset>
+
+        <fieldset class="math-studio-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="math-studio-actions">
+            <button class="math-studio-button" id="mathStudioRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="math-studio-button math-studio-button-secondary" id="mathStudioRandomize" type="button">Losuj nowe zadania</button>
+            <button class="math-studio-button math-studio-button-secondary" id="mathStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+            <button class="math-studio-button math-studio-button-secondary" id="mathStudioAddToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+            <button class="math-studio-button math-studio-button-secondary" id="mathStudioAddVariantsToBasket" type="button">Dodaj warianty do Koszyka Feniksa</button>
+            <button class="math-studio-button math-studio-button-secondary" id="mathStudioExportPack" type="button">Eksportuj .fenixpack</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="math-studio.js"></script>
+</body>
+</html>

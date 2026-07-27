@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Generator treści A+</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="a-plus.css">
+</head>
+<body class="aplus-page">
+  <header class="aplus-header">
+    <div class="aplus-brand">
+      <img class="aplus-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="aplus-kicker">FENIX</p>
+        <h1>Generator treści A+</h1>
+        <p>Przestrzeń robocza Amazon KDP A+</p>
+      </div>
+    </div>
+    <a class="aplus-back-link" href="../../index.html">← Powrót do Fenixa</a>
+  </header>
+
+  <main class="aplus-main">
+    <section class="aplus-status" aria-label="Status modułu">
+      <strong>Generator treści A+ - faza 5B: kontekstowa walidacja obrazów</strong>
+    </section>
+
+    <section class="aplus-actions" aria-label="Akcje projektu">
+      <button class="aplus-button aplus-button-primary" type="button" data-action="new-project">Nowy projekt</button>
+      <button class="aplus-button aplus-button-primary" type="button" data-action="save-project">Zapisz projekt JSON</button>
+      <button class="aplus-button" type="button" data-action="load-project">Wczytaj projekt JSON</button>
+      <button class="aplus-button" type="button" data-action="reset-project">Resetuj formularz</button>
+      <input class="aplus-file-input" id="aplus-project-file" type="file" accept=".json,application/json">
+    </section>
+
+    <div class="aplus-message" data-message aria-live="polite"></div>
+
+    <section class="aplus-summary" aria-label="Podsumowanie projektu">
+      <h2>Podsumowanie projektu</h2>
+      <dl class="aplus-summary-grid">
+        <div>
+          <dt>Projekt</dt>
+          <dd data-summary="projectName">-</dd>
+        </div>
+        <div>
+          <dt>Książka</dt>
+          <dd data-summary="bookTitle">-</dd>
+        </div>
+        <div>
+          <dt>Marketplace</dt>
+          <dd data-summary="marketplace">-</dd>
+        </div>
+        <div>
+          <dt>Język</dt>
+          <dd data-summary="language">-</dd>
+        </div>
+        <div>
+          <dt>Motyw</dt>
+          <dd data-summary="theme">-</dd>
+        </div>
+        <div>
+          <dt>Powiązane ASIN-y</dt>
+          <dd data-summary="relatedAsins">0</dd>
+        </div>
+        <div>
+          <dt>Zmodyfikowano</dt>
+          <dd data-summary="modifiedAt">-</dd>
+        </div>
+        <div>
+          <dt>Wybrane moduły</dt>
+          <dd data-summary="selectedModules">0</dd>
+        </div>
+        <div>
+          <dt>Okładka</dt>
+          <dd data-summary="coverImage">-</dd>
+        </div>
+        <div>
+          <dt>Przykładowe strony</dt>
+          <dd data-summary="samplePages">0</dd>
+        </div>
+        <div>
+          <dt>Grafika promocyjna</dt>
+          <dd data-summary="promoImage">-</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="aplus-section-grid" aria-label="Sekcje przestrzeni roboczej A+">
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">A</span>
+        <div class="aplus-section-heading">
+          <h2>Szczegóły projektu</h2>
+          <p>Podstawowa nazwa projektu, marketplace, język, motyw i kolory marki.</p>
+        </div>
+
+        <form class="aplus-form" data-form="project-details">
+          <label class="aplus-field">
+            <span>Nazwa projektu <em>opcjonalna, ale zalecana</em></span>
+            <input id="aplus-project-name" name="projectName" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Marketplace</span>
+            <select id="aplus-marketplace" name="marketplace">
+              <option>Amazon.com</option>
+              <option>Amazon.co.uk</option>
+              <option>Amazon.de</option>
+              <option>Amazon.fr</option>
+              <option>Amazon.it</option>
+              <option>Amazon.es</option>
+              <option>Amazon.ca</option>
+              <option>Amazon.com.au</option>
+              <option>Inny</option>
+            </select>
+          </label>
+
+          <label class="aplus-field">
+            <span>Język</span>
+            <select id="aplus-language" name="language">
+              <option>Angielski</option>
+              <option>Polski</option>
+              <option>Niemiecki</option>
+              <option>Francuski</option>
+              <option>Hiszpański</option>
+              <option>Włoski</option>
+            </select>
+          </label>
+
+          <label class="aplus-field">
+            <span>Motyw <em>opcjonalny, ale zalecany</em></span>
+            <input id="aplus-theme" name="theme" type="text" autocomplete="off">
+          </label>
+
+          <div class="aplus-color-row">
+            <label class="aplus-field">
+              <span>Główny kolor marki</span>
+              <input id="aplus-primary-color" name="primaryColor" type="color" value="#f47b20">
+            </label>
+            <label class="aplus-field">
+              <span>Główny HEX</span>
+              <input id="aplus-primary-color-hex" name="primaryColorHex" type="text" inputmode="text" spellcheck="false" value="#f47b20">
+            </label>
+          </div>
+
+          <div class="aplus-color-row">
+            <label class="aplus-field">
+              <span>Drugi kolor marki</span>
+              <input id="aplus-secondary-color" name="secondaryColor" type="color" value="#e9ad42">
+            </label>
+            <label class="aplus-field">
+              <span>Drugi HEX</span>
+              <input id="aplus-secondary-color-hex" name="secondaryColorHex" type="text" inputmode="text" spellcheck="false" value="#e9ad42">
+            </label>
+          </div>
+        </form>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">B</span>
+        <div class="aplus-section-heading">
+          <h2>Dane książki i serii</h2>
+          <p>Metadane książki, planowanie formatu ASIN, informacje o serii i odniesienia porównawcze.</p>
+        </div>
+
+        <form class="aplus-form" data-form="book-data">
+          <label class="aplus-field">
+            <span>Tytuł książki <em>opcjonalny, ale zalecany</em></span>
+            <input id="aplus-book-title" name="bookTitle" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Podtytuł <em>opcjonalny</em></span>
+            <input id="aplus-subtitle" name="subtitle" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Autor <em>opcjonalny, ale zalecany</em></span>
+            <input id="aplus-author" name="author" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Grupa wiekowa <em>opcjonalna, ale zalecana</em></span>
+            <input id="aplus-age-group" name="ageGroup" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Nazwa serii <em>opcjonalna</em></span>
+            <input id="aplus-series-name" name="seriesName" type="text" autocomplete="off">
+          </label>
+
+          <label class="aplus-field">
+            <span>Główny ASIN <em>opcjonalny, tylko format</em></span>
+            <input id="aplus-primary-asin" name="asin" type="text" maxlength="10" autocomplete="off" spellcheck="false" aria-describedby="aplus-primary-asin-feedback">
+          </label>
+          <p class="aplus-field-feedback" id="aplus-primary-asin-feedback" data-feedback="primaryAsin">Nie wpisano ASIN-u.</p>
+
+          <div class="aplus-related-block">
+            <div class="aplus-related-header">
+              <div>
+                <h3>Powiązane ASIN-y</h3>
+                <p>Maksymalnie pięć opcjonalnych ASIN-ów. Sprawdzany jest tylko format, bez weryfikacji istnienia.</p>
+              </div>
+              <button class="aplus-button" type="button" data-action="add-asin">Dodaj ASIN</button>
+            </div>
+            <div class="aplus-related-list" data-related-asins></div>
+          </div>
+        </form>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">C</span>
+        <div class="aplus-section-heading">
+          <h2>Wybór modułów A+</h2>
+          <p>Wybierz i ustaw kolejność obsługiwanych typów modułów.</p>
+        </div>
+        <div class="aplus-module-picker" data-module-picker></div>
+        <div class="aplus-selected-modules">
+          <div class="aplus-selected-header">
+            <h3>Wybrane moduły</h3>
+            <p data-module-count>Wybrane moduły: 0 / 5</p>
+          </div>
+          <ol class="aplus-selected-list" data-selected-modules></ol>
+        </div>
+        <div class="aplus-banner-config" data-banner-config hidden>
+          <h3>Konfiguracja modułu: Baner z obrazem i tekstem</h3>
+          <div class="aplus-form aplus-banner-config-grid">
+            <label class="aplus-field">
+              <span>Obraz banera</span>
+              <select id="aplus-banner-source-role" data-banner-field="sourceImageRole">
+                <option value="cover">Okładka</option>
+                <option value="promo">Dodatkowa grafika promocyjna</option>
+                <option value="sample">Wybierz z przykładowych stron</option>
+              </select>
+            </label>
+            <label class="aplus-field" data-banner-sample-field hidden>
+              <span>Przykładowa strona</span>
+              <select id="aplus-banner-source-image" data-banner-field="sourceImageId"></select>
+            </label>
+            <label class="aplus-field">
+              <span>Układ</span>
+              <select id="aplus-banner-layout" data-banner-field="layoutPreset">
+                <option value="image-left">Obraz po lewej, tekst po prawej</option>
+                <option value="image-right">Obraz po prawej, tekst po lewej</option>
+                <option value="panel-overlay">Obraz jako tło, tekst na panelu</option>
+                <option value="full-overlay">Pełny obraz z nakładką tekstową</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Rozmiar eksportu</span>
+              <select id="aplus-banner-size" data-banner-field="canvasSize">
+                <option value="standard-970x300">Standard 970 x 300</option>
+                <option value="hi-res-1940x600">Hi-res 1940 x 600</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Tło banera</span>
+              <select id="aplus-banner-background" data-banner-field="backgroundPreset">
+                <option value="primary">Kolor główny projektu</option>
+                <option value="secondary">Kolor dodatkowy projektu</option>
+                <option value="fenix-dark">Ciemne tło Fenixa</option>
+                <option value="auto">Automatycznie dopasowane</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Dopasowanie obrazu</span>
+              <select id="aplus-banner-image-fit" data-banner-field="imageFit">
+                <option value="cover">Wypełnij</option>
+                <option value="contain">Dopasuj w całości</option>
+                <option value="center-crop">Kadruj centralnie</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Wyrównanie tekstu</span>
+              <select id="aplus-banner-text-align" data-banner-field="textAlign">
+                <option value="left">Do lewej</option>
+                <option value="center">Do środka</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Styl banera</span>
+              <select id="aplus-banner-style" data-banner-field="bannerStyle">
+                <option value="clean">Czysty</option>
+                <option value="soft-border">Delikatna ramka</option>
+                <option value="premium-accent">Akcent premium</option>
+              </select>
+            </label>
+            <label class="aplus-field">
+              <span>Domyślny format eksportu</span>
+              <select id="aplus-banner-export-format" data-banner-field="exportFormatDefault">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+              </select>
+            </label>
+          </div>
+          <p class="aplus-field-feedback" data-banner-source-feedback>Wybierz obraz lokalny w sekcji D.</p>
+        </div>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">D</span>
+        <div class="aplus-section-heading">
+          <h2>Obrazy i podglądy stron</h2>
+          <p>Lokalny import obrazów do planowania A+. Pliki nie są wysyłane ani zapisywane w JSON.</p>
+        </div>
+        <div class="aplus-image-inputs">
+          <label class="aplus-image-drop">
+            <span>Okładka</span>
+            <input data-image-input="cover" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+          </label>
+          <label class="aplus-image-drop">
+            <span>Przykładowe strony</span>
+            <input data-image-input="sample" type="file" multiple accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+          </label>
+          <label class="aplus-image-drop">
+            <span>Dodatkowa grafika promocyjna</span>
+            <input data-image-input="promo" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+          </label>
+        </div>
+        <p class="aplus-phase-note">Po wczytaniu JSON trzeba ponownie wybrać pliki lokalne. W JSON zapisywane są tylko metadane.</p>
+        <div class="aplus-image-grid" data-image-previews></div>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">E</span>
+        <div class="aplus-section-heading">
+          <h2>Teksty i alt text</h2>
+          <p>Treści widoczne w renderowanym banerze i opis dostępności.</p>
+        </div>
+        <div class="aplus-banner-text-panel" data-banner-text-panel hidden>
+          <p class="aplus-phase-note">Treści dla Amazon.com wpisuj po angielsku.</p>
+          <p class="aplus-phase-note">Wskazówka: krótszy nagłówek i mniej tekstu dają lepszy efekt w banerze A+.</p>
+          <form class="aplus-form" data-form="banner-text">
+            <label class="aplus-field">
+              <span>Nagłówek</span>
+              <input id="aplus-banner-headline" data-banner-field="headline" type="text" autocomplete="off">
+            </label>
+            <label class="aplus-field">
+              <span>Tekst uzupełniający</span>
+              <textarea id="aplus-banner-supporting-text" data-banner-field="supportingText" rows="3"></textarea>
+            </label>
+            <div class="aplus-banner-bullets">
+              <label class="aplus-field">
+                <span>Krótka lista cech</span>
+                <input id="aplus-banner-bullet-1" data-banner-bullet="0" type="text" autocomplete="off">
+              </label>
+              <label class="aplus-field">
+                <span>Cecha 2 <em>opcjonalna</em></span>
+                <input id="aplus-banner-bullet-2" data-banner-bullet="1" type="text" autocomplete="off">
+              </label>
+              <label class="aplus-field">
+                <span>Cecha 3 <em>opcjonalna</em></span>
+                <input id="aplus-banner-bullet-3" data-banner-bullet="2" type="text" autocomplete="off">
+              </label>
+            </div>
+            <label class="aplus-field">
+              <span>Dodatkowa linia tekstu <em>opcjonalna</em></span>
+              <input id="aplus-banner-extra-line" data-banner-field="extraLine" type="text" autocomplete="off">
+            </label>
+            <label class="aplus-field">
+              <span>Alt text</span>
+              <textarea id="aplus-banner-alt-text" data-banner-field="altText" rows="3"></textarea>
+            </label>
+          </form>
+        </div>
+        <p class="aplus-placeholder" data-banner-text-placeholder>Wybierz moduł Baner z obrazem i tekstem w sekcji C, aby aktywować pola tekstowe.</p>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">F</span>
+        <div class="aplus-section-heading">
+          <h2>Walidacja</h2>
+          <p>Walidacja obejmuje dane projektu, ASIN-y, wybór modułów i lokalne metadane obrazów z przeznaczeniem.</p>
+        </div>
+        <div class="aplus-validation-panel" data-validation-panel aria-live="polite"></div>
+      </article>
+
+      <article class="aplus-section-card">
+        <span class="aplus-section-letter">G</span>
+        <div class="aplus-section-heading">
+          <h2>Pakiet eksportowy</h2>
+          <p>Lokalny podgląd i eksport pierwszego renderowalnego modułu A+.</p>
+        </div>
+        <div class="aplus-banner-export" data-banner-export-panel hidden>
+          <div class="aplus-banner-preview-shell">
+            <div class="aplus-banner-preview-head">
+              <h3>Podgląd banera</h3>
+              <p data-banner-preview-status>Wprowadź dane banera, aby zobaczyć podgląd.</p>
+            </div>
+            <canvas id="aplus-banner-preview" class="aplus-banner-preview" aria-label="Podgląd banera A+"></canvas>
+          </div>
+          <div class="aplus-export-actions">
+            <button class="aplus-button aplus-button-primary" type="button" data-action="export-banner-png">Eksportuj PNG</button>
+            <button class="aplus-button aplus-button-primary" type="button" data-action="export-banner-jpg">Eksportuj JPG</button>
+            <button class="aplus-button" type="button" data-action="export-banner-text">Eksportuj teksty modułu</button>
+          </div>
+        </div>
+        <p class="aplus-placeholder" data-banner-export-placeholder>Eksport banera będzie dostępny po wybraniu modułu Baner z obrazem i tekstem.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="core/project-state.js"></script>
+  <script src="core/image-manager.js"></script>
+  <script src="core/banner-renderer.js"></script>
+  <script src="core/project-validator.js"></script>
+  <script src="a-plus.js"></script>
+</body>
+</html>

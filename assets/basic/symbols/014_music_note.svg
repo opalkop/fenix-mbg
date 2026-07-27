@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Główka nuty -->
+        <ellipse
+            cx="420"
+            cy="720"
+            rx="85"
+            ry="65"/>
+
+        <!-- Laseczka -->
+        <path
+            d="M505 720
+               V250"/>
+
+        <!-- Chorągiewka -->
+        <path
+            d="M505 250
+               C610 270 690 320 690 420
+               C640 395 575 390 505 410"/>
+
+    </g>
+
+</svg>

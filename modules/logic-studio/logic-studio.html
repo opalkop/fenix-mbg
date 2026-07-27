@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Logic Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="logic-studio.css">
+</head>
+<body class="logic-studio-page">
+  <header class="logic-studio-header">
+    <div class="logic-studio-brand">
+      <img class="logic-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="logic-studio-kicker">FENIX</p>
+        <h1>Logic Studio</h1>
+        <p>Moduł do tworzenia prostych łamigłówek logicznych dla Activity Books.</p>
+      </div>
+    </div>
+    <div class="logic-studio-header-actions">
+      <span class="logic-studio-badge">MVP</span>
+      <span class="logic-studio-badge logic-studio-badge-pack">.fenixpack ready</span>
+      <a class="logic-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="logic-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="logic-studio-main">
+    <section class="logic-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="logic-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="logicStudioStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="logic-studio-workspace" aria-label="Obszar roboczy Logic Studio">
+      <aside class="logic-studio-card logic-studio-settings-panel">
+        <div class="logic-studio-section-heading">
+          <h2>Typ ćwiczenia</h2>
+          <p>Edytuj stronę przed dodaniem gotowego PNG do Koszyka Feniksa.</p>
+        </div>
+
+        <fieldset class="logic-studio-settings-group">
+          <legend>Status i strona</legend>
+          <label class="logic-studio-check-field">
+            <input id="logicStudioShowTitle" type="checkbox" checked>
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="logic-studio-field">
+            <span>Tytuł strony</span>
+            <input id="logicStudioTitle" type="text" maxlength="80" value="Logic Puzzle">
+          </label>
+          <label class="logic-studio-field">
+            <span>Instrukcja na stronie</span>
+            <input id="logicStudioInstruction" type="text" maxlength="120" value="Look carefully and solve each puzzle.">
+          </label>
+          <label class="logic-studio-field">
+            <span>Typ ćwiczenia</span>
+            <select id="logicStudioExerciseType">
+              <option value="what-next" selected>What comes next?</option>
+              <option value="complete-pattern">Complete the pattern</option>
+              <option value="odd-one-out">Odd one out</option>
+              <option value="same-different">Same or different</option>
+              <option value="simple-sorting">Simple sorting</option>
+              <option value="find-pair">Find the pair</option>
+            </select>
+          </label>
+          <label class="logic-studio-field">
+            <span>Poziom trudności</span>
+            <select id="logicStudioDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="logic-studio-settings-group">
+          <legend>Ustawienia logiki</legend>
+          <label class="logic-studio-range-field">
+            <span>Liczba zadań na stronie</span>
+            <input id="logicStudioTaskCount" type="range" min="2" max="10" value="5">
+            <output id="logicStudioTaskCountValue">5</output>
+            <input id="logicStudioTaskCountNumber" class="logic-studio-number-input" type="number" min="2" max="10" value="5" aria-label="Liczba zadań">
+          </label>
+          <label class="logic-studio-range-field">
+            <span>Liczba elementów w zadaniu</span>
+            <input id="logicStudioElementCount" type="range" min="3" max="7" value="5">
+            <output id="logicStudioElementCountValue">5</output>
+            <input id="logicStudioElementCountNumber" class="logic-studio-number-input" type="number" min="3" max="7" value="5" aria-label="Liczba elementów">
+          </label>
+          <label class="logic-studio-range-field">
+            <span>Liczba kolumn / układ</span>
+            <input id="logicStudioColumnCount" type="range" min="1" max="2" value="1">
+            <output id="logicStudioColumnCountValue">1</output>
+            <input id="logicStudioColumnCountNumber" class="logic-studio-number-input" type="number" min="1" max="2" value="1" aria-label="Liczba kolumn">
+          </label>
+          <label class="logic-studio-range-field">
+            <span>Seed / losowanie</span>
+            <input id="logicStudioSeed" type="range" min="1" max="9999" value="1">
+            <output id="logicStudioSeedValue">1</output>
+            <input id="logicStudioSeedNumber" class="logic-studio-number-input" type="number" min="1" max="9999" value="1" aria-label="Seed">
+          </label>
+        </fieldset>
+      </aside>
+
+      <article class="logic-studio-card logic-studio-preview-card">
+        <div class="logic-studio-preview-top">
+          <div class="logic-studio-section-heading">
+            <h2>Podgląd strony</h2>
+            <p>Roboczy format 8.5×11. Eksport tworzy PNG 2550×3300 px.</p>
+          </div>
+          <div class="logic-studio-active-summary">
+            <span id="logicStudioPreviewSummary">What comes next? · Medium</span>
+            <strong>Logic PNG</strong>
+          </div>
+        </div>
+        <div class="logic-studio-page-preview">
+          <canvas id="logicStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony logicznej"></canvas>
+        </div>
+        <p class="logic-studio-message" id="logicStudioMessage">Zadania są gotowe do eksportu.</p>
+      </article>
+
+      <aside class="logic-studio-card logic-studio-export-panel">
+        <div class="logic-studio-section-heading">
+          <h2>Wygląd i eksport</h2>
+          <p>Do koszyka trafia gotowy render PNG jako Blob.</p>
+        </div>
+
+        <fieldset class="logic-studio-settings-group">
+          <legend>Wygląd strony</legend>
+          <label class="logic-studio-range-field">
+            <span>Wielkość elementów</span>
+            <input id="logicStudioElementSize" type="range" min="90" max="220" value="150">
+            <output id="logicStudioElementSizeValue">150 px</output>
+            <input id="logicStudioElementSizeNumber" class="logic-studio-number-input" type="number" min="90" max="220" value="150" aria-label="Wielkość elementów">
+            <em>px</em>
+          </label>
+          <label class="logic-studio-range-field">
+            <span>Odstępy</span>
+            <input id="logicStudioSpacing" type="range" min="24" max="120" value="62">
+            <output id="logicStudioSpacingValue">62 px</output>
+            <input id="logicStudioSpacingNumber" class="logic-studio-number-input" type="number" min="24" max="120" value="62" aria-label="Odstępy">
+            <em>px</em>
+          </label>
+          <label class="logic-studio-check-field">
+            <input id="logicStudioShowFrames" type="checkbox" checked>
+            <span>Pokaż ramki zadań</span>
+          </label>
+          <label class="logic-studio-check-field">
+            <input id="logicStudioShowAnswers" type="checkbox">
+            <span>Pokaż odpowiedzi</span>
+          </label>
+          <p class="logic-studio-note">Domyślnie wyłączone, aby strona była ćwiczeniem dla dziecka. Włącz tylko do sprawdzenia lub stworzenia wersji z odpowiedziami.</p>
+        </fieldset>
+
+        <fieldset class="logic-studio-settings-group">
+          <legend>Warianty</legend>
+          <label class="logic-studio-range-field">
+            <span>Liczba wariantów</span>
+            <input id="logicStudioVariantCount" type="range" min="1" max="20" value="5">
+            <output id="logicStudioVariantCountValue">5</output>
+            <input id="logicStudioVariantCountNumber" class="logic-studio-number-input" type="number" min="1" max="20" value="5" aria-label="Liczba wariantów">
+          </label>
+          <p class="logic-studio-note">Warianty różnią się seedem i wygenerowanymi zadaniami.</p>
+        </fieldset>
+
+        <fieldset class="logic-studio-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="logic-studio-actions">
+            <button class="logic-studio-button" id="logicStudioRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="logic-studio-button logic-studio-button-secondary" id="logicStudioRandomize" type="button">Losuj nowe zadania</button>
+            <button class="logic-studio-button logic-studio-button-secondary" id="logicStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+            <button class="logic-studio-button logic-studio-button-secondary" id="logicStudioAddToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+            <button class="logic-studio-button logic-studio-button-secondary" id="logicStudioAddVariantsToBasket" type="button">Dodaj warianty do Koszyka Feniksa</button>
+            <button class="logic-studio-button logic-studio-button-secondary" id="logicStudioExportPack" type="button">Eksportuj .fenixpack</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="logic-studio.js"></script>
+</body>
+</html>

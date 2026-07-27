@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Dot to Dot Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="dot-to-dot-studio.css">
+</head>
+<body class="dot-studio-page">
+  <header class="dot-studio-header">
+    <div class="dot-studio-brand">
+      <img class="dot-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="dot-studio-kicker">FENIX</p>
+        <h1>Dot to Dot Studio</h1>
+        <p>Moduł do tworzenia stron typu połącz kropki dla Activity Books.</p>
+      </div>
+    </div>
+    <div class="dot-studio-header-actions">
+      <span class="dot-studio-badge">MVP</span>
+      <span class="dot-studio-badge dot-studio-badge-pack">.fenixpack ready</span>
+      <a class="dot-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="dot-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="dot-studio-main">
+    <section class="dot-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="dot-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="dotStudioStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="dot-studio-workspace" aria-label="Obszar roboczy Dot to Dot Studio">
+      <aside class="dot-studio-card dot-studio-settings-panel">
+        <div class="dot-studio-section-heading">
+          <h2>Kształt i punkty</h2>
+          <p>Edytuj układ przed dodaniem gotowego PNG do Koszyka Feniksa.</p>
+        </div>
+
+        <fieldset class="dot-studio-settings-group">
+          <legend>Ustawienia strony</legend>
+          <label class="dot-studio-check-field">
+            <input id="dotStudioShowTitle" type="checkbox" checked>
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="dot-studio-field">
+            <span>Tytuł strony</span>
+            <input id="dotStudioTitle" type="text" maxlength="80" value="Connect the Dots">
+          </label>
+          <label class="dot-studio-field">
+            <span>Instrukcja na stronie</span>
+            <input id="dotStudioInstruction" type="text" maxlength="120" value="Connect the dots in order.">
+          </label>
+          <label class="dot-studio-field">
+            <span>Typ kształtu</span>
+            <select id="dotStudioShapeType">
+              <option value="star" selected>Star</option>
+              <option value="heart">Heart</option>
+              <option value="house">House</option>
+              <option value="fish">Fish</option>
+              <option value="rocket">Rocket</option>
+              <option value="car">Car</option>
+              <option value="flower">Flower</option>
+              <option value="butterfly">Butterfly</option>
+              <option value="dinosaur">Dinosaur</option>
+              <option value="random">Random Simple Shape</option>
+            </select>
+          </label>
+          <label class="dot-studio-field">
+            <span>Poziom trudności</span>
+            <select id="dotStudioDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+          <label class="dot-studio-range-field">
+            <span>Liczba punktów</span>
+            <input id="dotStudioPointCount" type="range" min="8" max="40" value="22">
+            <output id="dotStudioPointCountValue">22</output>
+            <input id="dotStudioPointCountNumber" class="dot-studio-number-input" type="number" min="8" max="40" value="22" aria-label="Liczba punktów">
+          </label>
+          <label class="dot-studio-range-field">
+            <span>Seed / losowanie</span>
+            <input id="dotStudioSeed" type="range" min="1" max="9999" value="1">
+            <output id="dotStudioSeedValue">1</output>
+            <input id="dotStudioSeedNumber" class="dot-studio-number-input" type="number" min="1" max="9999" value="1" aria-label="Seed">
+          </label>
+        </fieldset>
+
+        <fieldset class="dot-studio-settings-group">
+          <legend>Ustawienia wyglądu</legend>
+          <label class="dot-studio-range-field">
+            <span>Rozmiar obszaru ćwiczenia</span>
+            <input id="dotStudioAreaScale" type="range" min="60" max="95" value="82">
+            <output id="dotStudioAreaScaleValue">82%</output>
+            <input id="dotStudioAreaScaleNumber" class="dot-studio-number-input" type="number" min="60" max="95" value="82" aria-label="Rozmiar obszaru ćwiczenia">
+            <em>%</em>
+          </label>
+          <label class="dot-studio-range-field">
+            <span>Rozmiar punktów</span>
+            <input id="dotStudioDotSize" type="range" min="8" max="28" value="16">
+            <output id="dotStudioDotSizeValue">16 px</output>
+            <input id="dotStudioDotSizeNumber" class="dot-studio-number-input" type="number" min="8" max="28" value="16" aria-label="Rozmiar punktów">
+            <em>px</em>
+          </label>
+          <label class="dot-studio-range-field">
+            <span>Rozmiar numerów</span>
+            <input id="dotStudioNumberSize" type="range" min="28" max="62" value="42">
+            <output id="dotStudioNumberSizeValue">42 px</output>
+            <input id="dotStudioNumberSizeNumber" class="dot-studio-number-input" type="number" min="28" max="62" value="42" aria-label="Rozmiar numerów">
+            <em>px</em>
+          </label>
+          <label class="dot-studio-range-field">
+            <span>Grubość linii pomocniczej</span>
+            <input id="dotStudioLineWidth" type="range" min="2" max="12" value="4">
+            <output id="dotStudioLineWidthValue">4 px</output>
+            <input id="dotStudioLineWidthNumber" class="dot-studio-number-input" type="number" min="2" max="12" value="4" aria-label="Grubość linii">
+            <em>px</em>
+          </label>
+        </fieldset>
+
+        <fieldset class="dot-studio-settings-group">
+          <legend>Kontur / odpowiedzi</legend>
+          <label class="dot-studio-check-field">
+            <input id="dotStudioShowOutline" type="checkbox">
+            <span>Pokaż delikatny kontur</span>
+          </label>
+          <label class="dot-studio-check-field">
+            <input id="dotStudioShowAnswerLines" type="checkbox">
+            <span>Pokaż linie odpowiedzi</span>
+          </label>
+          <p class="dot-studio-note">Linie odpowiedzi są domyślnie wyłączone. Kontur i linie odpowiedzi to osobne opcje.</p>
+        </fieldset>
+      </aside>
+
+      <article class="dot-studio-card dot-studio-preview-card">
+        <div class="dot-studio-preview-top">
+          <div class="dot-studio-section-heading">
+            <h2>Podgląd strony</h2>
+            <p>Roboczy format 8.5×11. Eksport tworzy PNG 2550×3300 px.</p>
+          </div>
+          <div class="dot-studio-active-summary">
+            <span id="dotStudioPreviewSummary">Star · Medium · 22 punkty</span>
+            <strong>Dot to Dot PNG</strong>
+          </div>
+        </div>
+        <div class="dot-studio-page-preview">
+          <canvas id="dotStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony połącz kropki"></canvas>
+        </div>
+        <p class="dot-studio-message" id="dotStudioMessage">Punkty są gotowe do eksportu.</p>
+      </article>
+
+      <aside class="dot-studio-card dot-studio-export-panel">
+        <div class="dot-studio-section-heading">
+          <h2>Warianty i eksport</h2>
+          <p>Do koszyka trafia gotowy render PNG jako Blob.</p>
+        </div>
+
+        <fieldset class="dot-studio-settings-group">
+          <legend>Warianty</legend>
+          <label class="dot-studio-range-field">
+            <span>Liczba wariantów</span>
+            <input id="dotStudioVariantCount" type="range" min="1" max="20" value="5">
+            <output id="dotStudioVariantCountValue">5</output>
+            <input id="dotStudioVariantCountNumber" class="dot-studio-number-input" type="number" min="1" max="20" value="5" aria-label="Liczba wariantów">
+          </label>
+          <p class="dot-studio-note">Warianty różnią się seedem, kształtem albo drobnym przesunięciem.</p>
+        </fieldset>
+
+        <fieldset class="dot-studio-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="dot-studio-actions">
+            <button class="dot-studio-button" id="dotStudioRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="dot-studio-button dot-studio-button-secondary" id="dotStudioRandomize" type="button">Losuj nowy układ</button>
+            <button class="dot-studio-button dot-studio-button-secondary" id="dotStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+            <button class="dot-studio-button dot-studio-button-secondary" id="dotStudioAddToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+            <button class="dot-studio-button dot-studio-button-secondary" id="dotStudioAddVariantsToBasket" type="button">Dodaj warianty do Koszyka Feniksa</button>
+            <button class="dot-studio-button dot-studio-button-secondary" id="dotStudioExportPack" type="button">Eksportuj .fenixpack</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="dot-to-dot-studio.js"></script>
+</body>
+</html>

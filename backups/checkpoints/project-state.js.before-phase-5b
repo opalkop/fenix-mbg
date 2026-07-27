@@ -1,0 +1,480 @@
+(function (global) {
+  "use strict";
+
+  var namespace = global.FenixAPlus || {};
+  var SCHEMA_VERSION = "0.5.0";
+  var DEFAULT_PRIMARY_COLOR = "#f47b20";
+  var DEFAULT_SECONDARY_COLOR = "#e9ad42";
+  var MAX_RELATED_ASINS = 5;
+  var MAX_SELECTED_MODULES = 5;
+  var MAX_SAMPLE_IMAGES = 6;
+  var state = createDefaultProject();
+
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
+  function deepClone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function createDefaultProject() {
+    var timestamp = nowIso();
+
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      projectName: "",
+      marketplace: "Amazon.com",
+      language: "Angielski",
+      book: {
+        title: "",
+        subtitle: "",
+        author: "",
+        ageGroup: "",
+        seriesName: "",
+        asin: "",
+        relatedAsins: []
+      },
+      theme: "",
+      brandColors: {
+        primary: DEFAULT_PRIMARY_COLOR,
+        secondary: DEFAULT_SECONDARY_COLOR
+      },
+      selectedModules: [],
+      importedImages: [],
+      modules: {
+        banner: createDefaultBannerModule()
+      },
+      validationResults: [],
+      exportSettings: {
+        projectSlug: "",
+        imageFormatDefault: "jpg",
+        maxImageSizeBytes: 2900000
+      },
+      extensions: {},
+      createdAt: timestamp,
+      modifiedAt: timestamp
+    };
+  }
+
+  function normalizeAsin(value) {
+    return String(value || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  }
+
+  function normalizeColor(value, fallback) {
+    var raw = String(value || "").trim();
+    if (!raw) {
+      return fallback;
+    }
+    if (raw.charAt(0) !== "#") {
+      raw = "#" + raw;
+    }
+    return /^#[0-9a-fA-F]{6}$/.test(raw) ? raw.toLowerCase() : raw;
+  }
+
+  function normalizeLanguage(value) {
+    var raw = String(value || "Angielski");
+    var map = {
+      English: "Angielski",
+      Polish: "Polski",
+      German: "Niemiecki",
+      French: "Francuski",
+      Spanish: "Hiszpański",
+      Italian: "Włoski"
+    };
+    return map[raw] || raw;
+  }
+
+  function normalizeMarketplace(value) {
+    var raw = String(value || "Amazon.com");
+    return raw === "Other" ? "Inny" : raw;
+  }
+
+  function normalizeRelatedAsins(values) {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    return values
+      .map(normalizeAsin)
+      .filter(function (value) {
+        return value.length > 0;
+      })
+      .slice(0, MAX_RELATED_ASINS);
+  }
+
+  function normalizeModuleType(value) {
+    var raw = String(value || "").trim();
+    return raw === "standard_image_text_overlay" ? "standard-image-text-overlay" : raw;
+  }
+
+  function createDefaultBannerModule() {
+    return {
+      type: "standard-image-text-overlay",
+      sourceImageRole: "cover",
+      sourceImageId: "",
+      layoutPreset: "image-left",
+      canvasSize: "hi-res-1940x600",
+      backgroundPreset: "primary",
+      imageFit: "cover",
+      textAlign: "left",
+      bannerStyle: "clean",
+      exportFormatDefault: "png",
+      headline: "",
+      supportingText: "",
+      bullets: ["", "", ""],
+      extraLine: "",
+      altText: ""
+    };
+  }
+
+  function normalizeChoice(value, allowed, fallback) {
+    var raw = String(value || "");
+    return allowed.indexOf(raw) === -1 ? fallback : raw;
+  }
+
+  function normalizeBannerModule(input) {
+    var source = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+    var role = normalizeChoice(source.sourceImageRole || source.sourceRole, ["cover", "promo", "sample"], "cover");
+    var bullets = Array.isArray(source.bullets) ? source.bullets : [];
+
+    return {
+      type: "standard-image-text-overlay",
+      sourceImageRole: role,
+      sourceImageId: role === "sample" ? String(source.sourceImageId || source.imageId || "") : String(source.sourceImageId || ""),
+      layoutPreset: normalizeChoice(source.layoutPreset || source.layout, ["image-left", "image-right", "panel-overlay", "full-overlay"], "image-left"),
+      canvasSize: normalizeChoice(source.canvasSize || source.exportSize, ["standard-970x300", "hi-res-1940x600"], "hi-res-1940x600"),
+      backgroundPreset: normalizeChoice(source.backgroundPreset || source.background, ["primary", "secondary", "fenix-dark", "auto"], "primary"),
+      imageFit: normalizeChoice(source.imageFit, ["cover", "contain", "center-crop"], "cover"),
+      textAlign: normalizeChoice(source.textAlign, ["left", "center"], "left"),
+      bannerStyle: normalizeChoice(source.bannerStyle || source.style, ["clean", "soft-border", "premium-accent"], "clean"),
+      exportFormatDefault: normalizeChoice(String(source.exportFormatDefault || "png").toLowerCase(), ["png", "jpg"], "png"),
+      headline: String(source.headline || ""),
+      supportingText: String(source.supportingText || ""),
+      bullets: [0, 1, 2].map(function (index) {
+        return String(bullets[index] || "");
+      }),
+      extraLine: String(source.extraLine || ""),
+      altText: String(source.altText || "")
+    };
+  }
+
+  function normalizeModules(input) {
+    var modules = input && typeof input === "object" && !Array.isArray(input) ? deepClone(input) : {};
+    modules.banner = normalizeBannerModule(modules.banner || modules.standardImageTextOverlay || modules["standard-image-text-overlay"]);
+    return modules;
+  }
+
+  function normalizeSelectedModules(values) {
+    var seen = {};
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    return values.map(function (item) {
+      var type = typeof item === "string" ? item : normalizeModuleType(item && item.type);
+      var id = item && typeof item.id === "string" ? item.id : "";
+      return {
+        id: id || "module-" + type,
+        type: type,
+        status: item && typeof item.status === "string" ? item.status : "planned",
+        addedAt: item && typeof item.addedAt === "string" ? item.addedAt : nowIso()
+      };
+    }).filter(function (item) {
+      if (!item.type || seen[item.type]) {
+        return false;
+      }
+      seen[item.type] = true;
+      return true;
+    }).slice(0, MAX_SELECTED_MODULES);
+  }
+
+  function normalizeImageStatus(value) {
+    var status = String(value || "missing").toLowerCase();
+    return ["pass", "warning", "error", "missing"].indexOf(status) === -1 ? "missing" : status;
+  }
+
+  function aspectFromDimensions(width, height, fallback) {
+    var w = Number(width || 0);
+    var h = Number(height || 0);
+    if (w > 0 && h > 0) {
+      return Number((w / h).toFixed(3));
+    }
+    return typeof fallback === "number" ? fallback : 0;
+  }
+
+  function normalizeImageRecord(item) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      return null;
+    }
+
+    var width = Number(item.width || 0);
+    var height = Number(item.height || 0);
+    var filename = String(item.filename || item.fileName || "");
+    var mimeType = String(item.mimeType || (item.fileType === "png" ? "image/png" : item.fileType === "jpg" || item.fileType === "jpeg" ? "image/jpeg" : ""));
+
+    if (!filename && !item.id && !item.imageId) {
+      return null;
+    }
+
+    return {
+      id: String(item.id || item.imageId || "image-" + Date.now()),
+      role: String(item.role || "sample"),
+      filename: filename,
+      mimeType: mimeType,
+      sizeBytes: Number(item.sizeBytes || 0),
+      width: width,
+      height: height,
+      aspectRatio: aspectFromDimensions(width, height, Number(item.aspectRatio || 0)),
+      validationStatus: normalizeImageStatus(item.validationStatus || item.status),
+      validationMessages: Array.isArray(item.validationMessages) ? deepClone(item.validationMessages) : [],
+      addedAt: typeof item.addedAt === "string" ? item.addedAt : nowIso(),
+      localFileAvailable: item.localFileAvailable === true
+    };
+  }
+
+  function normalizeImportedImages(values, legacyInput, preserveLocalAvailability) {
+    var records = [];
+
+    if (Array.isArray(values)) {
+      values.forEach(function (item) {
+        var normalized = normalizeImageRecord(item);
+        if (normalized) {
+          normalized.localFileAvailable = preserveLocalAvailability ? item.localFileAvailable === true : false;
+          if (normalized.validationStatus === "pass") {
+            normalized.validationStatus = normalized.localFileAvailable ? "pass" : "missing";
+          }
+          records.push(normalized);
+        }
+      });
+    }
+
+    if (legacyInput && legacyInput.coverImage) {
+      records.push(normalizeImageRecord(Object.assign({}, legacyInput.coverImage, { role: "cover" })));
+    }
+    if (legacyInput && Array.isArray(legacyInput.pagePreviewImages)) {
+      legacyInput.pagePreviewImages.forEach(function (item) {
+        records.push(normalizeImageRecord(Object.assign({}, item, { role: "sample" })));
+      });
+    }
+
+    return records.filter(function (item) {
+      if (!item) {
+        return false;
+      }
+      item.localFileAvailable = preserveLocalAvailability ? item.localFileAvailable === true : false;
+      if (item.validationStatus === "pass") {
+        item.validationStatus = item.localFileAvailable ? "pass" : "missing";
+      }
+      return true;
+    }).slice(0, 8);
+  }
+
+  function preserveUnknownProperties(source, knownKeys) {
+    var preserved = {};
+    Object.keys(source || {}).forEach(function (key) {
+      if (knownKeys.indexOf(key) === -1) {
+        preserved[key] = deepClone(source[key]);
+      }
+    });
+    return preserved;
+  }
+
+  function normalizeProject(input, preserveLocalImages) {
+    if (!input || typeof input !== "object" || Array.isArray(input)) {
+      throw new Error("Loaded file does not contain a project object.");
+    }
+
+    var sourceProject = input.project && typeof input.project === "object" ? input.project : {};
+    var bookSource = input.book && typeof input.book === "object" ? input.book : {};
+    var timestamp = nowIso();
+    var createdAt = typeof input.createdAt === "string" ? input.createdAt : sourceProject.createdAt;
+    var modifiedAt = typeof input.modifiedAt === "string" ? input.modifiedAt : sourceProject.modifiedAt;
+    var knownKeys = [
+      "schemaVersion",
+      "projectName",
+      "marketplace",
+      "language",
+      "book",
+      "theme",
+      "brandColors",
+      "selectedModules",
+      "importedImages",
+      "modules",
+      "validationResults",
+      "exportSettings",
+      "extensions",
+      "createdAt",
+      "modifiedAt",
+      "project",
+      "moduleOrder",
+      "importedImages",
+      "coverImage",
+      "pagePreviewImages",
+      "technicalSpecificationRows"
+    ];
+
+    return {
+      schemaVersion: typeof input.schemaVersion === "string" ? input.schemaVersion : SCHEMA_VERSION,
+      projectName: String(input.projectName || sourceProject.projectName || ""),
+      marketplace: normalizeMarketplace(input.marketplace || sourceProject.marketplace || "Amazon.com"),
+      language: normalizeLanguage(input.language || sourceProject.language || "Angielski"),
+      book: {
+        title: String(bookSource.title || sourceProject.bookTitle || ""),
+        subtitle: String(bookSource.subtitle || sourceProject.subtitle || ""),
+        author: String(bookSource.author || sourceProject.authorName || ""),
+        ageGroup: String(bookSource.ageGroup || sourceProject.ageGroup || ""),
+        seriesName: String(bookSource.seriesName || sourceProject.seriesName || ""),
+        asin: normalizeAsin(bookSource.asin || sourceProject.asin || ""),
+        relatedAsins: normalizeRelatedAsins(bookSource.relatedAsins || sourceProject.relatedAsins || [])
+      },
+      theme: String(input.theme || sourceProject.theme || ""),
+      brandColors: {
+        primary: normalizeColor(input.brandColors && input.brandColors.primary || sourceProject.brandColors && sourceProject.brandColors.primary, DEFAULT_PRIMARY_COLOR),
+        secondary: normalizeColor(input.brandColors && input.brandColors.secondary || sourceProject.brandColors && sourceProject.brandColors.secondary, DEFAULT_SECONDARY_COLOR)
+      },
+      selectedModules: normalizeSelectedModules(input.selectedModules || input.moduleOrder || []),
+      importedImages: normalizeImportedImages(input.importedImages, input, preserveLocalImages === true),
+      modules: normalizeModules(input.modules),
+      validationResults: Array.isArray(input.validationResults) ? deepClone(input.validationResults) : [],
+      exportSettings: input.exportSettings && typeof input.exportSettings === "object" && !Array.isArray(input.exportSettings)
+        ? deepClone(input.exportSettings)
+        : {
+          projectSlug: "",
+          imageFormatDefault: "jpg",
+          maxImageSizeBytes: 2900000
+        },
+      extensions: Object.assign(
+        {},
+        input.extensions && typeof input.extensions === "object" && !Array.isArray(input.extensions) ? deepClone(input.extensions) : {},
+        preserveUnknownProperties(input, knownKeys)
+      ),
+      createdAt: typeof createdAt === "string" && createdAt ? createdAt : timestamp,
+      modifiedAt: typeof modifiedAt === "string" && modifiedAt ? modifiedAt : timestamp
+    };
+  }
+
+  function touch() {
+    state.modifiedAt = nowIso();
+  }
+
+  function setProjectState(nextProject) {
+    state = normalizeProject(nextProject, true);
+    touch();
+    return getSnapshot();
+  }
+
+  function reset() {
+    state = createDefaultProject();
+    return getSnapshot();
+  }
+
+  function getSnapshot() {
+    return deepClone(state);
+  }
+
+  function hasUserData() {
+    var project = state;
+    return Boolean(
+      project.projectName ||
+      project.theme ||
+      project.book.title ||
+      project.book.subtitle ||
+      project.book.author ||
+      project.book.ageGroup ||
+      project.book.seriesName ||
+      project.book.asin ||
+      project.book.relatedAsins.length
+      || project.selectedModules.length
+      || project.importedImages.length
+      || project.modules.banner.headline
+      || project.modules.banner.supportingText
+      || project.modules.banner.bullets.some(function (item) { return item; })
+      || project.modules.banner.extraLine
+      || project.modules.banner.altText
+    );
+  }
+
+  function updateField(path, value) {
+    var parts = String(path || "").split(".");
+    var target = state;
+    var index;
+
+    if (!path) {
+      return getSnapshot();
+    }
+
+    for (index = 0; index < parts.length - 1; index += 1) {
+      if (!target[parts[index]] || typeof target[parts[index]] !== "object") {
+        target[parts[index]] = {};
+      }
+      target = target[parts[index]];
+    }
+
+    target[parts[parts.length - 1]] = value;
+    touch();
+    return getSnapshot();
+  }
+
+  function setRelatedAsins(values) {
+    state.book.relatedAsins = normalizeRelatedAsins(values);
+    touch();
+    return getSnapshot();
+  }
+
+  function setValidationResults(results) {
+    state.validationResults = Array.isArray(results) ? deepClone(results) : [];
+    return getSnapshot();
+  }
+
+  function setSelectedModules(values) {
+    state.selectedModules = normalizeSelectedModules(values);
+    touch();
+    return getSnapshot();
+  }
+
+  function setImportedImages(values) {
+    state.importedImages = normalizeImportedImages(values, null, true);
+    touch();
+    return getSnapshot();
+  }
+
+  function createSlug(value) {
+    var slug = String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/-{2,}/g, "-");
+    return slug || "fenix-a-plus-project";
+  }
+
+  namespace.ProjectState = {
+    createDefaultProject: createDefaultProject,
+    createDefaultBannerModule: createDefaultBannerModule,
+    getSnapshot: getSnapshot,
+    hasUserData: hasUserData,
+    normalizeAsin: normalizeAsin,
+    normalizeColor: normalizeColor,
+    normalizeProject: normalizeProject,
+    reset: reset,
+    setProjectState: setProjectState,
+    setImportedImages: setImportedImages,
+    setRelatedAsins: setRelatedAsins,
+    setSelectedModules: setSelectedModules,
+    setValidationResults: setValidationResults,
+    slugify: createSlug,
+    updateField: updateField,
+    constants: {
+      schemaVersion: SCHEMA_VERSION,
+      maxRelatedAsins: MAX_RELATED_ASINS,
+      maxSelectedModules: MAX_SELECTED_MODULES,
+      maxSampleImages: MAX_SAMPLE_IMAGES,
+      defaultPrimaryColor: DEFAULT_PRIMARY_COLOR,
+      defaultSecondaryColor: DEFAULT_SECONDARY_COLOR
+    }
+  };
+
+  global.FenixAPlus = namespace;
+}(window));

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Główka klucza -->
+        <circle
+            cx="320"
+            cy="512"
+            r="140"/>
+
+        <circle
+            cx="320"
+            cy="512"
+            r="52"/>
+
+        <!-- Trzpień -->
+        <line
+            x1="460"
+            y1="512"
+            x2="820"
+            y2="512"/>
+
+        <!-- Zęby klucza -->
+        <line
+            x1="700"
+            y1="512"
+            x2="700"
+            y2="620"/>
+
+        <line
+            x1="790"
+            y1="512"
+            x2="790"
+            y2="570"/>
+
+    </g>
+
+</svg>

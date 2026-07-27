@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <path
+        id="outline"
+        d="M432 172
+           H592
+           V432
+           H852
+           V592
+           H592
+           V852
+           H432
+           V592
+           H172
+           V432
+           H432
+           Z"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+</svg>

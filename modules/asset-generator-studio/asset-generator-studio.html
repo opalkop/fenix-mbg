@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Asset Generator Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="asset-generator-studio.css">
+</head>
+<body class="ag-page">
+  <header class="ag-header">
+    <div class="ag-brand">
+      <img class="ag-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="ag-kicker">FENIX · AG Studio · Asset Lab · Narzędzie Feniksa</p>
+        <h1>Asset Generator Studio</h1>
+        <p>Moduł pomocniczy do generowania, przygotowywania i oceniania assetów SVG/PNG do wykorzystania w modułach Fenixa.</p>
+      </div>
+    </div>
+    <nav class="ag-nav" aria-label="Nawigacja modułu">
+      <a href="../../index.html">← Powrót do Fenixa</a>
+      <a href="../coloring-studio/coloring-studio.html">Otwórz Coloring Studio</a>
+      <a href="../matching-studio/matching-studio.html">Otwórz Matching Studio</a>
+      <a href="../hidden-objects-studio/hidden-objects-studio.html">Otwórz Hidden Objects Studio</a>
+      <a href="../complete-picture/complete-picture.html">Otwórz Complete the Picture</a>
+      <a href="../../mbg.html">Otwórz MBG / Book Builder</a>
+    </nav>
+  </header>
+
+  <main class="ag-main">
+    <section class="ag-notice ag-notice-strong" aria-label="Informacja o workflow">
+      <strong>Ten moduł tworzy assety SVG/PNG, nie strony książki.</strong>
+      <span>Assety eksportujesz na PC i później wgrywasz ręcznie do wybranego modułu Fenixa. AG Studio nie dodaje assetów do Koszyka Feniksa. Koszyk służy do gotowych stron książki.</span>
+    </section>
+
+    <section class="ag-notice" aria-label="Prawa i bezpieczeństwo">
+      Generuj i zapisuj własne, generyczne assety. Nie używaj nazw znanych marek, postaci, franczyz ani cudzych grafik. Assety powinny być oryginalne i bezpieczne do użycia w KDP.
+    </section>
+
+    <section class="ag-mode-switch" aria-label="Tryb pracy">
+      <button class="ag-mode-button is-active" type="button" data-mode="local">Generator lokalny</button>
+      <button class="ag-mode-button" type="button" data-mode="prompt">Builder promptów AI</button>
+      <button class="ag-mode-button" type="button" data-mode="import">Import wyniku AI / ocena assetu</button>
+      <button class="ag-mode-button ag-mode-button-experiment" type="button" data-mode="online">Eksperymentalny generator online</button>
+    </section>
+
+    <section class="ag-workspace">
+      <aside class="ag-panel ag-controls">
+        <div class="ag-mode-panel" id="agLocalPanel">
+          <div class="ag-section-heading">
+            <h2>Generator lokalny</h2>
+            <p>Proceduralne, czyste assety SVG B/W. Działa bez internetu i bez zewnętrznych bibliotek.</p>
+          </div>
+
+          <label class="ag-field">
+            <span>Typ assetu</span>
+            <select id="agAssetType">
+              <option value="animal">Zwierzę</option>
+              <option value="dino">Dinozaur</option>
+              <option value="vehicle">Pojazd</option>
+              <option value="food">Owoc / jedzenie</option>
+              <option value="object">Przedmiot</option>
+              <option value="nature">Natura / roślina</option>
+              <option value="shape">Kształt / symbol</option>
+              <option value="decorative">Dekoracja</option>
+              <option value="education">Ikona edukacyjna</option>
+            </select>
+          </label>
+
+          <label class="ag-field">
+            <span>Styl assetu</span>
+            <select id="agAssetStyle">
+              <option value="line-art-coloring">Line-art coloring</option>
+              <option value="gameplay-icon">Gameplay icon</option>
+              <option value="hidden-objects-filler">Hidden Objects filler</option>
+              <option value="matching-icon">Matching icon</option>
+              <option value="simple-silhouette">Simple silhouette</option>
+              <option value="outline-sticker">Outline sticker</option>
+              <option value="decorative-doodle">Decorative doodle</option>
+            </select>
+          </label>
+
+          <label class="ag-field">
+            <span>Nazwa / temat assetu</span>
+            <input id="agTheme" type="text" maxlength="80" value="cute dino" placeholder="np. cute dino, apple, rocket">
+          </label>
+
+          <div class="ag-range-grid">
+            <label class="ag-range-field"><span>Poziom szczegółowości</span><input id="agDetail" type="range" min="1" max="10" value="4"><output>4</output></label>
+            <label class="ag-range-field"><span>Grubość konturu</span><input id="agStroke" type="range" min="4" max="36" value="18"><output>18</output></label>
+            <label class="ag-range-field"><span>Zaokrąglenie kształtów</span><input id="agRoundness" type="range" min="0" max="10" value="7"><output>7</output></label>
+            <label class="ag-range-field"><span>Prostota / czytelność</span><input id="agSimplicity" type="range" min="1" max="10" value="8"><output>8</output></label>
+            <label class="ag-range-field"><span>Symetria</span><input id="agSymmetry" type="range" min="0" max="10" value="6"><output>6</output></label>
+            <label class="ag-range-field"><span>Seed</span><input id="agSeed" type="number" min="1" max="999999" value="101"></label>
+            <label class="ag-range-field"><span>Liczba wariantów</span><input id="agVariantCount" type="number" min="1" max="12" value="4"></label>
+          </div>
+
+          <div class="ag-actions">
+            <button class="ag-button" id="agGenerateAsset" type="button">Generuj asset</button>
+            <button class="ag-button ag-button-secondary" id="agGenerateVariants" type="button">Generuj warianty</button>
+          </div>
+        </div>
+
+        <div class="ag-mode-panel" id="agPromptPanel" hidden>
+          <div class="ag-section-heading">
+            <h2>Builder promptów AI</h2>
+            <p>FENIX nie wysyła tego promptu do internetu. Skopiuj go ręcznie do wybranego narzędzia AI, a wynik zaimportuj w trybie Import wyniku AI.</p>
+          </div>
+          <p class="ag-warning">Unikaj promptów zawierających nazwy znanych postaci, marek, filmów, gier lub stylów żyjących artystów.</p>
+
+          <label class="ag-field"><span>Typ assetu</span><select id="agPromptType"></select></label>
+          <label class="ag-field"><span>Temat</span><input id="agPromptTheme" type="text" value="cute dinosaur" maxlength="100"></label>
+          <label class="ag-field"><span>Styl</span><select id="agPromptStyle"></select></label>
+          <label class="ag-field"><span>Przeznaczenie</span><select id="agPromptPurpose">
+            <option value="coloring">Coloring / worksheet</option>
+            <option value="gameplay">Gameplay</option>
+            <option value="hidden">Hidden Objects</option>
+            <option value="matching">Matching</option>
+            <option value="cover">Cover / A+</option>
+          </select></label>
+          <label class="ag-field"><span>Tło</span><select id="agPromptBackground">
+            <option value="white background">White background</option>
+            <option value="transparent background">Transparent background</option>
+            <option value="isolated on white">Isolated on white</option>
+          </select></label>
+          <label class="ag-field"><span>Format</span><select id="agPromptFormat">
+            <option value="single isolated object">Single isolated object</option>
+            <option value="set of small variations">Set of small variations</option>
+            <option value="centered icon">Centered icon</option>
+          </select></label>
+          <div class="ag-check-grid">
+            <label><input id="agPromptBw" type="checkbox" checked> B/W print</label>
+            <label><input id="agPromptColoring" type="checkbox" checked> Do coloring</label>
+            <label><input id="agPromptGameplay" type="checkbox"> Do gameplay</label>
+            <label><input id="agPromptCover" type="checkbox"> Do cover/A+</label>
+          </div>
+          <label class="ag-range-field"><span>Poziom szczegółowości</span><input id="agPromptDetail" type="range" min="1" max="10" value="4"><output>4</output></label>
+          <label class="ag-range-field"><span>Liczba wariantów</span><input id="agPromptVariants" type="number" min="1" max="12" value="4"></label>
+          <textarea id="agPromptOutput" rows="8" spellcheck="false" aria-label="Wygenerowany prompt"></textarea>
+          <div class="ag-actions">
+            <button class="ag-button" id="agCopyPrompt" type="button">Kopiuj prompt</button>
+            <button class="ag-button ag-button-secondary" id="agRegeneratePrompt" type="button">Wygeneruj ponownie prompt</button>
+            <button class="ag-button ag-button-quiet" id="agClearPrompt" type="button">Wyczyść</button>
+          </div>
+        </div>
+
+        <div class="ag-mode-panel" id="agImportPanel" hidden>
+          <div class="ag-section-heading">
+            <h2>Import wyniku AI / ocena assetu</h2>
+            <p>Zaimportuj PNG lub SVG wygenerowany poza Fenixem. Plik jest trzymany tylko w pamięci bieżącej sesji.</p>
+          </div>
+          <label class="ag-upload">
+            <span>Wybierz PNG/SVG z dysku</span>
+            <input id="agImportFile" type="file" accept=".svg,.png,image/svg+xml,image/png">
+          </label>
+          <div class="ag-import-info" id="agImportInfo">Brak zaimportowanego pliku.</div>
+          <p class="ag-warning">Koszyk Feniksa służy do gotowych stron książki. AG Studio tworzy assety. Wyeksportuj asset jako SVG/PNG i wgraj go ręcznie do modułu, który tworzy stronę.</p>
+        </div>
+
+        <div class="ag-mode-panel" id="agOnlinePanel" hidden>
+          <div class="ag-section-heading">
+            <span class="ag-experiment-badge">EKSPERYMENT</span>
+            <h2>Eksperymentalny generator online</h2>
+            <p>Ten tryb testowo generuje PNG online z promptu przez zewnętrznego providera bez klucza API. Wyniki mogą być niestabilne jakościowo. Przed użyciem w KDP zawsze sprawdź jakość, prawa i poprawność assetu.</p>
+          </div>
+          <p class="ag-warning">To nie jest produkcyjna integracja API. Ten tryb służy wyłącznie do testów workflow assetów.</p>
+
+          <label class="ag-field">
+            <span>Prompt / opis assetu</span>
+            <textarea id="agOnlinePrompt" rows="5">cute baby dinosaur, clean black and white line art, isolated object, white background, no text, no watermark</textarea>
+          </label>
+          <label class="ag-field">
+            <span>Styl / przeznaczenie</span>
+            <select id="agOnlineStyle">
+              <option value="coloring-line-art">Coloring line-art</option>
+              <option value="gameplay-icon">Gameplay icon</option>
+              <option value="hidden-objects-filler">Hidden Objects filler</option>
+              <option value="cover-a-plus">Cover / A+ decorative object</option>
+              <option value="semi-realistic">Semi-realistic object</option>
+            </select>
+          </label>
+          <div class="ag-range-grid">
+            <label class="ag-field"><span>Rozmiar</span><select id="agOnlineSize">
+              <option value="512">512×512</option>
+              <option value="768">768×768</option>
+              <option value="1024" selected>1024×1024</option>
+            </select></label>
+            <label class="ag-field"><span>Provider</span><select id="agOnlineProvider">
+              <option value="pollinations">Pollinations.ai / test bez klucza</option>
+            </select></label>
+            <label class="ag-field"><span>Seed</span><input id="agOnlineSeed" type="number" min="1" max="999999" value="2201"></label>
+            <label class="ag-field"><span>Liczba wariantów</span><input id="agOnlineVariantCount" type="number" min="1" max="4" value="1"></label>
+          </div>
+          <div class="ag-actions">
+            <button class="ag-button ag-button-quiet" id="agOnlineRandomSeed" type="button">Losuj seed</button>
+            <button class="ag-button" id="agGenerateOnline" type="button">Generuj testowy PNG online</button>
+            <button class="ag-button ag-button-secondary" id="agGenerateOnlineVariants" type="button">Generuj warianty online</button>
+            <button class="ag-button ag-button-quiet" id="agClearOnlineResults" type="button">Wyczyść wyniki online</button>
+          </div>
+          <div class="ag-import-info" id="agOnlineStatus">Gotowy</div>
+          <div class="ag-prompt-warning" id="agOnlinePromptWarning" hidden>Prompt może zawierać nazwę marki, franczyzy, znanej postaci albo styl chroniony. Dla KDP używaj generycznych, oryginalnych opisów.</div>
+          <details class="ag-online-details">
+            <summary>Ważne</summary>
+            <p>Tryb eksperymentalny: provider może działać niestabilnie, zwracać różną jakość albo chwilowo nie odpowiadać.</p>
+            <p>Nie używaj nazw marek, znanych postaci, franczyz ani stylów żyjących artystów.</p>
+            <p>Przed użyciem w KDP sprawdź jakość, czytelność, brak tekstu, brak watermarka i bezpieczeństwo prawne.</p>
+            <p>Wyniki online domyślnie otrzymują status NEEDS_REVIEW.</p>
+          </details>
+          <div class="ag-section-heading ag-online-results-heading">
+            <h2>Wyniki online</h2>
+          </div>
+          <div class="ag-online-results" id="agOnlineResults" aria-live="polite"></div>
+          <p class="ag-small">AG Studio tworzy assety, nie strony książki. Wyeksportuj PNG/SVG i wgraj go ręcznie do wybranego modułu.</p>
+        </div>
+
+        <div class="ag-section-heading ag-meta-heading">
+          <h2>Nazewnictwo i tagi</h2>
+        </div>
+        <label class="ag-field"><span>Nazwa assetu</span><input id="agAssetName" type="text" value="Cute Dino Gameplay" maxlength="100"></label>
+        <label class="ag-field"><span>Slug</span><input id="agAssetSlug" type="text" value="cute-dino-gameplay" maxlength="100"></label>
+        <label class="ag-field"><span>Kategoria</span><select id="agCategory"></select></label>
+        <label class="ag-field"><span>Tagi</span><input id="agTags" type="text" value="dino, kids, gameplay" maxlength="160"></label>
+        <label class="ag-field"><span>Styl</span><select id="agMetaStyle"></select></label>
+        <label class="ag-field"><span>Przeznaczenie</span><input id="agPurpose" type="text" value="matching, hidden objects, logic" maxlength="160"></label>
+      </aside>
+
+      <section class="ag-panel ag-preview-panel" aria-label="Podgląd aktywnego assetu">
+        <div class="ag-preview-top">
+          <div class="ag-section-heading">
+            <h2>Podgląd aktywnego assetu</h2>
+            <p id="agActiveSummary">Brak aktywnego assetu.</p>
+          </div>
+          <strong class="ag-status" id="agSvgStatus">NEEDS_REVIEW</strong>
+        </div>
+        <div class="ag-preview-frame" id="agPreviewFrame">
+          <span>Wygeneruj lub zaimportuj asset.</span>
+        </div>
+        <div class="ag-gallery" id="agVariantGallery" aria-label="Galeria wariantów"></div>
+      </section>
+
+      <aside class="ag-panel ag-side-panel">
+        <section>
+          <div class="ag-section-heading">
+            <h2>Do czego ten asset się nadaje?</h2>
+          </div>
+          <div class="ag-recommendations" id="agRecommendations"></div>
+          <div class="ag-warning-list" id="agWarnings"></div>
+        </section>
+
+        <section>
+          <div class="ag-section-heading">
+            <h2>Ocena assetu</h2>
+          </div>
+          <div class="ag-rating">
+            <label><input type="radio" name="agRating" value="like" checked> Podoba mi się</label>
+            <label><input type="radio" name="agRating" value="improve"> Do poprawy</label>
+            <label><input type="radio" name="agRating" value="reject"> Odrzuć</label>
+          </div>
+          <label class="ag-field"><span>Status</span><select id="agManualStatus">
+            <option value="FENIX_OK">FENIX_OK</option>
+            <option value="NEEDS_REVIEW" selected>NEEDS_REVIEW</option>
+            <option value="REJECT_RISK">REJECT_RISK</option>
+          </select></label>
+          <label class="ag-field"><span>Notatka / zastosowanie</span><textarea id="agNotes" rows="4">Sprawdzić czytelność w małym rozmiarze.</textarea></label>
+        </section>
+
+        <section>
+          <div class="ag-section-heading">
+            <h2>Eksport</h2>
+            <p>Eksport zapisuje pliki na PC. Nie tworzy stron i nie używa Koszyka Feniksa.</p>
+          </div>
+          <button class="ag-button" id="agExportSvg" type="button">Eksportuj SVG</button>
+          <p class="ag-small" id="agSvgExportHint">Eksport SVG dostępny dla aktywnego SVG.</p>
+          <label class="ag-field"><span>Rozmiar PNG</span><select id="agPngSize">
+            <option value="512">512×512</option>
+            <option value="1024" selected>1024×1024</option>
+            <option value="2048">2048×2048</option>
+          </select></label>
+          <button class="ag-button ag-button-secondary" id="agExportPngTransparent" type="button">PNG transparent</button>
+          <button class="ag-button ag-button-secondary" id="agExportPngWhite" type="button">PNG white background</button>
+          <button class="ag-button ag-button-pack" id="agExportPack" type="button">Eksportuj .fenixassetpack</button>
+          <p class="ag-small">To NIE jest .fenixpack. Paczka assetów nie jest paczką stron książki.</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="asset-generator-studio.js"></script>
+</body>
+</html>

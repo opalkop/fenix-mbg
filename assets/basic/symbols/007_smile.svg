@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <circle
+            cx="512"
+            cy="512"
+            r="320"/>
+
+        <circle
+            cx="400"
+            cy="420"
+            r="28"/>
+
+        <circle
+            cx="624"
+            cy="420"
+            r="28"/>
+
+        <path
+            d="M360 590
+               C420 690 604 690 664 590"/>
+
+    </g>
+
+</svg>

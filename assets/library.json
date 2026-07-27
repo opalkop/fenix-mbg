@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "libraries": [
+    {
+      "id": "basic",
+      "label": "Basic",
+      "categories": [
+        {
+          "id": "shapes",
+          "label": "Kształty",
+          "basePath": "assets/basic/shapes/",
+          "items": [
+            { "id": "basic-shape-circle", "label": "Circle", "file": "001_circle.svg" },
+            { "id": "basic-shape-square", "label": "Square", "file": "002_square.svg" },
+            { "id": "basic-shape-rectangle", "label": "Rectangle", "file": "003_rectangle.svg" },
+            { "id": "basic-shape-triangle", "label": "Triangle", "file": "004_triangle.svg" },
+            { "id": "basic-shape-star", "label": "Star", "file": "005_star.svg" },
+            { "id": "basic-shape-heart", "label": "Heart", "file": "006_heart.svg" },
+            { "id": "basic-shape-cloud", "label": "Cloud", "file": "007_cloud.svg" },
+            { "id": "basic-shape-moon", "label": "Moon", "file": "008_moon.svg" },
+            { "id": "basic-shape-sun", "label": "Sun", "file": "009_sun.svg" },
+            { "id": "basic-shape-drop", "label": "Drop", "file": "010_drop.svg" },
+            { "id": "basic-shape-diamond", "label": "Diamond", "file": "011_diamond.svg" },
+            { "id": "basic-shape-hexagon", "label": "Hexagon", "file": "012_hexagon.svg" },
+            { "id": "basic-shape-pentagon", "label": "Pentagon", "file": "013_pentagon.svg" },
+            { "id": "basic-shape-oval", "label": "Oval", "file": "014_oval.svg" },
+            { "id": "basic-shape-cross", "label": "Cross", "file": "015_cross.svg" },
+            { "id": "basic-shape-arrow", "label": "Arrow", "file": "016_arrow.svg" },
+            { "id": "basic-shape-flower", "label": "Flower", "file": "017_flower.svg" },
+            { "id": "basic-shape-leaf", "label": "Leaf", "file": "018_leaf.svg" },
+            { "id": "basic-shape-tree", "label": "Tree", "file": "019_tree.svg" },
+            { "id": "basic-shape-house", "label": "House", "file": "020_house.svg" }
+          ]
+        },
+        {
+          "id": "symbols",
+          "label": "Symbole",
+          "basePath": "assets/basic/symbols/",
+          "items": [
+            { "id": "basic-symbol-check", "label": "Check", "file": "001_check.svg" },
+            { "id": "basic-symbol-x-mark", "label": "X Mark", "file": "002_x_mark.svg" },
+            { "id": "basic-symbol-plus", "label": "Plus", "file": "003_plus.svg" },
+            { "id": "basic-symbol-minus", "label": "Minus", "file": "004_minus.svg" },
+            { "id": "basic-symbol-question-mark", "label": "Question Mark", "file": "005_question_mark.svg" },
+            { "id": "basic-symbol-exclamation-mark", "label": "Exclamation Mark", "file": "006_exclamation_mark.svg" },
+            { "id": "basic-symbol-smile", "label": "Smile", "file": "007_smile.svg" },
+            { "id": "basic-symbol-star-badge", "label": "Star Badge", "file": "008_star_badge.svg" },
+            { "id": "basic-symbol-flag", "label": "Flag", "file": "009_flag.svg" },
+            { "id": "basic-symbol-crown", "label": "Crown", "file": "010_crown.svg" },
+            { "id": "basic-symbol-trophy", "label": "Trophy", "file": "011_trophy.svg" },
+            { "id": "basic-symbol-medal", "label": "Medal", "file": "012_medal.svg" },
+            { "id": "basic-symbol-lightning", "label": "Lightning", "file": "013_lightning.svg" },
+            { "id": "basic-symbol-music-note", "label": "Music Note", "file": "014_music_note.svg" },
+            { "id": "basic-symbol-clock", "label": "Clock", "file": "015_clock.svg" },
+            { "id": "basic-symbol-book", "label": "Book", "file": "016_book.svg" },
+            { "id": "basic-symbol-pencil", "label": "Pencil", "file": "017_pencil.svg" },
+            { "id": "basic-symbol-magnifier", "label": "Magnifier", "file": "018_magnifier.svg" },
+            { "id": "basic-symbol-key", "label": "Key", "file": "019_key.svg" },
+            { "id": "basic-symbol-lock", "label": "Lock", "file": "020_lock.svg" }
+          ]
+        },
+        {
+          "id": "lines",
+          "label": "Lines / Pre-writing",
+          "basePath": "assets/basic/lines/",
+          "items": [
+            { "id": "basic-line-short-horizontal", "label": "Short Horizontal", "file": "001_short_horizontal.svg" },
+            { "id": "basic-line-short-vertical", "label": "Short Vertical", "file": "002_short_vertical.svg" },
+            { "id": "basic-line-long-horizontal", "label": "Long Horizontal", "file": "003_long_horizontal.svg" },
+            { "id": "basic-line-long-vertical", "label": "Long Vertical", "file": "004_long_vertical.svg" },
+            { "id": "basic-line-small-diagonal-up", "label": "Small Diagonal Up", "file": "005_small_diagonal_up.svg" },
+            { "id": "basic-line-small-diagonal-down", "label": "Small Diagonal Down", "file": "006_small_diagonal_down.svg" },
+            { "id": "basic-line-large-diagonal-up", "label": "Large Diagonal Up", "file": "007_large_diagonal_up.svg" },
+            { "id": "basic-line-large-diagonal-down", "label": "Large Diagonal Down", "file": "008_large_diagonal_down.svg" },
+            { "id": "basic-line-small-curve-left", "label": "Small Curve Left", "file": "009_small_curve_left.svg" },
+            { "id": "basic-line-small-curve-right", "label": "Small Curve Right", "file": "010_small_curve_right.svg" },
+            { "id": "basic-line-large-curve-left", "label": "Large Curve Left", "file": "011_large_curve_left.svg" },
+            { "id": "basic-line-large-curve-right", "label": "Large Curve Right", "file": "012_large_curve_right.svg" },
+            { "id": "basic-line-wave", "label": "Wave", "file": "013_wave.svg" },
+            { "id": "basic-line-zigzag", "label": "Zigzag", "file": "014_zigzag.svg" },
+            { "id": "basic-line-mountain", "label": "Mountain", "file": "015_mountain.svg" },
+            { "id": "basic-line-valley", "label": "Valley", "file": "016_valley.svg" },
+            { "id": "basic-line-loop", "label": "Loop", "file": "017_loop.svg" },
+            { "id": "basic-line-spiral", "label": "Spiral", "file": "018_spiral.svg" },
+            { "id": "basic-line-infinity", "label": "Infinity", "file": "019_infinity.svg" },
+            { "id": "basic-line-mixed-pattern", "label": "Mixed Pattern", "file": "020_mixed_pattern.svg" }
+          ]
+        }
+      ]
+    }
+  ]
+}

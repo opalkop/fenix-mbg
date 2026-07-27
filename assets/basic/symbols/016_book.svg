@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <path
+            d="M230 210
+               H490
+               C525 210 552 240 552 275
+               V820
+               C552 785 525 760 490 760
+               H230
+               Z"/>
+
+        <path
+            d="M794 210
+               H534
+               C499 210 472 240 472 275
+               V820
+               C472 785 499 760 534 760
+               H794
+               Z"/>
+
+        <line
+            x1="512"
+            y1="250"
+            x2="512"
+            y2="820"/>
+
+    </g>
+
+</svg>

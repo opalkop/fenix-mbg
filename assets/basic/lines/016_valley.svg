@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <path
+            d="M120 324
+               Q180 700 240 324
+               Q300 700 360 324
+               Q420 700 480 324
+               Q540 700 600 324
+               Q660 700 720 324
+               Q780 700 840 324
+               Q872 524 904 324"/>
+
+    </g>
+
+</svg>

@@ -1,0 +1,60 @@
+{
+  "bookTitle": "Help the Puppy Find His Food!",
+  "bookTitleLine2": "Maze Book for Kids Ages 4-6",
+  "bookSubtitle": "50 Fun and Easy Mazes with Solutions",
+  "bookInfo": "A cute puppy maze adventure for young kids.",
+
+  "includeIntroPages": true,
+  "includeSolutions": true,
+
+  "mazeCount": 50,
+  "mazeWidth": 8,
+  "mazeHeight": 8,
+
+  "useCheckpoint": false,
+  "useEnemy": false,
+
+  "missionStartText": "Help the puppy find his food!",
+  "screenFreeText": "Screen-free maze fun for kids.",
+
+  "howToTitle": "HOW TO PLAY",
+  "howToLines": [
+    "Start at the puppy.",
+    "Find the path through the maze.",
+    "Reach the food bowl.",
+    "Do not cross the maze walls.",
+    "Solve all 50 mazes!"
+  ],
+  "tipText": "Take your time and have fun!",
+
+  "mazePageTitle": "Food Maze",
+  "mazePageSubtitle": "Help the puppy reach the food bowl!",
+  "mazePrefix": "Maze",
+
+  "solutionPageTitle": "Solution",
+  "solutionPageSubtitle": "Follow the dashed path to check your answer.",
+  "solutionPrefix": "Solution",
+
+  "startLabelText": "START",
+  "goalLabelText": "FOOD",
+  "checkpointLabelText": "",
+  "enemyLabelText": "",
+
+  "startAssetName": "puppy.png",
+  "goalAssetName": "food_bowl.png",
+  "checkpointAssetName": "",
+  "enemyAssetName": "",
+
+  "pageWidth": 2550,
+  "pageHeight": 3300,
+  "safeMargin": 260,
+  "headerHeight": 450,
+  "footerHeight": 300,
+  "mazePadding": 150,
+  "assetScale": 1.2,
+
+  "solutionsPerPage": 2,
+  "paperSize": "8.5x11",
+  "bleed": false,
+  "colorMode": "black_and_white"
+}

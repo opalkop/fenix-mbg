@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Alphabet Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="alphabet-studio.css">
+</head>
+<body class="alphabet-studio-page">
+  <header class="alphabet-studio-header">
+    <div class="alphabet-studio-brand">
+      <img class="alphabet-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="alphabet-studio-kicker">FENIX</p>
+        <h1>Alphabet Studio</h1>
+        <p>Moduł do tworzenia stron alfabetu, letter tracing i prostych ćwiczeń ABC dla Activity Books.</p>
+      </div>
+    </div>
+    <div class="alphabet-studio-header-actions">
+      <span class="alphabet-studio-badge">MVP</span>
+      <span class="alphabet-studio-badge alphabet-studio-badge-pack">.fenixpack ready</span>
+      <a class="alphabet-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="alphabet-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="alphabet-studio-main">
+    <section class="alphabet-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="alphabet-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="alphabetStudioStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="alphabet-studio-workspace" aria-label="Obszar roboczy Alphabet Studio">
+      <aside class="alphabet-studio-card alphabet-studio-settings-panel">
+        <div class="alphabet-studio-section-heading">
+          <h2>Litera i słowo</h2>
+          <p>Interfejs jest po polsku, a tekst strony może być po angielsku dla Amazon.com.</p>
+        </div>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Litera i słowo</legend>
+          <label class="alphabet-studio-field">
+            <span>Wybór litery A-Z</span>
+            <select id="alphabetStudioLetter"></select>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Słowo</span>
+            <input id="alphabetStudioWord" type="text" maxlength="40" value="Apple">
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Typ strony</span>
+            <select id="alphabetStudioPageType">
+              <option value="letter-tracing" selected>Letter Tracing</option>
+              <option value="letter-practice">Letter Practice</option>
+              <option value="letter-word">Letter + Word</option>
+              <option value="abc-worksheet">Simple ABC Worksheet</option>
+            </select>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Poziom trudności</span>
+            <select id="alphabetStudioDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Ustawienia strony</legend>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowTitle" type="checkbox" checked>
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Tekst tytułu</span>
+            <input id="alphabetStudioTitle" type="text" maxlength="80" value="Letter A">
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Instrukcja na stronie</span>
+            <input id="alphabetStudioInstruction" type="text" maxlength="120" value="Trace the letter.">
+          </label>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowUppercase" type="checkbox" checked>
+            <span>Pokaż wielką literę</span>
+          </label>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowLowercase" type="checkbox" checked>
+            <span>Pokaż małą literę</span>
+          </label>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowWordText" type="checkbox" checked>
+            <span>Pokaż tekst „A is for Apple”</span>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Margines boczny</span>
+            <input id="alphabetStudioSideMargin" type="range" min="180" max="520" value="280">
+            <output id="alphabetStudioSideMarginValue">280 px</output>
+            <input id="alphabetStudioSideMarginNumber" class="alphabet-studio-number-input" type="number" min="180" max="520" value="280" aria-label="Margines boczny">
+            <em>px</em>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Rozmiar liter</span>
+            <input id="alphabetStudioLetterSize" type="range" min="180" max="560" value="390">
+            <output id="alphabetStudioLetterSizeValue">390 px</output>
+            <input id="alphabetStudioLetterSizeNumber" class="alphabet-studio-number-input" type="number" min="180" max="560" value="390" aria-label="Rozmiar liter">
+            <em>px</em>
+          </label>
+        </fieldset>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Tracing i writing practice</legend>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowTracing" type="checkbox" checked>
+            <span>Pokaż sekcję tracing</span>
+          </label>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowWriting" type="checkbox" checked>
+            <span>Pokaż sekcję writing practice</span>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Styl tracing</span>
+            <select id="alphabetStudioTracingStyle">
+              <option value="dotted" selected>dotted</option>
+              <option value="dashed">dashed</option>
+              <option value="light-solid">light solid</option>
+            </select>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Liczba wierszy</span>
+            <input id="alphabetStudioPracticeRows" type="range" min="2" max="8" value="4">
+            <output id="alphabetStudioPracticeRowsValue">4</output>
+            <input id="alphabetStudioPracticeRowsNumber" class="alphabet-studio-number-input" type="number" min="2" max="8" value="4" aria-label="Liczba wierszy">
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Odstęp między wierszami</span>
+            <input id="alphabetStudioRowSpacing" type="range" min="120" max="280" value="180">
+            <output id="alphabetStudioRowSpacingValue">180 px</output>
+            <input id="alphabetStudioRowSpacingNumber" class="alphabet-studio-number-input" type="number" min="120" max="280" value="180" aria-label="Odstęp między wierszami">
+            <em>px</em>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Grubość linii</span>
+            <input id="alphabetStudioLineWidth" type="range" min="2" max="12" value="5">
+            <output id="alphabetStudioLineWidthValue">5 px</output>
+            <input id="alphabetStudioLineWidthNumber" class="alphabet-studio-number-input" type="number" min="2" max="12" value="5" aria-label="Grubość linii">
+            <em>px</em>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Jasność linii</span>
+            <input id="alphabetStudioLineOpacity" type="range" min="20" max="100" value="42">
+            <output id="alphabetStudioLineOpacityValue">42%</output>
+            <input id="alphabetStudioLineOpacityNumber" class="alphabet-studio-number-input" type="number" min="20" max="100" value="42" aria-label="Jasność linii">
+            <em>%</em>
+          </label>
+        </fieldset>
+      </aside>
+
+      <article class="alphabet-studio-card alphabet-studio-preview-card">
+        <div class="alphabet-studio-preview-top">
+          <div class="alphabet-studio-section-heading">
+            <h2>Podgląd strony</h2>
+            <p>Roboczy format 8.5×11. Eksport tworzy PNG 2550×3300 px.</p>
+          </div>
+          <div class="alphabet-studio-active-summary">
+            <span id="alphabetStudioPreviewSummary">A · Apple · Letter Tracing</span>
+            <strong>Alphabet PNG</strong>
+          </div>
+        </div>
+        <div class="alphabet-studio-page-preview">
+          <canvas id="alphabetStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony alfabetu"></canvas>
+        </div>
+        <p class="alphabet-studio-message" id="alphabetStudioMessage">Zmień ustawienia i odśwież podgląd przed dodaniem do koszyka.</p>
+      </article>
+
+      <aside class="alphabet-studio-card alphabet-studio-assets-panel">
+        <div class="alphabet-studio-section-heading">
+          <h2>Ilustracja i eksport</h2>
+          <p>Opcjonalna ilustracja SVG/PNG trafia tylko do renderu strony.</p>
+        </div>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Ilustracja</legend>
+          <label class="alphabet-studio-file-drop">
+            <span>Wybierz SVG/PNG</span>
+            <input id="alphabetStudioAssetInput" type="file" accept="image/svg+xml,image/png,.svg,.png">
+          </label>
+          <div class="alphabet-studio-asset-preview" id="alphabetStudioAssetPreview">
+            <span>Brak ilustracji</span>
+          </div>
+          <button class="alphabet-studio-mini-button" id="alphabetStudioRemoveAsset" type="button">Usuń asset</button>
+          <label class="alphabet-studio-check-field">
+            <input id="alphabetStudioShowAsset" type="checkbox" checked>
+            <span>Pokaż ilustrację</span>
+          </label>
+          <label class="alphabet-studio-range-field">
+            <span>Rozmiar ilustracji</span>
+            <input id="alphabetStudioAssetSize" type="range" min="160" max="700" value="430">
+            <output id="alphabetStudioAssetSizeValue">430 px</output>
+            <input id="alphabetStudioAssetSizeNumber" class="alphabet-studio-number-input" type="number" min="160" max="700" value="430" aria-label="Rozmiar ilustracji">
+            <em>px</em>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Pozycja ilustracji</span>
+            <select id="alphabetStudioAssetPosition">
+              <option value="right" selected>Po prawej</option>
+              <option value="bottom">Na dole</option>
+              <option value="none">Ukryj</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Zakres liter</legend>
+          <label class="alphabet-studio-field">
+            <span>Zakres</span>
+            <select id="alphabetStudioRangeMode">
+              <option value="az">A-Z</option>
+              <option value="am">A-M</option>
+              <option value="nz">N-Z</option>
+              <option value="custom" selected>Custom</option>
+            </select>
+          </label>
+          <label class="alphabet-studio-field">
+            <span>Custom, np. A,B,C,D albo A-C</span>
+            <input id="alphabetStudioCustomRange" type="text" value="A,B,C">
+          </label>
+        </fieldset>
+
+        <fieldset class="alphabet-studio-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="alphabet-studio-actions">
+            <button class="alphabet-studio-button" id="alphabetStudioRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="alphabet-studio-button alphabet-studio-button-secondary" id="alphabetStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+            <button class="alphabet-studio-button alphabet-studio-button-secondary" id="alphabetStudioAddToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+            <button class="alphabet-studio-button alphabet-studio-button-secondary" id="alphabetStudioAddRangeToBasket" type="button">Dodaj zakres liter do Koszyka Feniksa</button>
+            <button class="alphabet-studio-button alphabet-studio-button-secondary" id="alphabetStudioExportPack" type="button">Eksportuj .fenixpack</button>
+            <button class="alphabet-studio-button alphabet-studio-button-secondary" id="alphabetStudioExportRangePack" type="button">Eksportuj zakres jako .fenixpack</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="alphabet-studio.js"></script>
+</body>
+</html>

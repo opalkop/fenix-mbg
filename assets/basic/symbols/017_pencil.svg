@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Korpus ołówka -->
+        <path
+            d="M250 730
+               L610 370
+               L740 500
+               L380 860
+               Z"/>
+
+        <!-- Końcówka -->
+        <path
+            d="M610 370
+               L760 220
+               L850 310
+               L700 460
+               Z"/>
+
+        <!-- Grafit -->
+        <path
+            d="M760 220
+               L900 180
+               L850 310
+               Z"/>
+
+        <!-- Gumka -->
+        <line
+            x1="300"
+            y1="680"
+            x2="430"
+            y2="810"/>
+
+    </g>
+
+</svg>

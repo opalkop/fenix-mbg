@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "0.1.0",
+  "project": {
+    "projectName": "Jungle Maze Adventure A Plus",
+    "marketplace": "US",
+    "language": "en-US",
+    "bookTitle": "Jungle Maze Adventure",
+    "subtitle": "Mazes and Activity Pages for Kids",
+    "ageGroup": "5-7",
+    "seriesName": "Fenix Activity Books",
+    "authorName": "Fenix Studio",
+    "asin": "B0ABC12345",
+    "relatedAsins": [
+      "B0ABC12346",
+      "B0ABC12347"
+    ],
+    "theme": "jungle",
+    "brandColors": {
+      "primary": "#f47b20",
+      "secondary": "#e9ad42",
+      "background": "#0f141b",
+      "text": "#edf2f7"
+    },
+    "createdAt": "2026-06-08T00:00:00Z",
+    "modifiedAt": "2026-06-08T00:00:00Z"
+  },
+  "moduleOrder": [
+    "module-001",
+    "module-002",
+    "module-003"
+  ],
+  "selectedModules": [
+    {
+      "id": "module-001",
+      "type": "standard_image_text_overlay",
+      "title": "Adventure Starts Here",
+      "status": "planned",
+      "visibleHeading": "Adventure Starts Here",
+      "bodyCopy": "Introduce young explorers to a jungle-themed maze journey with playful activity pages.",
+      "altText": "Jungle-themed book spread with maze paths and adventure illustrations for kids.",
+      "images": [
+        {
+          "imageId": "image-001",
+          "role": "background",
+          "sourcePath": "imports/jungle-overlay-background.png",
+          "fileName": "jungle-overlay-background.png",
+          "fileType": "png",
+          "width": 1940,
+          "height": 600,
+          "sizeBytes": 1800000,
+          "colorMode": "RGB",
+          "dpi": 300
+        }
+      ],
+      "exportPreset": {
+        "width": 1940,
+        "height": 600,
+        "format": "jpg",
+        "maxSizeBytes": 2900000
+      }
+    },
+    {
+      "id": "module-002",
+      "type": "standard_three_images_text",
+      "title": "Three Ways To Play",
+      "status": "planned",
+      "visibleHeading": "Three Ways To Play",
+      "bodyCopy": "Mazes, bonus challenges, and reward pages help keep the activity book varied.",
+      "altText": "Three square preview images showing a maze page, a bonus activity, and a certificate page.",
+      "images": [
+        {
+          "imageId": "image-002",
+          "role": "panel-1",
+          "sourcePath": "imports/maze-preview.png",
+          "fileName": "maze-preview.png",
+          "fileType": "png",
+          "width": 600,
+          "height": 600,
+          "sizeBytes": 620000,
+          "colorMode": "RGB",
+          "dpi": 300
+        },
+        {
+          "imageId": "image-003",
+          "role": "panel-2",
+          "sourcePath": "imports/bonus-preview.png",
+          "fileName": "bonus-preview.png",
+          "fileType": "png",
+          "width": 600,
+          "height": 600,
+          "sizeBytes": 590000,
+          "colorMode": "RGB",
+          "dpi": 300
+        },
+        {
+          "imageId": "image-004",
+          "role": "panel-3",
+          "sourcePath": "imports/certificate-preview.png",
+          "fileName": "certificate-preview.png",
+          "fileType": "png",
+          "width": 600,
+          "height": 600,
+          "sizeBytes": 610000,
+          "colorMode": "RGB",
+          "dpi": 300
+        }
+      ],
+      "exportPreset": {
+        "width": 600,
+        "height": 600,
+        "format": "png",
+        "maxSizeBytes": 2900000
+      }
+    },
+    {
+      "id": "module-003",
+      "type": "comparison_chart",
+      "title": "Compare Activity Books",
+      "status": "planned",
+      "visibleHeading": "Find The Right Adventure",
+      "bodyCopy": "Compare age ranges, themes, and activity types across the series.",
+      "altText": "Comparison chart showing books in the same activity book series.",
+      "comparisonData": {
+        "asins": [
+          "B0ABC12345",
+          "B0ABC12346",
+          "B0ABC12347"
+        ],
+        "rows": [
+          {
+            "label": "Age range",
+            "values": [
+              "5-7",
+              "6-8",
+              "4-6"
+            ]
+          },
+          {
+            "label": "Theme",
+            "values": [
+              "Jungle",
+              "Space",
+              "Knights"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "importedImages": [
+    "image-001",
+    "image-002",
+    "image-003",
+    "image-004"
+  ],
+  "coverImage": {
+    "imageId": "cover-001",
+    "sourcePath": "imports/jungle-cover.png",
+    "fileName": "jungle-cover.png",
+    "fileType": "png",
+    "width": 1800,
+    "height": 2700,
+    "sizeBytes": 2400000,
+    "colorMode": "RGB"
+  },
+  "pagePreviewImages": [
+    {
+      "imageId": "page-preview-001",
+      "sourcePath": "imports/page-01-preview.png",
+      "fileName": "page-01-preview.png",
+      "fileType": "png",
+      "width": 1200,
+      "height": 1200,
+      "sizeBytes": 900000,
+      "colorMode": "RGB"
+    }
+  ],
+  "technicalSpecificationRows": [
+    {
+      "label": "Interior type",
+      "value": "Maze and activity pages"
+    },
+    {
+      "label": "Format",
+      "value": "Paperback"
+    }
+  ],
+  "validationResults": [
+    {
+      "code": "MODULE_COUNT",
+      "level": "PASS",
+      "message": "Project uses three planned modules."
+    },
+    {
+      "code": "ALT_TEXT_PRESENT",
+      "level": "PASS",
+      "message": "All planned modules include separate alt text."
+    }
+  ],
+  "exportSettings": {
+    "projectSlug": "jungle-maze-adventure-a-plus",
+    "outputRoot": "exports/a-plus/jungle-maze-adventure-a-plus",
+    "imageFormatDefault": "jpg",
+    "jpgQualityDefault": 0.9,
+    "maxImageSizeBytes": 2900000,
+    "includeProjectJson": true,
+    "includeTextExports": true,
+    "includeUploadChecklist": true
+  }
+}

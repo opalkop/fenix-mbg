@@ -1,0 +1,14 @@
+{
+  "createdAt": "2026-07-10T12:15:50.683Z",
+  "root": "/home/perlik/Pulpit/FENIX/book-assets",
+  "summary": {
+    "totalFiles": 0,
+    "svgCount": 0,
+    "pngCount": 0,
+    "fenixOk": 0,
+    "needsReview": 0,
+    "rejectRisk": 0
+  },
+  "files": [],
+  "message": "No SVG or PNG files found in: /home/perlik/Pulpit/FENIX/book-assets"
+}

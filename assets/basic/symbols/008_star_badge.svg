@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Okrąg odznaki -->
+        <circle
+            cx="512"
+            cy="512"
+            r="330"/>
+
+        <!-- Gwiazda -->
+        <polygon
+            points="
+                512,250
+                574,420
+                752,420
+                608,530
+                664,700
+                512,595
+                360,700
+                416,530
+                272,420
+                450,420"/>
+
+    </g>
+
+</svg>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <path
+            d="M512 512
+               m0 -40
+               a40 40 0 1 1 -40 40
+               a80 80 0 1 0 80 -80
+               a120 120 0 1 1 -120 120
+               a160 160 0 1 0 160 -160
+               a200 200 0 1 1 -200 200
+               a240 240 0 1 0 240 -240"/>
+
+    </g>
+
+</svg>

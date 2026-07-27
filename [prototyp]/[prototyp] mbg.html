@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>MBG - Maze Book Generator</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #e9e9e9;
+      margin: 0;
+      padding: 20px;
+      color: #111;
+    }
+
+    .wrapper {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px 0 25px;
+      font-size: 34px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #111;
+      font-size: 22px;
+    }
+
+    .section {
+      background: #fff;
+      border: 2px solid #111;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 3px 3px 0 #111;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 14px 22px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      font-size: 15px;
+      padding: 9px;
+      border: 1px solid #777;
+      border-radius: 6px;
+      background: white;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    .actions {
+      text-align: center;
+      margin: 28px 0 18px;
+    }
+
+    button {
+      font-size: 22px;
+      font-weight: bold;
+      padding: 16px 40px;
+      border: 0;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #555;
+    }
+
+    button:hover { background: #333; }
+
+    #status {
+      background: #fff;
+      border: 2px solid #111;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 18px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <h1>MBG - Maze Book Generator</h1>
+
+  <div id="status">Gotowy.</div>
+
+  <div class="section">
+    <h2>1. Książka</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="pages">Ilość labiryntów</label>
+        <input type="number" id="pages" value="50" min="1" max="200">
+      </div>
+
+      <div class="field">
+        <label for="fileName">Nazwa pliku PDF</label>
+        <input type="text" id="fileName" value="farm_mazes_book.pdf">
+      </div>
+
+      <div class="field">
+        <label for="includeIntroPages">Dodać stronę 1 i stronę 2?</label>
+        <select id="includeIntroPages">
+          <option value="yes" selected>Tak</option>
+          <option value="no">Nie</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="includeSolutions">Dodać rozwiązania?</label>
+        <select id="includeSolutions">
+          <option value="yes" selected>Tak</option>
+          <option value="no">Nie</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. Strona 1 - Intro</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="bookTitle">Tytuł główny</label>
+        <input type="text" id="bookTitle" value="FARM MAZES">
+      </div>
+
+      <div class="field">
+        <label for="bookTitleLine2">Druga linia tytułu</label>
+        <input type="text" id="bookTitleLine2" value="FOR KIDS">
+      </div>
+
+      <div class="field">
+        <label for="bookSubtitle">Podtytuł</label>
+        <input type="text" id="bookSubtitle" value="Fun Puzzle Book for Ages 4–6">
+      </div>
+
+      <div class="field">
+        <label for="bookInfo">Informacja</label>
+        <input type="text" id="bookInfo" value="50 Easy Farm Maze Activities">
+      </div>
+
+      <div class="field">
+        <label for="missionStartText">Tekst startowy</label>
+        <input type="text" id="missionStartText" value="START YOUR FARM MISSION">
+      </div>
+
+      <div class="field">
+        <label for="screenFreeText">Tekst screen-free</label>
+        <input type="text" id="screenFreeText" value="A screen-free activity book for young kids.">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:14px;">
+      <label for="bookIntroText">Opis na stronie 1</label>
+      <textarea id="bookIntroText">Help the farm animals find their way home, collect items, and avoid obstacles.</textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. Strona 2 - Instrukcja</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="howToTitle">Nagłówek instrukcji</label>
+        <input type="text" id="howToTitle" value="HOW TO PLAY">
+      </div>
+
+      <div class="field">
+        <label for="howToFooter">Stopka instrukcji</label>
+        <input type="text" id="howToFooter" value="Use a pencil and have fun!">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:14px;">
+      <label for="howToLines">Instrukcja - każda linia osobno</label>
+      <textarea id="howToLines">Start at the animal.
+Follow the maze path.
+Collect the item.
+Avoid the obstacle.
+Reach the goal.</textarea>
+    </div>
+
+    <div class="field" style="margin-top:14px;">
+      <label for="tipText">Tip</label>
+      <textarea id="tipText">Tip: If you take a wrong turn, go back and try another path.</textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>4. Strony labiryntów</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="title">Tytuł strony labiryntu</label>
+        <input type="text" id="title" value="Farm Maze">
+      </div>
+
+      <div class="field">
+        <label for="subtitle">Podtytuł strony labiryntu</label>
+        <input type="text" id="subtitle" value="Help the farm animal reach the goal.">
+      </div>
+
+      <div class="field">
+        <label for="mazeNumberPrefix">Prefix labiryntu</label>
+        <input type="text" id="mazeNumberPrefix" value="Maze">
+      </div>
+
+      <div class="field">
+        <label for="solutionNumberPrefix">Prefix rozwiązania</label>
+        <input type="text" id="solutionNumberPrefix" value="Solution">
+      </div>
+
+      <div class="field">
+        <label for="solutionTitle">Tytuł rozwiązania</label>
+        <input type="text" id="solutionTitle" value="Solution">
+      </div>
+
+      <div class="field">
+        <label for="solutionSubtitle">Podtytuł rozwiązania</label>
+        <input type="text" id="solutionSubtitle" value="Follow the dashed path to check your answer.">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5. Ustawienia labiryntu</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="mazeWidth">Szerokość labiryntu</label>
+        <input type="number" id="mazeWidth" value="15" min="5" max="80">
+      </div>
+
+      <div class="field">
+        <label for="mazeHeight">Wysokość labiryntu</label>
+        <input type="number" id="mazeHeight" value="15" min="5" max="80">
+      </div>
+
+      <div class="field">
+        <label for="safeMargin">Margines strony</label>
+        <input type="number" id="safeMargin" value="180" min="0" max="600">
+      </div>
+
+      <div class="field">
+        <label for="mazePadding">Odstęp labiryntu</label>
+        <input type="number" id="mazePadding" value="80" min="0" max="600">
+      </div>
+
+      <div class="field">
+        <label for="useCheckpoint">Checkpoint</label>
+        <select id="useCheckpoint">
+          <option value="yes" selected>Tak</option>
+          <option value="no">Nie</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="useEnemy">Zagrożenie</label>
+        <select id="useEnemy">
+          <option value="yes" selected>Tak</option>
+          <option value="no">Nie</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>6. Assety z komputera</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="assetStart">START</label>
+        <input type="file" id="assetStart" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label for="assetGoal">CEL</label>
+        <input type="file" id="assetGoal" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label for="assetCheckpoint">CHECKPOINT</label>
+        <input type="file" id="assetCheckpoint" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label for="assetEnemy">ZAGROŻENIE</label>
+        <input type="file" id="assetEnemy" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label for="useAssets">Użyć assetów?</label>
+        <select id="useAssets">
+          <option value="yes" selected>Tak</option>
+          <option value="no">Nie - użyj liter</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="assetScale">Skala assetów (%)</label>
+        <input type="number" id="assetScale" value="130" min="50" max="220">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>7. Etykiety zastępcze</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="startLabelText">Start</label>
+        <input type="text" id="startLabelText" value="S">
+      </div>
+
+      <div class="field">
+        <label for="goalLabelText">Cel</label>
+        <input type="text" id="goalLabelText" value="G">
+      </div>
+
+      <div class="field">
+        <label for="checkpointLabelText">Checkpoint</label>
+        <input type="text" id="checkpointLabelText" value="1">
+      </div>
+
+      <div class="field">
+        <label for="enemyLabelText">Zagrożenie</label>
+        <input type="text" id="enemyLabelText" value="X">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>8. Eksport</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="format">Format obrazu w PDF</label>
+        <select id="format">
+          <option value="jpeg" selected>JPEG</option>
+          <option value="png">PNG</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="quality">Jakość JPEG</label>
+        <input type="number" id="quality" value="0.92" min="0.1" max="1" step="0.01">
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="generateBtn" type="button">GENERUJ PDF</button>
+  </div>
+
+</div>
+
+<script src="./mbg.js"></script>
+</body>
+</html>

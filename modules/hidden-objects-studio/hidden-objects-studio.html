@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Hidden Objects Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="hidden-objects-studio.css">
+</head>
+<body class="hidden-studio-page">
+  <header class="hidden-studio-header">
+    <div class="hidden-studio-brand">
+      <img class="hidden-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="hidden-studio-kicker">FENIX</p>
+        <h1>Hidden Objects Studio</h1>
+        <p>Moduł do tworzenia stron typu znajdź ukryte elementy dla Activity Books.</p>
+      </div>
+    </div>
+    <div class="hidden-studio-header-actions">
+      <span class="hidden-studio-badge">MVP</span>
+      <span class="hidden-studio-badge hidden-studio-badge-pack">.fenixpack ready</span>
+      <a class="hidden-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="hidden-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="hidden-studio-main">
+    <section class="hidden-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="hidden-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="hiddenStudioStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="hidden-studio-workspace" aria-label="Obszar roboczy Hidden Objects Studio">
+      <aside class="hidden-studio-card hidden-studio-settings-panel">
+        <div class="hidden-studio-section-heading">
+          <h2>Assety</h2>
+          <p>Dodaj SVG/PNG i ustaw, które obiekty mają trafić do listy Find.</p>
+        </div>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Upload SVG/PNG</legend>
+          <label class="hidden-studio-upload">
+            <span>Dodaj assety</span>
+            <input id="hiddenStudioFileInput" type="file" accept=".svg,.png,image/svg+xml,image/png" multiple>
+          </label>
+          <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioClearAssets" type="button">Wyczyść assety</button>
+          <p class="hidden-studio-note">Obrazy są trzymane w pamięci modułu i renderowane do finalnego PNG. Nie są zapisywane w localStorage.</p>
+          <div class="hidden-studio-asset-list" id="hiddenStudioAssetList" aria-live="polite"></div>
+        </fieldset>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Ustawienia strony</legend>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioShowTitle" type="checkbox" checked>
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="hidden-studio-field">
+            <span>Tytuł strony</span>
+            <input id="hiddenStudioTitle" type="text" maxlength="80" value="Hidden Objects">
+          </label>
+          <label class="hidden-studio-field">
+            <span>Instrukcja na stronie</span>
+            <input id="hiddenStudioInstruction" type="text" maxlength="120" value="Find and circle the objects.">
+          </label>
+          <label class="hidden-studio-field">
+            <span>Typ strony</span>
+            <select id="hiddenStudioPageType">
+              <option value="find-objects" selected>Find Objects</option>
+              <option value="i-spy">I Spy</option>
+              <option value="search-circle">Search and Circle</option>
+              <option value="count-find">Count and Find</option>
+              <option value="themed-scene">Themed Scene</option>
+            </select>
+          </label>
+          <label class="hidden-studio-field">
+            <span>Poziom trudności</span>
+            <select id="hiddenStudioDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Lista Find</legend>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioShowFindList" type="checkbox" checked>
+            <span>Pokaż listę „Find”</span>
+          </label>
+          <label class="hidden-studio-field">
+            <span>Układ listy „Find”</span>
+            <select id="hiddenStudioFindPosition">
+              <option value="top">Góra</option>
+              <option value="bottom" selected>Dół</option>
+              <option value="side">Bok</option>
+            </select>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioShowSolution" type="checkbox">
+            <span>Pokaż rozwiązanie</span>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioAutoFillScene" type="checkbox" checked>
+            <span>Automatycznie wypełnij scenę</span>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioUseBuiltInDistractors" type="checkbox" checked>
+            <span>Użyj prostych dystraktorów, gdy brakuje assetów</span>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioAllowFindAsDistractors" type="checkbox">
+            <span>Pozwól używać obiektów szukanych jako dystraktorów</span>
+          </label>
+          <p class="hidden-studio-note">Rozwiązanie jest domyślnie wyłączone. Po włączeniu obiekty z listy Find dostają subtelne oznaczenie.</p>
+          <p class="hidden-studio-note">Automatyczne wypełnienie dodaje dodatkowe obiekty, dekoracje i dystraktory, aby strona była prawdziwym zadaniem search and find.</p>
+          <p class="hidden-studio-note">Domyślnie obiekty szukane nie są używane jako dodatkowe dystraktory, aby liczba na liście Find zgadzała się z liczbą na stronie.</p>
+        </fieldset>
+      </aside>
+
+      <article class="hidden-studio-card hidden-studio-preview-card">
+        <div class="hidden-studio-preview-top">
+          <div class="hidden-studio-section-heading">
+            <h2>Podgląd strony</h2>
+            <p>Roboczy format 8.5×11. Eksport tworzy PNG 2550×3300 px.</p>
+          </div>
+          <div class="hidden-studio-active-summary">
+            <span id="hiddenStudioPreviewSummary">Find Objects · Medium</span>
+            <strong>Hidden Objects PNG</strong>
+          </div>
+        </div>
+        <div class="hidden-studio-page-preview">
+          <canvas id="hiddenStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony znajdź ukryte elementy"></canvas>
+        </div>
+        <p class="hidden-studio-message" id="hiddenStudioMessage">Dodaj assety albo użyj prostych placeholderów do testu układu.</p>
+      </article>
+
+      <aside class="hidden-studio-card hidden-studio-export-panel">
+        <div class="hidden-studio-section-heading">
+          <h2>Scena i eksport</h2>
+          <p>Do koszyka trafia gotowy render PNG jako Blob.</p>
+        </div>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Ustawienia sceny</legend>
+          <label class="hidden-studio-range-field">
+            <span>Liczba obiektów szukanych</span>
+            <input id="hiddenStudioObjectCount" type="range" min="1" max="30" value="12">
+            <output id="hiddenStudioObjectCountValue">12</output>
+            <input id="hiddenStudioObjectCountNumber" class="hidden-studio-number-input" type="number" min="1" max="30" value="12" aria-label="Liczba obiektów szukanych">
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Liczba dystraktorów</span>
+            <input id="hiddenStudioDistractorCount" type="range" min="0" max="60" value="22">
+            <output id="hiddenStudioDistractorCountValue">22</output>
+            <input id="hiddenStudioDistractorCountNumber" class="hidden-studio-number-input" type="number" min="0" max="60" value="22" aria-label="Liczba dystraktorów">
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Gęstość sceny</span>
+            <input id="hiddenStudioDensity" type="range" min="35" max="95" value="62">
+            <output id="hiddenStudioDensityValue">62%</output>
+            <input id="hiddenStudioDensityNumber" class="hidden-studio-number-input" type="number" min="35" max="95" value="62" aria-label="Gęstość sceny">
+            <em>%</em>
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Minimalna skala obiektów</span>
+            <input id="hiddenStudioMinScale" type="range" min="8" max="40" value="18">
+            <output id="hiddenStudioMinScaleValue">18%</output>
+            <input id="hiddenStudioMinScaleNumber" class="hidden-studio-number-input" type="number" min="8" max="40" value="18" aria-label="Minimalna skala">
+            <em>%</em>
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Maksymalna skala obiektów</span>
+            <input id="hiddenStudioMaxScale" type="range" min="18" max="70" value="34">
+            <output id="hiddenStudioMaxScaleValue">34%</output>
+            <input id="hiddenStudioMaxScaleNumber" class="hidden-studio-number-input" type="number" min="18" max="70" value="34" aria-label="Maksymalna skala">
+            <em>%</em>
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Minimalny odstęp między obiektami</span>
+            <input id="hiddenStudioMinSpacing" type="range" min="0" max="120" value="36">
+            <output id="hiddenStudioMinSpacingValue">36 px</output>
+            <input id="hiddenStudioMinSpacingNumber" class="hidden-studio-number-input" type="number" min="0" max="120" value="36" aria-label="Minimalny odstęp">
+            <em>px</em>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioRandomRotation" type="checkbox" checked>
+            <span>Losowa rotacja</span>
+          </label>
+          <label class="hidden-studio-check-field">
+            <input id="hiddenStudioRandomFlip" type="checkbox">
+            <span>Losowe odbicie</span>
+          </label>
+          <label class="hidden-studio-range-field">
+            <span>Seed / losowanie</span>
+            <input id="hiddenStudioSeed" type="range" min="1" max="9999" value="1">
+            <output id="hiddenStudioSeedValue">1</output>
+            <input id="hiddenStudioSeedNumber" class="hidden-studio-number-input" type="number" min="1" max="9999" value="1" aria-label="Seed">
+          </label>
+        </fieldset>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Warianty</legend>
+          <label class="hidden-studio-range-field">
+            <span>Liczba wariantów</span>
+            <input id="hiddenStudioVariantCount" type="range" min="1" max="20" value="5">
+            <output id="hiddenStudioVariantCountValue">5</output>
+            <input id="hiddenStudioVariantCountNumber" class="hidden-studio-number-input" type="number" min="1" max="20" value="5" aria-label="Liczba wariantów">
+          </label>
+          <p class="hidden-studio-note">Warianty różnią się seedem, układem, rotacją i kolejnością obiektów.</p>
+        </fieldset>
+
+        <fieldset class="hidden-studio-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="hidden-studio-actions">
+            <button class="hidden-studio-button" id="hiddenStudioRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioRandomize" type="button">Losuj nowy układ</button>
+            <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+            <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioAddToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+            <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioAddVariantsToBasket" type="button">Dodaj warianty do Koszyka Feniksa</button>
+            <button class="hidden-studio-button hidden-studio-button-secondary" id="hiddenStudioExportPack" type="button">Eksportuj .fenixpack</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="hidden-objects-studio.js"></script>
+</body>
+</html>

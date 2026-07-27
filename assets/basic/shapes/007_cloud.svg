@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <path
+        id="outline"
+        d="M270 620
+           C200 620 160 570 160 510
+           C160 450 205 405 265 405
+           C285 310 365 250 455 250
+           C530 250 595 290 630 350
+           C655 330 690 320 725 320
+           C810 320 880 390 880 475
+           C935 490 970 540 970 600
+           C970 680 905 740 825 740
+           H300
+           C235 740 180 690 180 625
+           C180 620 225 620 270 620
+           Z"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+</svg>

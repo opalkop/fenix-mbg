@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Maszt -->
+        <line
+            x1="260"
+            y1="180"
+            x2="260"
+            y2="860"/>
+
+        <!-- Flaga -->
+        <path
+            d="M260 220
+               H720
+               L620 360
+               L720 500
+               H260
+               Z"/>
+
+    </g>
+
+</svg>

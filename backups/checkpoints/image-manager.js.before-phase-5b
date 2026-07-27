@@ -1,0 +1,269 @@
+(function (global) {
+  "use strict";
+
+  var namespace = global.FenixAPlus || {};
+  var MAX_SIZE_BYTES = 3 * 1024 * 1024;
+  var CLOSE_TO_LIMIT_BYTES = Math.floor(MAX_SIZE_BYTES * 0.9);
+  var MAX_SAMPLE_IMAGES = 6;
+  var ACCEPTED_MIME = {
+    "image/png": true,
+    "image/jpeg": true
+  };
+  var ROLE_LABELS = {
+    cover: "Okładka",
+    sample: "Przykładowa strona",
+    promo: "Grafika promocyjna"
+  };
+  var RECOMMENDATIONS = {
+    cover: { minWidth: 1200, minHeight: 1800, portrait: true },
+    sample: { minWidth: 1200, minHeight: 1600, portrait: true },
+    promo: { minWidth: 970, minHeight: 300, portrait: false }
+  };
+  var records = [];
+
+  function nowIso() {
+    return new Date().toISOString();
+  }
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function createId(role) {
+    return role + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function extensionAllowed(fileName) {
+    return /\.(png|jpe?g)$/i.test(String(fileName || ""));
+  }
+
+  function formatRatio(width, height) {
+    if (!width || !height) {
+      return 0;
+    }
+    return Number((width / height).toFixed(3));
+  }
+
+  function validateMetadata(meta) {
+    var messages = [];
+    var status = "pass";
+    var rules = RECOMMENDATIONS[meta.role] || RECOMMENDATIONS.sample;
+
+    function error(code, message) {
+      status = "error";
+      messages.push({ status: "ERROR", code: code, message: message });
+    }
+
+    function warning(code, message) {
+      if (status !== "error") {
+        status = "warning";
+      }
+      messages.push({ status: "WARNING", code: code, message: message });
+    }
+
+    if (!ACCEPTED_MIME[meta.mimeType] || !extensionAllowed(meta.filename)) {
+      error("UNSUPPORTED_IMAGE_TYPE", "Nieobsługiwany format pliku. Dozwolone są tylko PNG, JPG i JPEG.");
+    }
+    if (!meta.width || !meta.height) {
+      error("ZERO_IMAGE_DIMENSIONS", "Obraz ma zerową szerokość lub wysokość.");
+    }
+    if (meta.sizeBytes > MAX_SIZE_BYTES) {
+      error("IMAGE_TOO_LARGE", "Plik przekracza limit 3 MB.");
+    } else if (meta.sizeBytes >= CLOSE_TO_LIMIT_BYTES) {
+      warning("IMAGE_CLOSE_TO_LIMIT", "Plik jest blisko limitu 3 MB.");
+    }
+    if (meta.width && meta.height && (meta.width < rules.minWidth || meta.height < rules.minHeight)) {
+      warning("IMAGE_BELOW_RECOMMENDED_DIMENSIONS", "Obraz jest mniejszy niż zalecane minimum dla tej roli.");
+    }
+    if (rules.portrait && meta.width >= meta.height) {
+      warning(meta.role === "cover" ? "COVER_NOT_PORTRAIT" : "SAMPLE_NOT_PORTRAIT", ROLE_LABELS[meta.role] + " powinna mieć orientację pionową.");
+    }
+    if (!rules.portrait && meta.width && meta.height && (meta.width / meta.height > 8 || meta.width / meta.height < 0.5)) {
+      warning("UNUSUAL_ASPECT_RATIO", "Obraz ma nietypowe proporcje.");
+    }
+    if (messages.length === 0) {
+      messages.push({ status: "PASS", code: "VALID_IMAGE", message: "Obraz ma obsługiwany format, poprawne wymiary i rozmiar poniżej 3 MB." });
+    }
+
+    meta.validationStatus = status;
+    meta.validationMessages = messages;
+    return meta;
+  }
+
+  function duplicateInRole(file, role) {
+    return records.some(function (record) {
+      return record.role === role &&
+        record.filename === file.name &&
+        record.sizeBytes === file.size &&
+        record.mimeType === file.type;
+    });
+  }
+
+  function revokeRecord(record) {
+    if (record && record.objectUrl) {
+      URL.revokeObjectURL(record.objectUrl);
+      record.objectUrl = "";
+    }
+  }
+
+  function removeByRole(role) {
+    records = records.filter(function (record) {
+      if (record.role === role) {
+        revokeRecord(record);
+        return false;
+      }
+      return true;
+    });
+  }
+
+  function removeById(id) {
+    var removed = null;
+    records = records.filter(function (record) {
+      if (record.id === id) {
+        removed = record;
+        revokeRecord(record);
+        return false;
+      }
+      return true;
+    });
+    return removed;
+  }
+
+  function readDimensions(objectUrl) {
+    return new Promise(function (resolve, reject) {
+      var image = new Image();
+      image.onload = function () {
+        resolve({ width: image.naturalWidth, height: image.naturalHeight });
+      };
+      image.onerror = function () {
+        reject(new Error("Nie można odczytać obrazu."));
+      };
+      image.src = objectUrl;
+    });
+  }
+
+  function validateFileBeforeRead(file, role) {
+    if (!ACCEPTED_MIME[file.type] || !extensionAllowed(file.name)) {
+      return { code: "UNSUPPORTED_IMAGE_TYPE", message: "Nieobsługiwany format pliku: " + file.name + "." };
+    }
+    if (duplicateInRole(file, role)) {
+      return { code: "DUPLICATE_IMAGE", message: "Ten plik jest już wybrany w tej samej roli: " + file.name + "." };
+    }
+    if (role === "sample" && records.filter(function (record) { return record.role === "sample"; }).length >= MAX_SAMPLE_IMAGES) {
+      return { code: "SAMPLE_LIMIT_REACHED", message: "Limit przykładowych stron wynosi 6 obrazów." };
+    }
+    return null;
+  }
+
+  function addFile(file, role) {
+    var early = validateFileBeforeRead(file, role);
+    var objectUrl;
+
+    if (early) {
+      return Promise.resolve({ added: false, error: early });
+    }
+
+    if (role === "cover" || role === "promo") {
+      removeByRole(role);
+    }
+
+    objectUrl = URL.createObjectURL(file);
+    return readDimensions(objectUrl).then(function (dimensions) {
+      var record = validateMetadata({
+        id: createId(role),
+        role: role,
+        filename: file.name,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        width: dimensions.width,
+        height: dimensions.height,
+        aspectRatio: formatRatio(dimensions.width, dimensions.height),
+        validationStatus: "pass",
+        validationMessages: [],
+        addedAt: nowIso(),
+        localFileAvailable: true,
+        objectUrl: objectUrl
+      });
+
+      records.push(record);
+      return { added: true, record: record };
+    }).catch(function () {
+      URL.revokeObjectURL(objectUrl);
+      return {
+        added: false,
+        error: { code: "UNREADABLE_IMAGE", message: "Nie można odczytać obrazu: " + file.name + "." }
+      };
+    });
+  }
+
+  function addFiles(fileList, role) {
+    var files = Array.prototype.slice.call(fileList || []);
+    var results = [];
+    return files.reduce(function (promise, file) {
+      return promise.then(function () {
+        return addFile(file, role).then(function (result) {
+          results.push(result);
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      return results;
+    });
+  }
+
+  function snapshot() {
+    return records.map(function (record) {
+      return {
+        id: record.id,
+        role: record.role,
+        filename: record.filename,
+        mimeType: record.mimeType,
+        sizeBytes: record.sizeBytes,
+        width: record.width,
+        height: record.height,
+        aspectRatio: record.aspectRatio,
+        validationStatus: record.validationStatus,
+        validationMessages: clone(record.validationMessages || []),
+        addedAt: record.addedAt,
+        localFileAvailable: record.localFileAvailable === true
+      };
+    });
+  }
+
+  function restore(metadata) {
+    revokeAll();
+    records = Array.isArray(metadata) ? metadata.map(function (item) {
+      var copy = clone(item);
+      copy.localFileAvailable = false;
+      copy.objectUrl = "";
+      if (copy.validationStatus === "pass") {
+        copy.validationStatus = "missing";
+      }
+      copy.validationMessages = [{
+        status: "WARNING",
+        code: "LOCAL_FILE_REQUIRED",
+        message: "Wybierz plik lokalny ponownie."
+      }];
+      return copy;
+    }) : [];
+  }
+
+  function revokeAll() {
+    records.forEach(revokeRecord);
+    records = [];
+  }
+
+  namespace.ImageManager = {
+    addFiles: addFiles,
+    getRecords: function () { return records.slice(); },
+    removeById: removeById,
+    restore: restore,
+    revokeAll: revokeAll,
+    snapshot: snapshot,
+    constants: {
+      maxSampleImages: MAX_SAMPLE_IMAGES,
+      maxSizeBytes: MAX_SIZE_BYTES
+    }
+  };
+
+  global.FenixAPlus = namespace;
+}(window));

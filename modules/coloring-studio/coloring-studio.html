@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Coloring Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="coloring-studio.css">
+</head>
+<body class="coloring-studio-page">
+  <header class="coloring-studio-header">
+    <div class="coloring-studio-brand">
+      <img class="coloring-studio-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="coloring-studio-kicker">FENIX</p>
+        <h1>Coloring Studio</h1>
+        <p>Samodzielny moduł do przygotowania stron kolorowanek 8.5 x 11 dla Book Buildera.</p>
+      </div>
+    </div>
+    <div class="coloring-studio-header-actions">
+      <span class="coloring-studio-badge">MVP</span>
+      <span class="coloring-studio-badge coloring-studio-badge-pack">.fenixpack ready</span>
+      <a class="coloring-studio-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="coloring-studio-back-link" href="../../mbg.html">Przejdź do MBG / Book Builder</a>
+    </div>
+  </header>
+
+  <main class="coloring-studio-main">
+    <section class="coloring-studio-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
+      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w MBG.</p>
+    </section>
+
+    <section class="coloring-studio-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="coloringStudioStatusText">Brak aktywnego assetu.</span>
+    </section>
+
+    <section class="coloring-studio-workspace" aria-label="Obszar roboczy Coloring Studio">
+      <aside class="coloring-studio-card coloring-studio-source-panel">
+        <div class="coloring-studio-section-heading">
+          <h2>Assety</h2>
+          <p>Wczytaj SVG lub PNG. W MVP jeden asset tworzy jedną stronę kolorowanki.</p>
+        </div>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>Upload SVG/PNG</legend>
+          <label class="coloring-studio-file-drop">
+            <span>Wybierz pliki z komputera</span>
+            <input id="coloringStudioFileInput" type="file" accept="image/svg+xml,image/png,.svg,.png" multiple>
+          </label>
+          <p class="coloring-studio-note">Pliki są używane tylko lokalnie w przeglądarce. Moduł nie ładuje zewnętrznych URL.</p>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioClearAssets" type="button">Wyczyść listę</button>
+        </fieldset>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>Załadowane assety</legend>
+          <div class="coloring-studio-asset-list" id="coloringStudioAssetList" aria-live="polite"></div>
+        </fieldset>
+      </aside>
+
+      <article class="coloring-studio-card coloring-studio-preview-card">
+        <div class="coloring-studio-preview-top">
+          <div class="coloring-studio-section-heading">
+            <h2>Podgląd strony 8.5 x 11</h2>
+            <p>Podgląd używa tego samego renderera co eksport PNG.</p>
+          </div>
+          <div class="coloring-studio-active-summary" aria-label="Aktywny plik">
+            <span id="coloringStudioActiveFileName">Brak aktywnego pliku</span>
+            <span id="coloringStudioActiveFileType">Typ: brak</span>
+            <strong id="coloringStudioActiveBadge">Aktywny: brak</strong>
+          </div>
+        </div>
+
+        <div class="coloring-studio-page-preview">
+          <canvas id="coloringStudioPreviewCanvas" width="765" height="990" aria-label="Podgląd strony kolorowanki"></canvas>
+        </div>
+        <p class="coloring-studio-message" id="coloringStudioMessage">Wczytaj SVG lub PNG, aby rozpocząć.</p>
+      </article>
+
+      <aside class="coloring-studio-card coloring-studio-settings-panel">
+        <div class="coloring-studio-section-heading">
+          <h2>Ustawienia i eksport</h2>
+          <p>Kontrolki dotyczą wyłącznie aktywnego assetu.</p>
+        </div>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>Układ strony</legend>
+          <label class="coloring-studio-range-field">
+            <span>Skala grafiki</span>
+            <input id="coloringStudioScale" type="range" min="20" max="300" value="100">
+            <output id="coloringStudioScaleValue">100%</output>
+            <input id="coloringStudioScaleNumber" class="coloring-studio-number-input" type="number" min="20" max="300" value="100" aria-label="Skala grafiki w procentach">
+            <em>%</em>
+          </label>
+          <label class="coloring-studio-range-field">
+            <span>Pozycja X</span>
+            <input id="coloringStudioOffsetX" type="range" min="-1000" max="1000" value="0">
+            <output id="coloringStudioOffsetXValue">0 px</output>
+            <input id="coloringStudioOffsetXNumber" class="coloring-studio-number-input" type="number" min="-1000" max="1000" value="0" aria-label="Pozycja X w pikselach eksportu">
+            <em>px</em>
+          </label>
+          <label class="coloring-studio-range-field">
+            <span>Pozycja Y</span>
+            <input id="coloringStudioOffsetY" type="range" min="-1000" max="1000" value="0">
+            <output id="coloringStudioOffsetYValue">0 px</output>
+            <input id="coloringStudioOffsetYNumber" class="coloring-studio-number-input" type="number" min="-1000" max="1000" value="0" aria-label="Pozycja Y w pikselach eksportu">
+            <em>px</em>
+          </label>
+          <label class="coloring-studio-range-field">
+            <span>Obrót</span>
+            <input id="coloringStudioRotation" type="range" min="-30" max="30" value="0">
+            <output id="coloringStudioRotationValue">0°</output>
+            <input id="coloringStudioRotationNumber" class="coloring-studio-number-input" type="number" min="-30" max="30" value="0" aria-label="Obrót grafiki w stopniach">
+            <em>°</em>
+          </label>
+          <div class="coloring-studio-inline-actions">
+            <button class="coloring-studio-mini-button" id="coloringStudioResetScale" type="button">Reset skali do 100%</button>
+            <button class="coloring-studio-mini-button" id="coloringStudioCenterArt" type="button">Wycentruj grafikę</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>Tytuł i ramka</legend>
+          <label class="coloring-studio-check-field">
+            <input id="coloringStudioShowTitle" type="checkbox">
+            <span>Pokaż tytuł</span>
+          </label>
+          <label class="coloring-studio-field">
+            <span>Tekst tytułu</span>
+            <input id="coloringStudioTitleText" type="text" maxlength="80" placeholder="np. Kolorowanka">
+          </label>
+          <label class="coloring-studio-check-field">
+            <input id="coloringStudioShowBorder" type="checkbox">
+            <span>Ramka strony</span>
+          </label>
+          <label class="coloring-studio-range-field">
+            <span>Grubość ramki</span>
+            <input id="coloringStudioBorderThickness" type="range" min="1" max="24" value="4">
+            <output id="coloringStudioBorderThicknessValue">4 px</output>
+            <input id="coloringStudioBorderThicknessNumber" class="coloring-studio-number-input" type="number" min="1" max="24" value="4" aria-label="Grubość ramki w pikselach">
+            <em>px</em>
+          </label>
+        </fieldset>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>SVG / PNG</legend>
+          <p class="coloring-studio-mode-status" id="coloringStudioSourceStatus">Brak aktywnego assetu.</p>
+          <label class="coloring-studio-check-field">
+            <input id="coloringStudioPngMode" type="checkbox">
+            <span>Konwertuj PNG do czarno-białego line art</span>
+          </label>
+          <label class="coloring-studio-range-field">
+            <span>Próg czerni PNG</span>
+            <input id="coloringStudioPngThreshold" type="range" min="0" max="255" value="180">
+            <output id="coloringStudioPngThresholdValue">180</output>
+            <input id="coloringStudioPngThresholdNumber" class="coloring-studio-number-input" type="number" min="0" max="255" value="180" aria-label="Próg czerni od 0 do 255">
+            <em>0-255</em>
+          </label>
+        </fieldset>
+
+        <fieldset class="coloring-studio-settings-group">
+          <legend>Eksport</legend>
+          <button class="coloring-studio-button" id="coloringStudioExportPng" type="button">Eksportuj aktywną stronę PNG</button>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioAddActiveToBasket" type="button">Dodaj aktywną stronę do Koszyka Feniksa</button>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioAddSelectedToBasket" type="button">Dodaj zaznaczone strony do Koszyka Feniksa</button>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioUpdateBasketPage" type="button" hidden>Zapisz zmiany w koszyku</button>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioExportActivePack" type="button">Eksportuj aktywną stronę jako paczkę dla MBG</button>
+          <button class="coloring-studio-button coloring-studio-button-secondary" id="coloringStudioExportSelectedPack" type="button">Eksportuj zaznaczone strony jako paczkę dla MBG</button>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="coloring-studio.js"></script>
+</body>
+</html>

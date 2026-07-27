@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <path
+            d="M180 512
+               C180 390 300 390 390 512
+               C480 634 544 634 634 512
+               C724 390 844 390 844 512
+               C844 634 724 634 634 512
+               C544 390 480 390 390 512
+               C300 634 180 634 180 512"/>
+
+    </g>
+
+</svg>

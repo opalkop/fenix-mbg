@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <!-- Puchar -->
+        <path
+            d="M332 180
+               H692
+               V380
+               C692 520 610 610 512 650
+               C414 610 332 520 332 380
+               Z"/>
+
+        <!-- Lewy uchwyt -->
+        <path
+            d="M332 240
+               H240
+               C180 240 180 360 240 390
+               H332"/>
+
+        <!-- Prawy uchwyt -->
+        <path
+            d="M692 240
+               H784
+               C844 240 844 360 784 390
+               H692"/>
+
+        <!-- Trzon -->
+        <path
+            d="M472 650
+               V760
+               H552
+               V650"/>
+
+        <!-- Podstawa -->
+        <rect
+            x="382"
+            y="760"
+            width="260"
+            height="90"/>
+
+    </g>
+
+</svg>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1024"
+    height="1024"
+    viewBox="0 0 1024 1024">
+
+    <g
+        id="outline"
+        fill="none"
+        stroke="#000000"
+        stroke-width="24"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <circle cx="512" cy="512" r="95"/>
+
+        <ellipse cx="512" cy="260" rx="95" ry="145"/>
+        <ellipse cx="512" cy="764" rx="95" ry="145"/>
+
+        <ellipse cx="260" cy="512" rx="145" ry="95"/>
+        <ellipse cx="764" cy="512" rx="145" ry="95"/>
+
+        <ellipse cx="335" cy="335" rx="95" ry="135" transform="rotate(-45 335 335)"/>
+        <ellipse cx="689" cy="335" rx="95" ry="135" transform="rotate(45 689 335)"/>
+        <ellipse cx="335" cy="689" rx="95" ry="135" transform="rotate(45 335 689)"/>
+        <ellipse cx="689" cy="689" rx="95" ry="135" transform="rotate(-45 689 689)"/>
+
+    </g>
+
+</svg>

@@ -1,0 +1,41 @@
+# Kopie zapasowe i wygenerowane pliki
+backups/
+backup/
+exports/
+output/
+generated/
+tests/generated/
+promo/
+covery do poprawki/
+
+# Narzędzia i cache
+node_modules/
+dist/
+build/
+.parcel-cache/
+.vite/
+.codex/
+.agents/
+
+# Ciężkie pliki robocze
+*.xcf
+*.psd
+*.ai
+
+# Eksporty i archiwa
+*.pdf
+*.zip
+*.7z
+*.rar
+*.tar
+*.tgz
+
+# Pliki tymczasowe
+*.tmp
+*.bak
+*.log
+*.cache
+
+# System
+.DS_Store
+Thumbs.db

@@ -119,11 +119,46 @@
     });
   }
 
+  function ensureMazeBasketButton(){
+    if(getView()!=='mbg') return;
+    if(document.getElementById('addMazesToBasketBtn')) return;
+
+    if(window.FenixBasketStatus && typeof window.FenixBasketStatus.installMbgMazeBasketButton==='function'){
+      window.FenixBasketStatus.installMbgMazeBasketButton();
+      if(document.getElementById('addMazesToBasketBtn')) return;
+    }
+
+    var generateBtn=document.getElementById('generateBtn');
+    if(!generateBtn) return;
+
+    var button=document.createElement('button');
+    button.id='addMazesToBasketBtn';
+    button.type='button';
+    button.className='secondary-btn btn-secondary';
+    button.textContent='Dodaj labirynty + rozwiązania do Koszyka Feniksa';
+    button.style.minWidth='300px';
+    button.style.borderColor='rgba(107,229,255,.72)';
+    button.addEventListener('click',function(){
+      if(window.FenixBasketStatus && typeof window.FenixBasketStatus.installMbgMazeBasketButton==='function'){
+        button.remove();
+        window.FenixBasketStatus.installMbgMazeBasketButton();
+        var installed=document.getElementById('addMazesToBasketBtn');
+        if(installed) installed.click();
+        return;
+      }
+      window.alert('Moduł dodawania labiryntów do Koszyka Feniksa nie został załadowany. Odśwież stronę klawiszami Ctrl+F5.');
+    });
+    generateBtn.parentElement.insertBefore(button,generateBtn);
+  }
+
   function init(){
     var view=getView();
     setModuleVisibility(view);
     buildShell(view);
     enhanceTiles(view);
+    ensureMazeBasketButton();
+    window.setTimeout(ensureMazeBasketButton,250);
+    window.setTimeout(ensureMazeBasketButton,1000);
   }
 
   addStylesheet('shared/mbg-unified-shell.css','workspace');

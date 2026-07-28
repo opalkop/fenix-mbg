@@ -1,0 +1,56 @@
+:root{
+  color-scheme:dark;
+  --fenix-bg:#0b1018;
+  --fenix-surface:#141c29;
+  --fenix-surface-2:#1c2736;
+  --fenix-text:#edf5ff;
+  --fenix-muted:#aebbd0;
+  --fenix-line:#34445b;
+  --fenix-accent:#f4b75d;
+  --fenix-accent-2:#61dcff;
+  --fenix-shadow:0 18px 48px rgba(0,0,0,.34);
+}
+html[data-fenix-theme="light"]{
+  color-scheme:light;
+  --fenix-bg:#edf2f7;
+  --fenix-surface:#ffffff;
+  --fenix-surface-2:#f4f7fb;
+  --fenix-text:#172033;
+  --fenix-muted:#5e6d82;
+  --fenix-line:#cbd6e3;
+  --fenix-accent:#b85f15;
+  --fenix-accent-2:#087da5;
+  --fenix-shadow:0 16px 38px rgba(28,45,70,.14);
+}
+html[data-fenix-theme="dark"]{
+  color-scheme:dark;
+  --fenix-bg:#11151c;
+  --fenix-surface:#1c222c;
+  --fenix-surface-2:#272f3b;
+  --fenix-text:#f4f6fa;
+  --fenix-muted:#bdc6d3;
+  --fenix-line:#465264;
+  --fenix-accent:#e5a64b;
+  --fenix-accent-2:#77cce8;
+}
+html[data-fenix-theme="fenix"]{
+  color-scheme:dark;
+  --fenix-bg:#080d15;
+  --fenix-surface:#101a29;
+  --fenix-surface-2:#182638;
+  --fenix-text:#eff8ff;
+  --fenix-muted:#afbed3;
+  --fenix-line:#31465f;
+  --fenix-accent:#ffc46d;
+  --fenix-accent-2:#6be5ff;
+}
+@media(prefers-color-scheme:light){
+  html[data-fenix-theme="system"]{
+    color-scheme:light;
+    --fenix-bg:#edf2f7;--fenix-surface:#fff;--fenix-surface-2:#f4f7fb;--fenix-text:#172033;--fenix-muted:#5e6d82;--fenix-line:#cbd6e3;--fenix-accent:#b85f15;--fenix-accent-2:#087da5;--fenix-shadow:0 16px 38px rgba(28,45,70,.14)
+  }
+}
+.fenix-theme-control{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 9px;border:1px solid var(--fenix-line);border-radius:11px;background:var(--fenix-surface-2);color:var(--fenix-text)}
+.fenix-theme-control label{margin:0!important;font-size:11px!important;font-weight:850!important;color:var(--fenix-muted)!important}
+.fenix-theme-control select{width:auto!important;min-width:126px!important;margin:0!important;padding:7px 28px 7px 9px!important;border-radius:8px!important;border:1px solid var(--fenix-line)!important;background:var(--fenix-surface)!important;color:var(--fenix-text)!important;font-size:12px!important;box-shadow:none!important}
+html[data-fenix-theme="light"] body,html[data-fenix-theme="system"] body{transition:background .18s ease,color .18s ease}

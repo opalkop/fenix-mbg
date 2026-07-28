@@ -6,6 +6,7 @@
   <title>FENIX - Platforma modułów KDP</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="styles/launcher-v2.css">
 </head>
 <body class="fenix-launcher-page">
   <header class="fenix-launcher-header">
@@ -19,26 +20,20 @@
     <section class="fenix-launcher-intro fenix-architecture-intro" aria-label="Sposób pracy">
       <span class="fenix-eyebrow">JEDEN FENIX / WIELE ZADAŃ</span>
       <h2>Każdy moduł tworzy inne zadanie. Wszystkie strony spotykają się w jednym Koszyku.</h2>
-      <div class="fenix-flow">
-        <span>1. Moduły zadań</span><strong>→</strong><span>2. Koszyk Feniksa</span><strong>→</strong><span>3. Book Builder</span><strong>→</strong><span>4. PDF</span>
-      </div>
+      <div class="fenix-flow"><span>1. Moduły zadań</span><strong>→</strong><span>2. Koszyk Feniksa</span><strong>→</strong><span>3. Book Builder</span><strong>→</strong><span>4. PDF</span></div>
     </section>
 
     <section class="fenix-launcher-section" aria-labelledby="workspaceHeading">
       <div class="fenix-launcher-section-heading"><span>WSPÓLNY PROJEKT</span><h2 id="workspaceHeading">Zarządzanie książką</h2></div>
       <div class="fenix-launcher-grid fenix-workspace-grid">
         <article class="fenix-module-card fenix-module-card--basket">
-          <div class="fenix-module-marker">ETAP 02</div>
-          <span class="fenix-module-status fenix-module-status-basket">WSPÓLNY KOSZYK</span>
-          <h2>Koszyk Feniksa</h2>
+          <div class="fenix-module-marker">ETAP 02</div><span class="fenix-module-status fenix-module-status-basket">WSPÓLNY KOSZYK</span><h2>Koszyk Feniksa</h2>
           <p>Odrębny ekran wszystkich stron utworzonych przez moduły. Tutaj przeglądasz projekt, usuwasz zbędne strony i przygotowujesz materiał do składu.</p>
           <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
           <a class="fenix-module-link" href="basket.html">Otwórz Koszyk</a>
         </article>
         <article class="fenix-module-card fenix-module-card--builder">
-          <div class="fenix-module-marker">ETAP 03</div>
-          <span class="fenix-module-status fenix-module-status-production">SKŁAD KSIĄŻKI</span>
-          <h2>Book Builder</h2>
+          <div class="fenix-module-marker">ETAP 03</div><span class="fenix-module-status fenix-module-status-production">SKŁAD KSIĄŻKI</span><h2>Book Builder</h2>
           <p>Końcowy etap pracy. Pobiera strony z Koszyka, dodaje strony początkowe i końcowe, rozwiązania oraz eksportuje gotową książkę do PDF.</p>
           <a class="fenix-module-link" href="mbg.html">Otwórz Book Builder</a>
         </article>
@@ -62,9 +57,7 @@
 
     <section class="fenix-launcher-section" aria-labelledby="toolsHeading">
       <div class="fenix-launcher-section-heading"><span>NARZĘDZIA WSPÓLNE</span><h2 id="toolsHeading">Assety</h2></div>
-      <div class="fenix-launcher-grid fenix-launcher-grid-tools">
-        <article class="fenix-module-card fenix-module-card--asset-lab"><div class="fenix-module-marker">NARZĘDZIE</div><span class="fenix-module-status fenix-module-status-tool">ASSET LAB</span><h2>Asset Generator Studio</h2><p>Przygotowuje wspólne assety SVG/PNG do wykorzystania przez moduły zadań. Nie tworzy stron książki.</p><a class="fenix-module-link" href="modules/asset-generator-studio/asset-generator-studio.html">Otwórz Asset Generator</a></article>
-      </div>
+      <div class="fenix-launcher-grid fenix-launcher-grid-tools"><article class="fenix-module-card fenix-module-card--asset-lab"><div class="fenix-module-marker">NARZĘDZIE</div><span class="fenix-module-status fenix-module-status-tool">ASSET LAB</span><h2>Asset Generator Studio</h2><p>Przygotowuje wspólne assety SVG/PNG do wykorzystania przez moduły zadań. Nie tworzy stron książki.</p><a class="fenix-module-link" href="modules/asset-generator-studio/asset-generator-studio.html">Otwórz Asset Generator</a></article></div>
     </section>
   </main>
   <script src="shared/fenix-basket-status.js"></script>

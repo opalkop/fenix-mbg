@@ -1,33 +1,6 @@
 (function () {
   "use strict";
 
-  const DB_NAME = "fenixBookBasketDb";
-  const STORE_NAME = "pages";
-  const DB_VERSION = 1;
-
-  function openBasketDb() {
-    return new Promise(function (resolve, reject) {
-      if (!window.indexedDB) {
-        reject(new Error("IndexedDB nie jest dostępny w tej przeglądarce."));
-        return;
-      }
-
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
-      request.onupgradeneeded = function () {
-        const db = request.result;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          db.createObjectStore(STORE_NAME, { keyPath: "id" });
-        }
-      };
-      request.onsuccess = function () {
-        resolve(request.result);
-      };
-      request.onerror = function () {
-        reject(request.error || new Error("Błąd otwarcia Koszyka Feniksa."));
-      };
-    });
-  }
-
   function getSourceLabel(sourceModule) {
     if (sourceModule === "complete-picture") return "Complete the Picture";
     if (sourceModule === "coloring-studio") return "Coloring Studio";
@@ -63,45 +36,54 @@
     };
   }
 
+  function loadBasketApi() {
+    if (window.FenixBasket) return Promise.resolve(window.FenixBasket);
+
+    return new Promise(function (resolve, reject) {
+      const existing = document.querySelector('script[data-fenix-basket-core]');
+      if (existing) {
+        existing.addEventListener("load", function () {
+          if (window.FenixBasket) resolve(window.FenixBasket);
+          else reject(new Error("Nie udało się uruchomić współdzielonego API Koszyka Feniksa."));
+        }, { once: true });
+        existing.addEventListener("error", function () {
+          reject(new Error("Nie udało się wczytać shared/fenix-basket.js."));
+        }, { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "shared/fenix-basket.js";
+      script.async = false;
+      script.dataset.fenixBasketCore = "true";
+      script.onload = function () {
+        if (window.FenixBasket) resolve(window.FenixBasket);
+        else reject(new Error("Nie udało się uruchomić współdzielonego API Koszyka Feniksa."));
+      };
+      script.onerror = function () {
+        reject(new Error("Nie udało się wczytać shared/fenix-basket.js."));
+      };
+      document.head.appendChild(script);
+    });
+  }
+
   async function getFenixBasketSummary() {
     const summary = createEmptySummary();
-    let db;
 
     try {
-      db = await openBasketDb();
-      await new Promise(function (resolve, reject) {
-        const transaction = db.transaction(STORE_NAME, "readonly");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.openCursor();
+      const basket = await loadBasketApi();
+      const pages = await basket.getAllPages();
 
-        request.onsuccess = function () {
-          const cursor = request.result;
-          if (!cursor) return;
-
-          const page = cursor.value || {};
-          const sourceModule = page.sourceModule || "other";
-          const key = sourceModule === "complete-picture" || sourceModule === "coloring-studio" || sourceModule === "tracing-studio" || sourceModule === "matching-studio" || sourceModule === "alphabet-studio" || sourceModule === "math-studio" || sourceModule === "dot-to-dot-studio" || sourceModule === "hidden-objects-studio" || sourceModule === "logic-studio"
-            ? sourceModule
-            : "other";
-          summary.total += 1;
-          summary.bySource[key] = (summary.bySource[key] || 0) + 1;
-          if (!summary.labels[key]) summary.labels[key] = getSourceLabel(sourceModule);
-          cursor.continue();
-        };
-
-        request.onerror = function () {
-          reject(request.error || new Error("Błąd odczytu Koszyka Feniksa."));
-        };
-        transaction.oncomplete = resolve;
-        transaction.onerror = function () {
-          reject(transaction.error || new Error("Błąd transakcji Koszyka Feniksa."));
-        };
+      pages.forEach(function (page) {
+        const sourceModule = page.sourceModule || "other";
+        const known = summary.labels[sourceModule] ? sourceModule : "other";
+        summary.total += 1;
+        summary.bySource[known] = (summary.bySource[known] || 0) + 1;
+        if (!summary.labels[known]) summary.labels[known] = getSourceLabel(sourceModule);
       });
     } catch (error) {
       summary.available = false;
       summary.error = error && error.message ? error.message : "Koszyk Feniksa jest niedostępny.";
-    } finally {
-      if (db) db.close();
     }
 
     return summary;
@@ -157,7 +139,8 @@
   window.FenixBasketStatus = {
     getFenixBasketSummary: getFenixBasketSummary,
     refresh: refreshFenixBasketStatusWidgets,
-    getSourceLabel: getSourceLabel
+    getSourceLabel: getSourceLabel,
+    loadBasketApi: loadBasketApi
   };
   window.getFenixBasketSummary = getFenixBasketSummary;
   window.refreshFenixBasketStatusWidgets = refreshFenixBasketStatusWidgets;

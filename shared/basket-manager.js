@@ -12,11 +12,13 @@
     "hidden-objects-studio":"modules/hidden-objects-studio/hidden-objects-studio.html",
     "logic-studio":"modules/logic-studio/logic-studio.html",
     "word-search-studio":"modules/word-search-studio/word-search-studio.html",
+    "word-search":"modules/word-search-studio/word-search-studio.html",
     "maze-studio":"mbg.html?view=mbg#workflow-maze"
   };
 
   function $(id){return document.getElementById(id);}
-  function editable(page){return !!(page&&page.editorState&&sourceMap[page.sourceModule]);}
+  function hasEditor(page){return !!(page&&sourceMap[page.sourceModule]);}
+  function editable(page){return !!(hasEditor(page)&&page.editorState);}
   function label(page){return page.sourceLabel||page.sourceModule||"Inny moduł";}
   function date(value){var d=new Date(value||0);return isNaN(d.getTime())?"brak daty":d.toLocaleString("pl-PL");}
   function imageUrl(page){if(page.dataUrl)return page.dataUrl;if(page.blob)return URL.createObjectURL(page.blob);return "";}
@@ -40,11 +42,7 @@
     var now=new Date().toISOString();
     var copy=Object.assign({},page,{id:createId("fenix-basket"),title:(page.title||page.fileName||"Strona Feniksa")+" — kopia",fileName:(page.fileName||"fenix-page.png").replace(/(\.[^.]+)?$/,"-copy$1"),createdAt:now,updatedAt:now,order:Number(page.order||index+1)+0.5,editorState:cloneValue(page.editorState)});
     if(page.blob)copy.blob=page.blob.slice(0,page.blob.size,page.blob.type||"image/png");
-    return window.FenixBasket.putPage(copy).then(function(){
-      return window.FenixBasket.getAllPages();
-    }).then(function(all){
-      return Promise.all(all.map(function(item,i){item.order=i+1;return window.FenixBasket.putPage(item);}));
-    }).then(load);
+    return window.FenixBasket.putPage(copy).then(function(){return window.FenixBasket.getAllPages();}).then(function(all){return Promise.all(all.map(function(item,i){item.order=i+1;return window.FenixBasket.putPage(item);}));}).then(load);
   }
   function openPreview(page){var url=imageUrl(page);if(!url)return;$("basketPreviewImage").src=url;$("basketPreview").showModal();}
   function openEditor(page){var base=sourceMap[page.sourceModule];if(!base)return;var separator=base.indexOf("?")>=0?"&":"?";window.location.href=base+separator+"basketPageId="+encodeURIComponent(page.id);}
@@ -64,7 +62,7 @@
   function card(page,index,pages){
     var item=document.createElement("article");item.className="basket-card"+(page.includeInBook===false?" is-disabled":"");
     var thumb=document.createElement("button");thumb.type="button";thumb.className="basket-thumb";var img=document.createElement("img");img.src=imageUrl(page);img.alt=page.title||page.fileName||"Strona";thumb.appendChild(img);thumb.addEventListener("click",function(){openPreview(page);});
-    var body=document.createElement("div");body.className="basket-card-body";var top=document.createElement("div");top.className="basket-card-top";var title=document.createElement("input");title.value=page.title||page.fileName||"Strona Feniksa";title.setAttribute("aria-label","Nazwa strony");var badge=document.createElement("span");badge.className="basket-badge";badge.textContent=editable(page)?"Do poprawy w module":"Gotowy PNG";top.append(title,badge);
+    var body=document.createElement("div");body.className="basket-card-body";var top=document.createElement("div");top.className="basket-card-top";var title=document.createElement("input");title.value=page.title||page.fileName||"Strona Feniksa";title.setAttribute("aria-label","Nazwa strony");var badge=document.createElement("span");badge.className="basket-badge";badge.textContent=editable(page)?"Edycja dostępna":hasEditor(page)?"Stara strona — brak danych edycji":"Gotowy PNG";top.append(title,badge);
     var meta=document.createElement("div");meta.className="basket-meta";meta.innerHTML="<span><b>Źródło:</b> "+label(page)+"</span><span><b>Typ:</b> "+(page.pageType||"brak")+"</span><span><b>Dodano:</b> "+date(page.createdAt)+"</span><span><b>Pozycja:</b> "+(index+1)+"</span>";
     var controls=document.createElement("div");controls.className="basket-controls";var include=document.createElement("label");include.className="basket-include";var check=document.createElement("input");check.type="checkbox";check.checked=page.includeInBook!==false;check.addEventListener("change",function(){page.includeInBook=check.checked;save(page);});include.append(check,document.createTextNode(" Uwzględnij w książce"));
     var saveName=document.createElement("button");saveName.type="button";saveName.textContent="Zapisz nazwę";saveName.addEventListener("click",function(){page.title=title.value.trim()||page.fileName||"Strona Feniksa";save(page);});
@@ -73,7 +71,12 @@
     var up=document.createElement("button");up.type="button";up.textContent="↑ Wyżej";up.disabled=index===0;up.addEventListener("click",function(){swap(pages,index,-1);});
     var down=document.createElement("button");down.type="button";down.textContent="↓ Niżej";down.disabled=index===pages.length-1;down.addEventListener("click",function(){swap(pages,index,1);});
     controls.append(include,saveName,preview,duplicate,up,down);
-    if(editable(page)){var edit=document.createElement("button");edit.type="button";edit.className="edit";edit.textContent="Edytuj w module";edit.addEventListener("click",function(){openEditor(page);});controls.appendChild(edit);}
+    if(hasEditor(page)){
+      var edit=document.createElement("button");edit.type="button";edit.className="edit";
+      if(editable(page)){edit.textContent="Edytuj w module";edit.addEventListener("click",function(){openEditor(page);});}
+      else{edit.textContent="Edycja niedostępna — dodaj stronę ponownie";edit.disabled=true;edit.title="Ta pozycja została dodana przed zapisem ustawień generatora. Obrazu PNG nie da się zamienić z powrotem na ustawienia modułu.";}
+      controls.appendChild(edit);
+    }
     var remove=document.createElement("button");remove.type="button";remove.className="danger";remove.textContent="Usuń z koszyka";remove.addEventListener("click",function(){if(confirm("Usunąć tę stronę z Koszyka Feniksa?"))window.FenixBasket.deletePage(page.id).then(load);});controls.appendChild(remove);
     body.append(top,meta,controls);item.append(thumb,body);return item;
   }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Koszyk Feniksa — Menedżer stron</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared/fenix-theme.css">
+  <link rel="stylesheet" href="styles/basket-manager.css">
+  <script src="shared/fenix-theme.js"></script>
+</head>
+<body>
+  <header class="basket-header">
+    <a href="index.html" class="basket-home">← Centrum Feniksa</a>
+    <div><span class="eyebrow">KOSZYK FENIKSA</span><h1>Menedżer stron</h1><p>Tu widzisz każdą stronę osobno. Możesz ją podejrzeć, zmienić nazwę, wyłączyć z książki, przesunąć albo usunąć.</p></div>
+    <div id="basketThemeMount"></div>
+  </header>
+  <main class="basket-shell">
+    <section class="basket-summary-panel">
+      <div><strong id="basketTotal">0</strong><span>stron w koszyku</span></div>
+      <div><strong id="basketIncluded">0</strong><span>włączonych do książki</span></div>
+      <div><strong id="basketEditable">0</strong><span>możliwych do poprawy w module</span></div>
+      <div class="basket-summary-actions"><button id="basketRefresh" type="button">Odśwież</button><button id="basketClear" type="button" class="danger">Wyczyść cały koszyk</button></div>
+    </section>
+    <section class="basket-help">
+      <strong>Jak to działa?</strong>
+      <span><b>Popraw w module</b> otwiera moduł źródłowy. Po ponownym zapisaniu strona powinna zastąpić swoją wcześniejszą wersję, o ile moduł obsługuje edycję pozycji koszyka.</span>
+      <span><b>Gotowy PNG</b> można podejrzeć, wyłączyć, przesunąć lub usunąć, ale nie da się odtworzyć jego ustawień.</span>
+    </section>
+    <div id="basketEmpty" class="basket-empty" hidden>Koszyk Feniksa jest pusty.</div>
+    <section id="basketList" class="basket-list" aria-live="polite"></section>
+  </main>
+  <dialog id="basketPreview"><button id="basketPreviewClose" type="button">Zamknij</button><img id="basketPreviewImage" alt="Podgląd strony"></dialog>
+  <script src="shared/fenix-basket.js"></script>
+  <script src="shared/basket-manager.js"></script>
+  <script>(function(){var m=document.getElementById('basketThemeMount');if(m&&window.FenixTheme)m.appendChild(window.FenixTheme.createControl());})();</script>
+</body>
+</html>

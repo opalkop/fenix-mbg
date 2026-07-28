@@ -47,18 +47,7 @@
       available: true,
       total: 0,
       bySource: {},
-      labels: {
-        "complete-picture": "Complete the Picture",
-        "coloring-studio": "Coloring Studio",
-        "tracing-studio": "Tracing Studio",
-        "matching-studio": "Matching Studio",
-        "alphabet-studio": "Alphabet Studio",
-        "math-studio": "Math Studio",
-        "dot-to-dot-studio": "Dot to Dot Studio",
-        "hidden-objects-studio": "Hidden Objects Studio",
-        "logic-studio": "Logic Studio",
-        other: "Inne / import"
-      },
+      labels: {},
       error: ""
     };
   }
@@ -77,15 +66,11 @@
         request.onsuccess = function () {
           const cursor = request.result;
           if (!cursor) return;
-
           const page = cursor.value || {};
           const sourceModule = page.sourceModule || "other";
-          const key = sourceModule === "complete-picture" || sourceModule === "coloring-studio" || sourceModule === "tracing-studio" || sourceModule === "matching-studio" || sourceModule === "alphabet-studio" || sourceModule === "math-studio" || sourceModule === "dot-to-dot-studio" || sourceModule === "hidden-objects-studio" || sourceModule === "logic-studio"
-            ? sourceModule
-            : "other";
           summary.total += 1;
-          summary.bySource[key] = (summary.bySource[key] || 0) + 1;
-          if (!summary.labels[key]) summary.labels[key] = getSourceLabel(sourceModule);
+          summary.bySource[sourceModule] = (summary.bySource[sourceModule] || 0) + 1;
+          summary.labels[sourceModule] = getSourceLabel(sourceModule);
           cursor.continue();
         };
 
@@ -113,35 +98,17 @@
     node.classList.toggle("is-empty", !summary.total);
     node.classList.toggle("is-error", !summary.available);
 
-    const title = document.createElement("strong");
-    title.textContent = "Koszyk Feniksa";
-    node.appendChild(title);
+    const status = document.createElement("span");
 
     if (!summary.available) {
-      const error = document.createElement("span");
-      error.textContent = summary.error || "Koszyk Feniksa jest niedostępny.";
-      node.appendChild(error);
-      return;
+      status.textContent = "Koszyk niedostępny";
+    } else if (!summary.total) {
+      status.textContent = "Koszyk jest pusty";
+    } else {
+      status.textContent = summary.total + (summary.total === 1 ? " strona w koszyku" : " stron w koszyku");
     }
 
-    if (!summary.total) {
-      const empty = document.createElement("span");
-      empty.textContent = "Koszyk Feniksa jest pusty.";
-      node.appendChild(empty);
-      return;
-    }
-
-    const total = document.createElement("span");
-    total.textContent = "Razem: " + summary.total + " stron";
-    node.appendChild(total);
-
-    ["complete-picture", "coloring-studio", "tracing-studio", "matching-studio", "alphabet-studio", "math-studio", "dot-to-dot-studio", "hidden-objects-studio", "logic-studio", "other"].forEach(function (source) {
-      const count = summary.bySource[source] || 0;
-      if (!count && source === "other") return;
-      const item = document.createElement("span");
-      item.textContent = summary.labels[source] + ": " + count;
-      node.appendChild(item);
-    });
+    node.appendChild(status);
   }
 
   async function refreshFenixBasketStatusWidgets() {

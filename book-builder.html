@@ -2,12 +2,79 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>FENIX — Book Builder</title>
-  <meta http-equiv="refresh" content="0; url=mbg.html?view=builder">
-  <script>window.location.replace('mbg.html?view=builder');</script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared/fenix-theme.css">
+  <link rel="stylesheet" href="styles/book-builder.css">
+  <script src="shared/fenix-theme.js"></script>
 </head>
 <body>
-  <p>Otwieranie Book Buildera… <a href="mbg.html?view=builder">Kliknij tutaj, jeśli przekierowanie nie nastąpiło.</a></p>
+<header class="bb-header">
+  <a href="index.html" class="bb-home">← Centrum Feniksa</a>
+  <div><span>FENIX ACTIVITY BOOK STUDIO</span><h1>Book Builder</h1><p>Składa kompletną książkę z Koszyka Feniksa i stron pomocniczych. Nie dubluje generatorów aktywności.</p></div>
+  <div id="bbThemeMount"></div>
+</header>
+<main class="bb-shell">
+  <section class="bb-intro">
+    <div><h2>Przepływ pracy</h2><p>1. Przygotuj aktywności w modułach. 2. Dodaj je do Koszyka. 3. Dodaj strony początkowe i końcowe. 4. Ułóż kolejność w Koszyku. 5. Wygeneruj PDF.</p></div>
+    <div class="bb-actions"><a href="basket-manager.html">Otwórz Koszyk Feniksa</a><a href="mbg.html?view=mbg#workflow-maze">Otwórz MBG — Labirynty</a></div>
+  </section>
+
+  <section class="bb-card">
+    <div class="bb-heading"><div><span>GENERATORY STRON</span><h2>Studia aktywności</h2><p>Book Builder nie powiela ich funkcji — otwiera właściwy moduł.</p></div></div>
+    <div class="bb-module-grid" id="bbModuleGrid"></div>
+  </section>
+
+  <section class="bb-builder-grid">
+    <aside class="bb-card bb-controls">
+      <div class="bb-heading"><div><span>POCZĄTEK KSIĄŻKI</span><h2>Strony początkowe</h2></div></div>
+      <label><span>Tytuł książki</span><input id="bbBookTitle" value="My Activity Book"></label>
+      <label><span>Podtytuł</span><input id="bbBookSubtitle" value="Fun puzzles and activities"></label>
+      <label><span>Autor / marka</span><input id="bbAuthor" value=""></label>
+      <label><span>Tekst powitalny</span><textarea id="bbWelcomeText">Welcome! Complete the activities, have fun and do your best.</textarea></label>
+      <label><span>Instrukcja „How to use”</span><textarea id="bbHowToText">Choose an activity, complete it carefully and mark your progress on the mission tracker.</textarea></label>
+      <label><span>Tekst copyright</span><textarea id="bbCopyrightText">Copyright © 2026. All rights reserved. For personal use only.</textarea></label>
+      <div class="bb-button-stack">
+        <button data-add-page="welcome">Dodaj Welcome / Intro</button>
+        <button data-add-page="belongs">Dodaj This Book Belongs To</button>
+        <button data-add-page="howto">Dodaj How to Use</button>
+        <button data-add-page="copyright">Dodaj Copyright</button>
+      </div>
+    </aside>
+
+    <article class="bb-card bb-preview-card">
+      <div class="bb-heading"><div><span>PODGLĄD</span><h2 id="bbPreviewTitle">Welcome / Intro</h2></div><strong id="bbBasketCount">Koszyk: 0 stron</strong></div>
+      <div class="bb-paper"><canvas id="bbCanvas" width="765" height="990"></canvas></div>
+      <p id="bbStatus">Gotowe do pracy.</p>
+    </article>
+
+    <aside class="bb-card bb-controls">
+      <div class="bb-heading"><div><span>KONIEC KSIĄŻKI</span><h2>Strony końcowe</h2></div></div>
+      <label><span>Tytuł trackera</span><input id="bbTrackerTitle" value="COMPLETE THE MISSION!"></label>
+      <label><span>Instrukcja trackera</span><input id="bbTrackerInstruction" value="Color one star after each completed activity!"></label>
+      <label><span>Liczba pól / gwiazdek</span><input id="bbTrackerCount" type="number" min="1" max="200" value="50"></label>
+      <label><span>Kolumny trackera</span><input id="bbTrackerColumns" type="number" min="2" max="12" value="10"></label>
+      <label><span>Tekst gratulacji</span><textarea id="bbCongratsText">Amazing work! You completed the whole activity book.</textarea></label>
+      <label><span>Tekst certyfikatu</span><textarea id="bbCertificateText">For completing all activities in this book.</textarea></label>
+      <label><span>Tekst / adres QR</span><input id="bbQrText" value="Scan for more activities"></label>
+      <div class="bb-button-stack">
+        <button data-add-page="tracker">Dodaj Activity Mission Tracker</button>
+        <button data-add-page="certificate">Dodaj Certificate</button>
+        <button data-add-page="congratulations">Dodaj Congratulations</button>
+        <button data-add-page="qr">Dodaj stronę QR / Bonus</button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="bb-card bb-final">
+    <div><span>FINALIZACJA</span><h2>Ułóż strony i wygeneruj PDF</h2><p>Rozwiązania są zwykłymi stronami dodawanymi przez moduły. Ułóż je w Koszyku razem z pozostałymi stronami.</p></div>
+    <div><a href="basket-manager.html">Zarządzaj kolejnością w Koszyku</a><a href="basket-manager.html">Generuj PDF z Koszyka</a></div>
+  </section>
+</main>
+<script src="shared/fenix-basket.js"></script>
+<script src="shared/fenix-basket-status.js"></script>
+<script src="shared/book-builder.js"></script>
+<script>(function(){var m=document.getElementById('bbThemeMount');if(m&&window.FenixTheme)m.appendChild(window.FenixTheme.createControl());})();</script>
 </body>
 </html>

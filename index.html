@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FENIX - Platforma modułów KDP</title>
+  <title>FENIX — Activity Book Studio</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles/index.css">
   <link rel="stylesheet" href="shared/fenix-theme.css">
@@ -12,79 +12,77 @@
 </head>
 <body class="fenix-launcher-page">
   <header class="fenix-launcher-header">
-    <div class="fenix-launcher-brand">
+    <button class="fenix-brand-button" type="button" data-fenix-home aria-label="Pokaż pulpit Feniksa">
       <img class="fenix-launcher-logo" src="ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
-      <div>
-        <h1>FENIX</h1>
-        <p class="fenix-launcher-subtitle">Activity Book Studio dla Amazon KDP</p>
-      </div>
-    </div>
+      <span><strong>FENIX</strong><small>Activity Book Studio dla Amazon KDP</small></span>
+    </button>
     <div class="fenix-launcher-header-tools" id="fenixThemeMount"></div>
   </header>
 
-  <main class="fenix-dashboard">
-    <section class="fenix-dashboard-hero">
-      <div>
-        <span class="fenix-dashboard-kicker">CENTRUM PROJEKTU</span>
-        <h2>Wybierz moduł</h2>
-        <p>Każdy kafelek prowadzi do osobnego obszaru pracy. MBG tworzy labirynty, Book Builder składa książkę, a Studia produkują strony do Koszyka Feniksa.</p>
-      </div>
-      <div class="fenix-dashboard-basket" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+  <main class="fenix-app-shell">
+    <section id="fenixHomeView" class="fenix-home-view">
+      <section class="fenix-dashboard-hero">
+        <div>
+          <span class="fenix-dashboard-kicker">CENTRUM FENIKSA</span>
+          <h1>Wszystkie obszary pracy w jednym miejscu</h1>
+          <p>Kliknij kafelek, a pełny moduł otworzy się bez opuszczania strony głównej. Silniki i logika modułów pozostają w swoich dotychczasowych plikach.</p>
+        </div>
+        <div class="fenix-dashboard-basket" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      </section>
+
+      <section class="fenix-dashboard-group fenix-dashboard-group--mbg" aria-labelledby="mbgHeading">
+        <div class="fenix-dashboard-heading"><span>MBG</span><h2 id="mbgHeading">Maze Book Generator</h2></div>
+        <div class="fenix-tile-grid">
+          <a class="fenix-app-tile fenix-app-tile--mbg" href="mbg.html?view=mbg#workflow-maze" data-fenix-module data-label="MBG — Labirynty" data-description="Trudność, siatka i logika ścieżki"><span class="fenix-app-tile-icon">▦</span><span class="fenix-app-tile-copy"><strong>Labirynty</strong><small>Trudność, siatka i generowanie</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile fenix-app-tile--mbg" href="mbg.html?view=mbg#workflow-assets" data-fenix-module data-label="MBG — Assety, maski i dekoracje" data-description="START, CEL, checkpointy, maski oraz oprawa"><span class="fenix-app-tile-icon">◇</span><span class="fenix-app-tile-copy"><strong>Assety, maski i dekoracje</strong><small>START, CEL, checkpointy i oprawa</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile fenix-app-tile--mbg" href="mbg.html?view=mbg#workflow-preview" data-fenix-module data-label="MBG — Podgląd i rozwiązania" data-description="Kontrola stron i poprawności labiryntów"><span class="fenix-app-tile-icon">◉</span><span class="fenix-app-tile-copy"><strong>Podgląd i rozwiązania</strong><small>Kontrola stron i rozwiązań</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        </div>
+      </section>
+
+      <section class="fenix-dashboard-group fenix-dashboard-group--builder" aria-labelledby="builderHeading">
+        <div class="fenix-dashboard-heading"><span>BOOK BUILDER</span><h2 id="builderHeading">Składanie książki</h2></div>
+        <div class="fenix-tile-grid">
+          <a class="fenix-app-tile fenix-app-tile--builder" href="book-builder.html#workflow-setup" data-fenix-module data-label="Book Builder — Projekt i teksty" data-description="Ustawienia projektu, intro i instrukcje"><span class="fenix-app-tile-icon">▤</span><span class="fenix-app-tile-copy"><strong>Projekt i teksty</strong><small>Ustawienia książki, intro i instrukcje</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile fenix-app-tile--builder" href="book-builder.html#workflow-pages" data-fenix-module data-label="Book Builder — Strony i Koszyk" data-description="Materiały ze wszystkich modułów Feniksa"><span class="fenix-app-tile-icon">▦</span><span class="fenix-app-tile-copy"><strong>Strony i Koszyk Feniksa</strong><small>Import, kolejność i dodatkowe strony</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile fenix-app-tile--builder" href="book-builder.html#workflow-output" data-fenix-module data-label="Book Builder — Eksport PDF" data-description="Podgląd książki i finalny plik KDP"><span class="fenix-app-tile-icon">⇩</span><span class="fenix-app-tile-copy"><strong>Podgląd i eksport PDF</strong><small>Finalna kontrola i generowanie książki</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        </div>
+      </section>
+
+      <section class="fenix-dashboard-group" aria-labelledby="studiosHeading">
+        <div class="fenix-dashboard-heading"><span>STUDIA STRON</span><h2 id="studiosHeading">Generatory aktywności</h2></div>
+        <div class="fenix-tile-grid">
+          <a class="fenix-app-tile" href="modules/complete-picture/complete-picture.html" data-fenix-module data-label="Complete the Picture" data-description="Uzupełnianie obrazków"><span class="fenix-app-tile-icon">◫</span><span class="fenix-app-tile-copy"><strong>Complete the Picture</strong><small>Uzupełnianie obrazków</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/coloring-studio/coloring-studio.html" data-fenix-module data-label="Coloring Studio" data-description="Kolorowanki"><span class="fenix-app-tile-icon">✦</span><span class="fenix-app-tile-copy"><strong>Coloring Studio</strong><small>Kolorowanki</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/tracing-studio/tracing-studio.html" data-fenix-module data-label="Tracing Studio" data-description="Szlaczki i pre-writing"><span class="fenix-app-tile-icon">〰</span><span class="fenix-app-tile-copy"><strong>Tracing Studio</strong><small>Szlaczki i pre-writing</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/matching-studio/matching-studio.html" data-fenix-module data-label="Matching Studio" data-description="Łączenie par"><span class="fenix-app-tile-icon">⇄</span><span class="fenix-app-tile-copy"><strong>Matching Studio</strong><small>Łączenie par</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/alphabet-studio/alphabet-studio.html" data-fenix-module data-label="Alphabet Studio" data-description="Litery i słowa"><span class="fenix-app-tile-icon">Aa</span><span class="fenix-app-tile-copy"><strong>Alphabet Studio</strong><small>Litery i słowa</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/math-studio/math-studio.html" data-fenix-module data-label="Math Studio" data-description="Ćwiczenia matematyczne"><span class="fenix-app-tile-icon">∑</span><span class="fenix-app-tile-copy"><strong>Math Studio</strong><small>Ćwiczenia matematyczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/dot-to-dot-studio/dot-to-dot-studio.html" data-fenix-module data-label="Dot to Dot Studio" data-description="Połącz kropki"><span class="fenix-app-tile-icon">•••</span><span class="fenix-app-tile-copy"><strong>Dot to Dot Studio</strong><small>Połącz kropki</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/hidden-objects-studio/hidden-objects-studio.html" data-fenix-module data-label="Hidden Objects Studio" data-description="Znajdź ukryte elementy"><span class="fenix-app-tile-icon">◎</span><span class="fenix-app-tile-copy"><strong>Hidden Objects Studio</strong><small>Znajdź ukryte elementy</small></span><span class="fenix-app-tile-arrow">→</span></a>
+          <a class="fenix-app-tile" href="modules/logic-studio/logic-studio.html" data-fenix-module data-label="Logic Studio" data-description="Łamigłówki logiczne"><span class="fenix-app-tile-icon">◇</span><span class="fenix-app-tile-copy"><strong>Logic Studio</strong><small>Łamigłówki logiczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        </div>
+      </section>
+
+      <section class="fenix-dashboard-group" aria-labelledby="toolsHeading">
+        <div class="fenix-dashboard-heading"><span>NARZĘDZIA</span><h2 id="toolsHeading">Assety i zasoby</h2></div>
+        <div class="fenix-tile-grid">
+          <a class="fenix-app-tile fenix-app-tile--tool" href="modules/asset-generator-studio/asset-generator-studio.html" data-fenix-module data-label="Asset Generator Studio" data-description="Tworzenie i przygotowanie assetów SVG/PNG"><span class="fenix-app-tile-icon">⬡</span><span class="fenix-app-tile-copy"><strong>Asset Generator Studio</strong><small>Tworzenie assetów SVG/PNG</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        </div>
+      </section>
     </section>
 
-    <section class="fenix-dashboard-group" aria-labelledby="coreHeading">
-      <div class="fenix-dashboard-heading">
-        <span>GŁÓWNE MODUŁY</span>
-        <h2 id="coreHeading">Tworzenie i składanie książki</h2>
+    <section id="fenixWorkspaceView" class="fenix-workspace-view" hidden>
+      <div class="fenix-workspace-bar">
+        <button type="button" class="fenix-workspace-home" data-fenix-home>← Pulpit Feniksa</button>
+        <div><strong id="fenixWorkspaceTitle">Moduł Feniksa</strong><small id="fenixWorkspaceSubtitle"></small></div>
+        <a id="fenixWorkspaceExternal" class="fenix-workspace-external" href="#" target="_blank" rel="noopener">Otwórz osobno ↗</a>
       </div>
-      <div class="fenix-tile-grid fenix-tile-grid--core">
-        <a class="fenix-app-tile fenix-app-tile--mbg" href="mbg.html?view=mbg">
-          <span class="fenix-app-tile-icon">▦</span>
-          <span class="fenix-app-tile-copy"><strong>MBG</strong><small>Maze Book Generator</small></span>
-          <span class="fenix-app-tile-arrow">→</span>
-        </a>
-        <a class="fenix-app-tile fenix-app-tile--builder" href="book-builder.html">
-          <span class="fenix-app-tile-icon">▤</span>
-          <span class="fenix-app-tile-copy"><strong>Book Builder</strong><small>Składanie kompletnej książki</small></span>
-          <span class="fenix-app-tile-arrow">→</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="fenix-dashboard-group" aria-labelledby="studiosHeading">
-      <div class="fenix-dashboard-heading">
-        <span>STUDIA STRON</span>
-        <h2 id="studiosHeading">Generatory aktywności</h2>
-      </div>
-      <div class="fenix-tile-grid">
-        <a class="fenix-app-tile" href="modules/complete-picture/complete-picture.html"><span class="fenix-app-tile-icon">◫</span><span class="fenix-app-tile-copy"><strong>Complete the Picture</strong><small>Uzupełnianie obrazków</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/coloring-studio/coloring-studio.html"><span class="fenix-app-tile-icon">✦</span><span class="fenix-app-tile-copy"><strong>Coloring Studio</strong><small>Kolorowanki</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/tracing-studio/tracing-studio.html"><span class="fenix-app-tile-icon">〰</span><span class="fenix-app-tile-copy"><strong>Tracing Studio</strong><small>Szlaczki i pre-writing</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/matching-studio/matching-studio.html"><span class="fenix-app-tile-icon">⇄</span><span class="fenix-app-tile-copy"><strong>Matching Studio</strong><small>Łączenie par</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/alphabet-studio/alphabet-studio.html"><span class="fenix-app-tile-icon">Aa</span><span class="fenix-app-tile-copy"><strong>Alphabet Studio</strong><small>Litery i słowa</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/math-studio/math-studio.html"><span class="fenix-app-tile-icon">∑</span><span class="fenix-app-tile-copy"><strong>Math Studio</strong><small>Ćwiczenia matematyczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/dot-to-dot-studio/dot-to-dot-studio.html"><span class="fenix-app-tile-icon">•••</span><span class="fenix-app-tile-copy"><strong>Dot to Dot Studio</strong><small>Połącz kropki</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/hidden-objects-studio/hidden-objects-studio.html"><span class="fenix-app-tile-icon">◎</span><span class="fenix-app-tile-copy"><strong>Hidden Objects Studio</strong><small>Znajdź ukryte elementy</small></span><span class="fenix-app-tile-arrow">→</span></a>
-        <a class="fenix-app-tile" href="modules/logic-studio/logic-studio.html"><span class="fenix-app-tile-icon">◇</span><span class="fenix-app-tile-copy"><strong>Logic Studio</strong><small>Łamigłówki logiczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
-      </div>
-    </section>
-
-    <section class="fenix-dashboard-group" aria-labelledby="toolsHeading">
-      <div class="fenix-dashboard-heading">
-        <span>NARZĘDZIA</span>
-        <h2 id="toolsHeading">Assety i zasoby</h2>
-      </div>
-      <div class="fenix-tile-grid fenix-tile-grid--tools">
-        <a class="fenix-app-tile fenix-app-tile--tool" href="modules/asset-generator-studio/asset-generator-studio.html">
-          <span class="fenix-app-tile-icon">⬡</span>
-          <span class="fenix-app-tile-copy"><strong>Asset Generator Studio</strong><small>Tworzenie i przygotowanie assetów SVG/PNG</small></span>
-          <span class="fenix-app-tile-arrow">→</span>
-        </a>
-      </div>
+      <iframe id="fenixWorkspaceFrame" class="fenix-workspace-frame" title="Obszar roboczy Feniksa" src="about:blank"></iframe>
     </section>
   </main>
 
   <script src="shared/fenix-basket-status.js"></script>
+  <script src="shared/fenix-app-shell.js"></script>
   <script>(function(){var mount=document.getElementById('fenixThemeMount');if(mount&&window.FenixTheme)mount.appendChild(window.FenixTheme.createControl());})();</script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koszyk Feniksa</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="styles/basket.css">
+</head>
+<body class="fenix-launcher-page">
+  <header class="fenix-launcher-header">
+    <div class="fenix-launcher-brand fenix-workspace-header">
+      <a class="fenix-back-link" href="index.html">← FENIX</a>
+      <img class="fenix-launcher-logo" src="ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <h1>KOSZYK</h1>
+        <p class="fenix-launcher-subtitle">Wspólne miejsce stron utworzonych przez wszystkie moduły</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="fenix-launcher-main basket-main">
+    <section class="fenix-workflow-strip" aria-label="Przepływ pracy">
+      <span>1. Moduły zadań</span><strong>→</strong><span class="is-active">2. Koszyk</span><strong>→</strong><span>3. Book Builder</span><strong>→</strong><span>4. PDF</span>
+    </section>
+
+    <section class="basket-toolbar">
+      <div>
+        <span class="fenix-eyebrow">ETAP 2 / ORGANIZACJA</span>
+        <h2>Strony projektu</h2>
+        <p>Sprawdź strony, usuń zbędne elementy i przekaż gotowy zestaw do składania książki.</p>
+      </div>
+      <div class="basket-toolbar-actions">
+        <button id="refreshBasket" class="fenix-secondary-button" type="button">Odśwież</button>
+        <button id="clearBasket" class="fenix-danger-button" type="button">Wyczyść koszyk</button>
+        <a class="fenix-module-link" href="mbg.html">Przejdź do Book Buildera →</a>
+      </div>
+    </section>
+
+    <section class="basket-summary" aria-live="polite">
+      <div class="basket-summary-number"><strong id="basketTotal">0</strong><span>stron razem</span></div>
+      <div id="basketSources" class="basket-source-list"></div>
+    </section>
+
+    <section id="basketEmpty" class="basket-empty" hidden>
+      <h2>Koszyk jest pusty</h2>
+      <p>Otwórz dowolny moduł zadania, utwórz stronę i dodaj ją do Koszyka Feniksa.</p>
+      <a class="fenix-module-link" href="index.html#zadania">Wybierz moduł zadania</a>
+    </section>
+
+    <section id="basketGrid" class="basket-grid" aria-label="Strony w Koszyku Feniksa"></section>
+  </main>
+
+  <script src="shared/fenix-basket-status.js"></script>
+  <script src="shared/fenix-basket-manager.js"></script>
+</body>
+</html>

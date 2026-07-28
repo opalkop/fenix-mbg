@@ -16,70 +16,74 @@
       <img class="fenix-launcher-logo" src="ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
       <div>
         <h1>FENIX</h1>
-        <p class="fenix-launcher-subtitle">Lokalna platforma modułów Activity Books dla Amazon KDP</p>
+        <p class="fenix-launcher-subtitle">Activity Book Studio dla Amazon KDP</p>
       </div>
     </div>
     <div class="fenix-launcher-header-tools" id="fenixThemeMount"></div>
   </header>
 
-  <main class="fenix-launcher-main">
-    <section class="fenix-launcher-intro" aria-label="Opis platformy">
-      <p>Fenix jest jednym dużym projektem złożonym z wyspecjalizowanych modułów. MBG tworzy strony z labiryntami, Book Builder składa całą książkę, a pozostałe Studia produkują gotowe strony do Koszyka Feniksa.</p>
-      <p>Wszystkie dotychczasowe funkcje pozostają dostępne. Zmieniamy przede wszystkim organizację, nawigację i wygląd, aby łatwiej było odnaleźć właściwy etap pracy.</p>
-    </section>
-
-    <section class="fenix-global-basket" aria-label="Status Koszyka Feniksa">
-      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
-      <p>Koszyk lokalny: szybki tryb pracy na tym samym komputerze i w tej samej przeglądarce.</p>
-      <p>.fenixpack: przenośny tryb pracy między domem i pracą. Eksportuj paczkę i zaimportuj ją w Book Builderze.</p>
-    </section>
-
-    <section class="fenix-launcher-section" aria-labelledby="fenixCoreHeading">
-      <div class="fenix-launcher-section-heading">
-        <span>CORE / GŁÓWNY WORKFLOW</span>
-        <h2 id="fenixCoreHeading">MBG i Book Builder — dwa osobne moduły jednego projektu</h2>
+  <main class="fenix-dashboard">
+    <section class="fenix-dashboard-hero">
+      <div>
+        <span class="fenix-dashboard-kicker">CENTRUM PROJEKTU</span>
+        <h2>Wybierz moduł</h2>
+        <p>Każdy kafelek prowadzi do osobnego obszaru pracy. MBG tworzy labirynty, Book Builder składa książkę, a Studia produkują strony do Koszyka Feniksa.</p>
       </div>
-      <div class="fenix-launcher-grid fenix-launcher-grid-core">
-        <article class="fenix-module-card fenix-module-card--core fenix-module-card--book-builder">
-          <div class="fenix-module-marker">01</div>
-          <span class="fenix-module-status fenix-module-status-production">GENERATOR STRON</span>
-          <h2>MBG — Maze Book Generator</h2>
-          <p>Osobny moduł do tworzenia labiryntów: trudność, siatka, maski, assety, dekoracje, podgląd oraz rozwiązania.</p>
-          <a class="fenix-module-link" href="mbg.html?view=mbg">Otwórz MBG</a>
-        </article>
+      <div class="fenix-dashboard-basket" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+    </section>
 
-        <article class="fenix-module-card fenix-module-card--core fenix-module-card--book-builder">
-          <div class="fenix-module-marker">02</div>
-          <span class="fenix-module-status fenix-module-status-production">GŁÓWNY SKŁADACZ</span>
-          <h2>Book Builder</h2>
-          <p>Składanie pełnej książki: Koszyk Feniksa, teksty, strony dodatkowe, kolejność, ustawienia projektu i finalny eksport PDF.</p>
-          <a class="fenix-module-link" href="book-builder.html">Otwórz Book Builder</a>
-        </article>
+    <section class="fenix-dashboard-group" aria-labelledby="coreHeading">
+      <div class="fenix-dashboard-heading">
+        <span>GŁÓWNE MODUŁY</span>
+        <h2 id="coreHeading">Tworzenie i składanie książki</h2>
+      </div>
+      <div class="fenix-tile-grid fenix-tile-grid--core">
+        <a class="fenix-app-tile fenix-app-tile--mbg" href="mbg.html?view=mbg">
+          <span class="fenix-app-tile-icon">▦</span>
+          <span class="fenix-app-tile-copy"><strong>MBG</strong><small>Maze Book Generator</small></span>
+          <span class="fenix-app-tile-arrow">→</span>
+        </a>
+        <a class="fenix-app-tile fenix-app-tile--builder" href="book-builder.html">
+          <span class="fenix-app-tile-icon">▤</span>
+          <span class="fenix-app-tile-copy"><strong>Book Builder</strong><small>Składanie kompletnej książki</small></span>
+          <span class="fenix-app-tile-arrow">→</span>
+        </a>
       </div>
     </section>
 
-    <section class="fenix-launcher-section" aria-labelledby="fenixPageProducersHeading">
-      <div class="fenix-launcher-section-heading"><span>PAGE PRODUCERS</span><h2 id="fenixPageProducersHeading">Moduły tworzenia stron</h2></div>
-      <div class="fenix-launcher-grid" aria-label="Moduły tworzenia stron">
-        <article class="fenix-module-card"><div class="fenix-module-marker">03</div><span class="fenix-module-status fenix-module-status-new">Nowy / Testowy</span><h2>Complete the Picture</h2><p>Producent stron. Dodaje gotowe strony do Koszyka Feniksa albo eksportuje przenośny plik .fenixpack.</p><a class="fenix-module-link" href="modules/complete-picture/complete-picture.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">04</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Coloring Studio</h2><p>Producent stron. Dodaje gotowe kolorowanki do Koszyka Feniksa albo eksportuje przenośny plik .fenixpack.</p><a class="fenix-module-link" href="modules/coloring-studio/coloring-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">05</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Tracing Studio</h2><p>Tworzenie stron pre-writing i tracing: linie, szlaczki, fale, zygzaki, pętle i ćwiczenia przygotowujące rękę do pisania.</p><a class="fenix-module-link" href="modules/tracing-studio/tracing-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">06</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Matching Studio</h2><p>Tworzenie stron typu matching: połącz pary, obrazek z cieniem, takie same elementy, kategorie i proste skojarzenia.</p><a class="fenix-module-link" href="modules/matching-studio/matching-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">07</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Alphabet Studio</h2><p>Tworzenie stron alfabetu: litery A-Z, śledzenie liter, wielkie i małe litery, proste słowa oraz ćwiczenia przygotowujące do pisania.</p><a class="fenix-module-link" href="modules/alphabet-studio/alphabet-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">08</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Math Studio</h2><p>Tworzenie stron matematycznych dla dzieci: liczenie, dodawanie, odejmowanie, brakujące liczby, number tracing i proste worksheety.</p><a class="fenix-module-link" href="modules/math-studio/math-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">09</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Dot to Dot Studio</h2><p>Tworzenie stron typu połącz kropki: numerowane punkty, proste kształty, obrazki do odkrycia i ćwiczenia kolejności liczb.</p><a class="fenix-module-link" href="modules/dot-to-dot-studio/dot-to-dot-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">10</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Hidden Objects Studio</h2><p>Tworzenie stron typu znajdź ukryte elementy: search and find, I spy, lista obiektów do odnalezienia, sceny z assetów SVG/PNG.</p><a class="fenix-module-link" href="modules/hidden-objects-studio/hidden-objects-studio.html">Otwórz</a></article>
-        <article class="fenix-module-card"><div class="fenix-module-marker">11</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Logic Studio</h2><p>Tworzenie prostych łamigłówek logicznych dla dzieci: sekwencje, wzory, znajdź niepasujący element, co będzie następne i proste sortowanie.</p><a class="fenix-module-link" href="modules/logic-studio/logic-studio.html">Otwórz</a></article>
+    <section class="fenix-dashboard-group" aria-labelledby="studiosHeading">
+      <div class="fenix-dashboard-heading">
+        <span>STUDIA STRON</span>
+        <h2 id="studiosHeading">Generatory aktywności</h2>
+      </div>
+      <div class="fenix-tile-grid">
+        <a class="fenix-app-tile" href="modules/complete-picture/complete-picture.html"><span class="fenix-app-tile-icon">◫</span><span class="fenix-app-tile-copy"><strong>Complete the Picture</strong><small>Uzupełnianie obrazków</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/coloring-studio/coloring-studio.html"><span class="fenix-app-tile-icon">✦</span><span class="fenix-app-tile-copy"><strong>Coloring Studio</strong><small>Kolorowanki</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/tracing-studio/tracing-studio.html"><span class="fenix-app-tile-icon">〰</span><span class="fenix-app-tile-copy"><strong>Tracing Studio</strong><small>Szlaczki i pre-writing</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/matching-studio/matching-studio.html"><span class="fenix-app-tile-icon">⇄</span><span class="fenix-app-tile-copy"><strong>Matching Studio</strong><small>Łączenie par</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/alphabet-studio/alphabet-studio.html"><span class="fenix-app-tile-icon">Aa</span><span class="fenix-app-tile-copy"><strong>Alphabet Studio</strong><small>Litery i słowa</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/math-studio/math-studio.html"><span class="fenix-app-tile-icon">∑</span><span class="fenix-app-tile-copy"><strong>Math Studio</strong><small>Ćwiczenia matematyczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/dot-to-dot-studio/dot-to-dot-studio.html"><span class="fenix-app-tile-icon">•••</span><span class="fenix-app-tile-copy"><strong>Dot to Dot Studio</strong><small>Połącz kropki</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/hidden-objects-studio/hidden-objects-studio.html"><span class="fenix-app-tile-icon">◎</span><span class="fenix-app-tile-copy"><strong>Hidden Objects Studio</strong><small>Znajdź ukryte elementy</small></span><span class="fenix-app-tile-arrow">→</span></a>
+        <a class="fenix-app-tile" href="modules/logic-studio/logic-studio.html"><span class="fenix-app-tile-icon">◇</span><span class="fenix-app-tile-copy"><strong>Logic Studio</strong><small>Łamigłówki logiczne</small></span><span class="fenix-app-tile-arrow">→</span></a>
       </div>
     </section>
 
-    <section class="fenix-launcher-section" aria-labelledby="fenixToolsHeading">
-      <div class="fenix-launcher-section-heading"><span>ASSET / TOOLING</span><h2 id="fenixToolsHeading">Narzędzia / Assety</h2></div>
-      <div class="fenix-launcher-grid fenix-launcher-grid-tools">
-        <article class="fenix-module-card fenix-module-card--tool fenix-module-card--asset-lab"><div class="fenix-module-marker">12</div><span class="fenix-module-status fenix-module-status-tool">ASSET LAB</span><h2>Asset Generator Studio</h2><p>Generator i laboratorium assetów SVG/PNG. Tworzy, importuje, ocenia i eksportuje pojedyncze assety do ręcznego użycia w Coloring, Matching, Hidden Objects, Alphabet, Logic i innych modułach. Nie tworzy stron książki.</p><a class="fenix-module-link" href="modules/asset-generator-studio/asset-generator-studio.html">Otwórz AG Studio</a></article>
+    <section class="fenix-dashboard-group" aria-labelledby="toolsHeading">
+      <div class="fenix-dashboard-heading">
+        <span>NARZĘDZIA</span>
+        <h2 id="toolsHeading">Assety i zasoby</h2>
+      </div>
+      <div class="fenix-tile-grid fenix-tile-grid--tools">
+        <a class="fenix-app-tile fenix-app-tile--tool" href="modules/asset-generator-studio/asset-generator-studio.html">
+          <span class="fenix-app-tile-icon">⬡</span>
+          <span class="fenix-app-tile-copy"><strong>Asset Generator Studio</strong><small>Tworzenie i przygotowanie assetów SVG/PNG</small></span>
+          <span class="fenix-app-tile-arrow">→</span>
+        </a>
       </div>
     </section>
   </main>
+
   <script src="shared/fenix-basket-status.js"></script>
   <script>(function(){var mount=document.getElementById('fenixThemeMount');if(mount&&window.FenixTheme)mount.appendChild(window.FenixTheme.createControl());})();</script>
 </body>

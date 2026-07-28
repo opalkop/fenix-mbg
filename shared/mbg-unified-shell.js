@@ -28,7 +28,7 @@
   }
 
   var groups={
-    mbg:['workflow-maze','workflow-assets','workflow-preview'],
+    mbg:['workflow-maze','workflow-assets','workflow-preview','workflow-export'],
     builder:['workflow-setup','workflow-pages','workflow-output']
   };
 
@@ -92,6 +92,7 @@
       'workflow-maze':['01','Labirynty','Trudność, siatka, ścieżka i liczba stron'],
       'workflow-assets':['02','Assety, maski i dekoracje','START, CEL, checkpointy, maski oraz oprawa'],
       'workflow-preview':['03','Podgląd i rozwiązania','Kontrola stron, rozwiązań i wyglądu'],
+      'workflow-export':['04','Eksport i Koszyk Feniksa','Dodawanie labiryntów oraz rozwiązań do Book Buildera lub eksport PDF'],
       'workflow-setup':['01','Projekt i teksty książki','Ustawienia projektu, intro, instrukcje i zapis'],
       'workflow-pages':['02','Strony i Koszyk Feniksa','Materiały ze wszystkich modułów i strony dodatkowe'],
       'workflow-output':['03','Podgląd książki i eksport PDF','Kolejność stron, kontrola i finalny plik KDP']
@@ -119,46 +120,11 @@
     });
   }
 
-  function ensureMazeBasketButton(){
-    if(getView()!=='mbg') return;
-    if(document.getElementById('addMazesToBasketBtn')) return;
-
-    if(window.FenixBasketStatus && typeof window.FenixBasketStatus.installMbgMazeBasketButton==='function'){
-      window.FenixBasketStatus.installMbgMazeBasketButton();
-      if(document.getElementById('addMazesToBasketBtn')) return;
-    }
-
-    var generateBtn=document.getElementById('generateBtn');
-    if(!generateBtn) return;
-
-    var button=document.createElement('button');
-    button.id='addMazesToBasketBtn';
-    button.type='button';
-    button.className='secondary-btn btn-secondary';
-    button.textContent='Dodaj labirynty + rozwiązania do Koszyka Feniksa';
-    button.style.minWidth='300px';
-    button.style.borderColor='rgba(107,229,255,.72)';
-    button.addEventListener('click',function(){
-      if(window.FenixBasketStatus && typeof window.FenixBasketStatus.installMbgMazeBasketButton==='function'){
-        button.remove();
-        window.FenixBasketStatus.installMbgMazeBasketButton();
-        var installed=document.getElementById('addMazesToBasketBtn');
-        if(installed) installed.click();
-        return;
-      }
-      window.alert('Moduł dodawania labiryntów do Koszyka Feniksa nie został załadowany. Odśwież stronę klawiszami Ctrl+F5.');
-    });
-    generateBtn.parentElement.insertBefore(button,generateBtn);
-  }
-
   function init(){
     var view=getView();
     setModuleVisibility(view);
     buildShell(view);
     enhanceTiles(view);
-    ensureMazeBasketButton();
-    window.setTimeout(ensureMazeBasketButton,250);
-    window.setTimeout(ensureMazeBasketButton,1000);
   }
 
   addStylesheet('shared/mbg-unified-shell.css','workspace');

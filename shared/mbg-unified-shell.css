@@ -24,5 +24,63 @@
 /* Light/system themes apply to the new tile workspace too. */
 html[data-fenix-theme="light"] .fenix-module-shell-top,html[data-fenix-theme="light"] .fenix-module-shell-intro,html[data-fenix-theme="light"] .workflow-group.fenix-module-tile,html[data-fenix-theme="system"] .fenix-module-shell-top,html[data-fenix-theme="system"] .fenix-module-shell-intro,html[data-fenix-theme="system"] .workflow-group.fenix-module-tile{background:linear-gradient(160deg,#fff,#f1f5f9)!important;border-color:#cbd5e1!important;color:#172033!important}html[data-fenix-theme="light"] .fenix-module-shell h1,html[data-fenix-theme="light"] .fenix-module-tile-copy strong,html[data-fenix-theme="system"] .fenix-module-shell h1,html[data-fenix-theme="system"] .fenix-module-tile-copy strong{color:#172033!important}html[data-fenix-theme="light"] .fenix-module-shell p,html[data-fenix-theme="light"] .fenix-module-shell-intro span,html[data-fenix-theme="light"] .fenix-module-tile-copy small,html[data-fenix-theme="system"] .fenix-module-shell p,html[data-fenix-theme="system"] .fenix-module-shell-intro span,html[data-fenix-theme="system"] .fenix-module-tile-copy small{color:#5e6d82!important}
 
+/* Legacy MBG/Book Builder panels must follow the selected theme as well. */
+html[data-fenix-theme="light"] .fenix-module-page .workflow-group .group-body,
+html[data-fenix-theme="light"] .fenix-module-page .workflow-group .card,
+html[data-fenix-theme="light"] .fenix-module-page .panel,
+html[data-fenix-theme="light"] .fenix-module-page .subpanel,
+html[data-fenix-theme="light"] .fenix-module-page fieldset,
+html[data-fenix-theme="light"] .fenix-module-page .control-group,
+html[data-fenix-theme="light"] .fenix-module-page .settings-group,
+html[data-fenix-theme="system"] .fenix-module-page .workflow-group .group-body,
+html[data-fenix-theme="system"] .fenix-module-page .workflow-group .card,
+html[data-fenix-theme="system"] .fenix-module-page .panel,
+html[data-fenix-theme="system"] .fenix-module-page .subpanel,
+html[data-fenix-theme="system"] .fenix-module-page fieldset,
+html[data-fenix-theme="system"] .fenix-module-page .control-group,
+html[data-fenix-theme="system"] .fenix-module-page .settings-group{background:#fff!important;color:#172033!important;border-color:#cbd5e1!important}
+html[data-fenix-theme="light"] .fenix-module-page label,
+html[data-fenix-theme="light"] .fenix-module-page legend,
+html[data-fenix-theme="light"] .fenix-module-page h2,
+html[data-fenix-theme="light"] .fenix-module-page h3,
+html[data-fenix-theme="light"] .fenix-module-page h4,
+html[data-fenix-theme="light"] .fenix-module-page strong,
+html[data-fenix-theme="light"] .fenix-module-page .title,
+html[data-fenix-theme="light"] .fenix-module-page .section-title,
+html[data-fenix-theme="system"] .fenix-module-page label,
+html[data-fenix-theme="system"] .fenix-module-page legend,
+html[data-fenix-theme="system"] .fenix-module-page h2,
+html[data-fenix-theme="system"] .fenix-module-page h3,
+html[data-fenix-theme="system"] .fenix-module-page h4,
+html[data-fenix-theme="system"] .fenix-module-page strong,
+html[data-fenix-theme="system"] .fenix-module-page .title,
+html[data-fenix-theme="system"] .fenix-module-page .section-title{color:#172033!important}
+html[data-fenix-theme="light"] .fenix-module-page small,
+html[data-fenix-theme="light"] .fenix-module-page .hint,
+html[data-fenix-theme="light"] .fenix-module-page .help,
+html[data-fenix-theme="light"] .fenix-module-page .muted,
+html[data-fenix-theme="light"] .fenix-module-page .description,
+html[data-fenix-theme="system"] .fenix-module-page small,
+html[data-fenix-theme="system"] .fenix-module-page .hint,
+html[data-fenix-theme="system"] .fenix-module-page .help,
+html[data-fenix-theme="system"] .fenix-module-page .muted,
+html[data-fenix-theme="system"] .fenix-module-page .description{color:#5e6d82!important}
+html[data-fenix-theme="light"] .fenix-module-page input,
+html[data-fenix-theme="light"] .fenix-module-page textarea,
+html[data-fenix-theme="light"] .fenix-module-page select,
+html[data-fenix-theme="light"] .fenix-module-page option,
+html[data-fenix-theme="system"] .fenix-module-page input,
+html[data-fenix-theme="system"] .fenix-module-page textarea,
+html[data-fenix-theme="system"] .fenix-module-page select,
+html[data-fenix-theme="system"] .fenix-module-page option{background:#fff!important;color:#172033!important;border-color:#aebccd!important}
+html[data-fenix-theme="light"] .fenix-module-page input::placeholder,
+html[data-fenix-theme="light"] .fenix-module-page textarea::placeholder,
+html[data-fenix-theme="system"] .fenix-module-page input::placeholder,
+html[data-fenix-theme="system"] .fenix-module-page textarea::placeholder{color:#7a8798!important;opacity:1}
+html[data-fenix-theme="light"] .fenix-module-page button:not(.primary),
+html[data-fenix-theme="light"] .fenix-module-page .btn:not(.primary),
+html[data-fenix-theme="system"] .fenix-module-page button:not(.primary),
+html[data-fenix-theme="system"] .fenix-module-page .btn:not(.primary){background:#f4f7fb!important;color:#172033!important;border-color:#b9c6d6!important}
+
 @media(max-width:1080px){.fenix-module-page main>.grid{grid-template-columns:1fr 1fr!important}.fenix-module-page .workflow-group.fenix-module-tile[open]{grid-column:1/-1!important}.fenix-module-page .workflow-group.fenix-module-tile>.group-body{grid-template-columns:1fr!important}.fenix-module-shell-top{align-items:flex-start;flex-direction:column}.fenix-module-shell-actions{justify-content:flex-start}.fenix-module-shell-intro{align-items:flex-start;flex-direction:column}.fenix-module-shell-intro span{text-align:left}}
 @media(max-width:680px){.fenix-module-shell{padding:0 12px}.fenix-module-page main>.grid{grid-template-columns:1fr!important}.fenix-module-page .workflow-group.fenix-module-tile{min-height:150px}.fenix-module-page .workflow-group.fenix-module-tile>summary.fenix-module-tile-summary{min-height:150px;grid-template-columns:auto minmax(0,1fr);padding:18px!important}.fenix-module-tile-action{grid-column:2}.fenix-module-shell h1{font-size:22px!important}.fenix-module-shell-mark{width:46px;height:46px}.fenix-module-shell-actions{width:100%}}

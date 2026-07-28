@@ -1,101 +1,134 @@
 (function(){
   "use strict";
 
-  var configs={
-    mbg:{
-      key:'mbg',title:'MBG — Maze Book Generator',kicker:'GENERATOR LABIRYNTÓW',badge:'MODUŁ MBG',
-      description:'Tworzenie labiryntów, masek, assetów, dekoracji, rozwiązań i gotowych stron.',
-      links:[
-        {icon:'⌘',label:'Ustawienia labiryntu',description:'Trudność, siatka, liczba labiryntów i logika ścieżki',id:'workflow-maze'},
-        {icon:'◇',label:'Assety, maski i dekoracje',description:'START, CEL, checkpointy, maski i oprawa stron',id:'workflow-assets'},
-        {icon:'◉',label:'Podgląd i rozwiązania',description:'Kontrola wyglądu stron oraz rozwiązań',id:'workflow-preview'}
-      ]
-    },
-    builder:{
-      key:'builder',title:'Book Builder',kicker:'SKŁADANIE KSIĄŻKI',badge:'GŁÓWNY SKŁADACZ',
-      description:'Projekt, teksty, Koszyk Feniksa, dodatkowe strony, kolejność i finalny PDF.',
-      links:[
-        {icon:'▤',label:'Projekt i teksty',description:'Dane książki, ustawienia, intro i instrukcje',id:'workflow-setup'},
-        {icon:'▦',label:'Strony i Koszyk Feniksa',description:'Materiały z modułów, dodatki i kolejność stron',id:'workflow-pages'},
-        {icon:'⇩',label:'Eksport książki',description:'Podgląd całości, ustawienia i finalny PDF',id:'workflow-output'}
-      ]
-    }
-  };
-
   function addStylesheet(href,key){
-    if(document.querySelector('link[data-fenix-style="'+key+'"]'))return;
-    var link=document.createElement('link');link.rel='stylesheet';link.href=href;link.dataset.fenixStyle=key;document.head.appendChild(link);
+    if(document.querySelector('link[data-fenix-style="'+key+'"]')) return;
+    var link=document.createElement('link');
+    link.rel='stylesheet';link.href=href;link.dataset.fenixStyle=key;
+    document.head.appendChild(link);
   }
+
   function loadTheme(){
     addStylesheet('shared/fenix-theme.css','theme');
-    if(window.FenixTheme)return Promise.resolve(window.FenixTheme);
-    return new Promise(function(resolve){var script=document.createElement('script');script.src='shared/fenix-theme.js';script.async=false;script.onload=function(){resolve(window.FenixTheme||null);};script.onerror=function(){resolve(null);};document.head.appendChild(script);});
-  }
-  function findSection(id){return document.getElementById(id);}
-  function requestedMode(){
-    var params=new URLSearchParams(location.search);
-    var mode=params.get('view');
-    if(mode==='builder'||mode==='mbg')return mode;
-    if(location.hash.indexOf('builder')!==-1)return 'builder';
-    return 'mbg';
-  }
-  function updateUrl(mode,sectionId){
-    if(!history||!history.replaceState)return;
-    var url='mbg.html?view='+mode+(sectionId?'#'+sectionId:'');
-    history.replaceState(null,'',url);
-  }
-  function markSections(){
-    ['workflow-maze','workflow-assets','workflow-preview'].forEach(function(id){var node=findSection(id);if(node)node.dataset.fenixWorkspace='mbg';});
-    ['workflow-setup','workflow-pages','workflow-output'].forEach(function(id){var node=findSection(id);if(node)node.dataset.fenixWorkspace='builder';});
-  }
-  function showSection(mode,id){
-    document.body.dataset.fenixModule=mode;
-    document.querySelectorAll('.workflow-group[data-fenix-workspace]').forEach(function(node){
-      var active=node.id===id&&node.dataset.fenixWorkspace===mode;
-      node.classList.toggle('fenix-panel-active',active);
-      if(active&&node.tagName==='DETAILS')node.open=true;
+    if(window.FenixTheme) return Promise.resolve(window.FenixTheme);
+    return new Promise(function(resolve){
+      var script=document.createElement('script');
+      script.src='shared/fenix-theme.js';script.async=false;
+      script.onload=function(){resolve(window.FenixTheme||null);};
+      script.onerror=function(){resolve(null);};
+      document.head.appendChild(script);
     });
-    document.querySelectorAll('.fenix-workspace-tile').forEach(function(tile){tile.classList.toggle('is-active',tile.dataset.target===id);});
-    if(id){window.setTimeout(function(){var section=findSection(id);if(section)section.scrollIntoView({behavior:'smooth',block:'start'});},40);}
-    updateUrl(mode,id);
   }
-  function makeTile(item,mode){
-    var button=document.createElement('button');button.type='button';button.className='fenix-workspace-tile';button.dataset.target=item.id;
-    button.innerHTML='<span class="fenix-workspace-tile-icon">'+item.icon+'</span><span><strong>'+item.label+'</strong><small>'+item.description+'</small></span><span class="fenix-workspace-tile-arrow">→</span>';
-    button.addEventListener('click',function(){showSection(mode,item.id);});
-    return button;
-  }
-  function makeModuleSwitch(mode){
-    var other=mode==='mbg'?'builder':'mbg';
-    var wrap=document.createElement('div');wrap.className='fenix-module-switch';
-    wrap.innerHTML='<a class="fenix-module-switch-card is-current" href="mbg.html?view='+mode+'"><span>'+configs[mode].kicker+'</span><strong>'+configs[mode].title+'</strong><small>Aktualny moduł</small></a><a class="fenix-module-switch-card" href="'+(other==='builder'?'book-builder.html':'mbg.html?view=mbg')+'"><span>'+configs[other].kicker+'</span><strong>'+configs[other].title+'</strong><small>Przejdź do modułu</small></a>';
-    return wrap;
-  }
-  function buildDashboard(mode){
-    var config=configs[mode];
-    var lane=document.createElement('section');lane.className='fenix-workspace-lane fenix-workspace-lane--'+mode;
-    lane.innerHTML='<div class="fenix-workspace-lane-head"><div><p class="fenix-workspace-lane-kicker">'+config.kicker+'</p><h2>'+config.title+'</h2><p>'+config.description+'</p></div><span class="fenix-workspace-lane-badge">'+config.badge+'</span></div>';
-    var tiles=document.createElement('div');tiles.className='fenix-workspace-tiles';config.links.forEach(function(item){if(findSection(item.id))tiles.appendChild(makeTile(item,mode));});lane.appendChild(tiles);return lane;
-  }
-  function buildShell(){
-    if(document.querySelector('.fenix-workspace-shell'))return;
-    var header=document.querySelector('body > header');if(!header)return;
-    markSections();
-    var mode=requestedMode();document.body.dataset.fenixModule=mode;
-    var shell=document.createElement('section');shell.className='fenix-workspace-shell';shell.setAttribute('aria-label','Kafelkowy pulpit modułu Fenix');
-    var topbar=document.createElement('div');topbar.className='fenix-workspace-topbar';
-    var brand=document.createElement('div');brand.className='fenix-workspace-brand';brand.innerHTML='<span class="fenix-workspace-brand-mark">F</span><div><strong>FENIX Activity Book Studio</strong><span>Każdy moduł ma własny pulpit • silnik i funkcje pozostają wspólne</span></div>';
-    var right=document.createElement('div');right.className='fenix-workspace-topbar-right';
-    right.innerHTML='<a class="fenix-workspace-action is-home" href="index.html">⌂ Centrum Feniksa</a>';
-    if(window.FenixTheme)right.append(window.FenixTheme.createControl());
-    topbar.append(brand,right);
-    var intro=document.createElement('div');intro.className='fenix-workspace-intro';intro.innerHTML='<span class="fenix-workspace-eyebrow">PULPIT MODUŁU</span><h2>'+configs[mode].title+'</h2><p>Wybierz kafelek etapu pracy. Otworzy się dokładnie ten sam dopracowany panel i ta sama logika, które działały wcześniej.</p>';
-    shell.append(topbar,makeModuleSwitch(mode),intro,buildDashboard(mode));header.insertAdjacentElement('afterend',shell);
 
-    var hash=(location.hash||'').replace('#','');
-    var allowed=configs[mode].links.some(function(item){return item.id===hash;});
-    if(allowed)showSection(mode,hash);
+  function getView(){
+    var params=new URLSearchParams(window.location.search);
+    if(params.get('view')==='builder') return 'builder';
+    if(params.get('view')==='mbg') return 'mbg';
+    return window.location.pathname.toLowerCase().indexOf('book-builder')>=0?'builder':'mbg';
   }
+
+  var groups={
+    mbg:['workflow-maze','workflow-assets','workflow-preview'],
+    builder:['workflow-setup','workflow-pages','workflow-output']
+  };
+
+  function setModuleVisibility(view){
+    var allowed=groups[view]||groups.mbg;
+    document.documentElement.dataset.fenixModule=view;
+    document.body.classList.add('fenix-module-page','fenix-module-page--'+view);
+    document.querySelectorAll('.workflow-group').forEach(function(section){
+      section.hidden=allowed.indexOf(section.id)===-1;
+      section.open=false;
+      if(!section.hidden){
+        section.classList.add('fenix-module-tile');
+        section.dataset.moduleView=view;
+      }
+    });
+    var toolbar=document.querySelector('.workflow-toolbar');
+    if(toolbar) toolbar.hidden=true;
+    document.querySelectorAll('.hero-badges').forEach(function(node){node.hidden=true;});
+  }
+
+  function buildShell(view){
+    if(document.querySelector('.fenix-module-shell')) return;
+    var header=document.querySelector('body > header');
+    if(!header) return;
+
+    var isMbg=view==='mbg';
+    var shell=document.createElement('section');
+    shell.className='fenix-module-shell fenix-module-shell--'+view;
+    shell.innerHTML='\
+      <div class="fenix-module-shell-top">\
+        <div class="fenix-module-shell-brand">\
+          <span class="fenix-module-shell-mark">F</span>\
+          <div><span class="fenix-module-shell-kicker">FENIX ACTIVITY BOOK STUDIO</span><h1>'+(isMbg?'MBG — Maze Book Generator':'Book Builder')+'</h1><p>'+(isMbg?'Tworzenie labiryntów, masek, assetów, dekoracji i rozwiązań.':'Składanie całej książki z Koszyka Feniksa, stron dodatkowych i materiałów z innych modułów.')+'</p></div>\
+        </div>\
+        <div class="fenix-module-shell-actions">\
+          <a href="index.html">⌂ Centrum Feniksa</a>\
+          <a class="'+(isMbg?'is-active':'')+'" href="mbg.html?view=mbg">MBG</a>\
+          <a class="'+(!isMbg?'is-active':'')+'" href="book-builder.html">Book Builder</a>\
+          <span id="fenixModuleThemeMount"></span>\
+        </div>\
+      </div>\
+      <div class="fenix-module-shell-intro">\
+        <strong>Wybierz kafelek roboczy</strong>\
+        <span>Kliknięcie otwiera pełny, istniejący panel. Żadna funkcja generatora ani Book Buildera nie została usunięta.</span>\
+      </div>';
+
+    header.insertAdjacentElement('afterend',shell);
+    if(window.FenixTheme){
+      var mount=shell.querySelector('#fenixModuleThemeMount');
+      if(mount) mount.appendChild(window.FenixTheme.createControl());
+    }
+
+    var oldTitle=header.querySelector('h1');
+    if(oldTitle) oldTitle.textContent=isMbg?'MBG — Maze Book Generator':'Book Builder';
+    var oldDesc=header.querySelector('p');
+    if(oldDesc) oldDesc.textContent=isMbg?'Generator stron labiryntowych dla Feniksa.':'Składacz książek KDP korzystający z Koszyka Feniksa i wszystkich modułów.';
+  }
+
+  function enhanceTiles(view){
+    var labels={
+      'workflow-maze':['01','Labirynty','Trudność, siatka, ścieżka i liczba stron'],
+      'workflow-assets':['02','Assety, maski i dekoracje','START, CEL, checkpointy, maski oraz oprawa'],
+      'workflow-preview':['03','Podgląd i rozwiązania','Kontrola stron, rozwiązań i wyglądu'],
+      'workflow-setup':['01','Projekt i teksty książki','Ustawienia projektu, intro, instrukcje i zapis'],
+      'workflow-pages':['02','Strony i Koszyk Feniksa','Materiały ze wszystkich modułów i strony dodatkowe'],
+      'workflow-output':['03','Podgląd książki i eksport PDF','Kolejność stron, kontrola i finalny plik KDP']
+    };
+
+    (groups[view]||[]).forEach(function(id){
+      var section=document.getElementById(id);
+      if(!section) return;
+      var summary=section.querySelector(':scope > summary');
+      if(!summary) return;
+      var info=labels[id];
+      summary.classList.add('fenix-module-tile-summary');
+      summary.innerHTML='<span class="fenix-module-tile-number">'+info[0]+'</span><span class="fenix-module-tile-copy"><strong>'+info[1]+'</strong><small>'+info[2]+'</small></span><span class="fenix-module-tile-action">Otwórz →</span>';
+      section.addEventListener('toggle',function(){
+        section.classList.toggle('is-open',section.open);
+        var action=summary.querySelector('.fenix-module-tile-action');
+        if(action) action.textContent=section.open?'Zwiń ↑':'Otwórz →';
+        if(section.open){
+          (groups[view]||[]).forEach(function(otherId){
+            var other=document.getElementById(otherId);
+            if(other&&other!==section) other.open=false;
+          });
+        }
+      });
+    });
+  }
+
+  function init(){
+    var view=getView();
+    setModuleVisibility(view);
+    buildShell(view);
+    enhanceTiles(view);
+  }
+
   addStylesheet('shared/mbg-unified-shell.css','workspace');
-  loadTheme().then(function(){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',buildShell,{once:true});else buildShell();});
+  loadTheme().then(function(){
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+    else init();
+  });
 })();

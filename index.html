@@ -8,6 +8,34 @@
   <link rel="stylesheet" href="styles/index.css">
   <link rel="stylesheet" href="shared/fenix-theme.css">
   <link rel="stylesheet" href="shared/fenix-launcher-theme.css">
+  <style>
+    .fenix-dashboard-hero {
+      grid-template-columns: minmax(360px, 1fr) minmax(0, 2fr) !important;
+      align-items: start !important;
+    }
+    .fenix-dashboard-hero > div:first-child {
+      min-width: 0;
+      max-width: 620px;
+    }
+    .fenix-dashboard-basket {
+      min-width: 0 !important;
+      width: 100%;
+      max-width: 100%;
+      justify-content: flex-end;
+      align-content: flex-start;
+    }
+    @media (max-width: 1050px) {
+      .fenix-dashboard-hero {
+        grid-template-columns: 1fr !important;
+      }
+      .fenix-dashboard-hero > div:first-child {
+        max-width: none;
+      }
+      .fenix-dashboard-basket {
+        justify-content: flex-start;
+      }
+    }
+  </style>
   <script src="shared/fenix-theme.js"></script>
 </head>
 <body class="fenix-launcher-page">

@@ -37,7 +37,7 @@
     <section class="fenix-launcher-section" aria-labelledby="fenixCoreHeading">
       <div class="fenix-launcher-section-heading">
         <span>CORE / GŁÓWNY WORKFLOW</span>
-        <h2 id="fenixCoreHeading">MBG i Book Builder — dwa obszary jednego projektu</h2>
+        <h2 id="fenixCoreHeading">MBG i Book Builder — dwa osobne moduły jednego projektu</h2>
       </div>
       <div class="fenix-launcher-grid fenix-launcher-grid-core">
         <article class="fenix-module-card fenix-module-card--core fenix-module-card--book-builder">
@@ -45,7 +45,7 @@
           <span class="fenix-module-status fenix-module-status-production">GENERATOR STRON</span>
           <h2>MBG — Maze Book Generator</h2>
           <p>Osobny moduł do tworzenia labiryntów: trudność, siatka, maski, assety, dekoracje, podgląd oraz rozwiązania.</p>
-          <a class="fenix-module-link" href="mbg.html#workspace-mbg">Otwórz MBG</a>
+          <a class="fenix-module-link" href="mbg.html?view=mbg">Otwórz MBG</a>
         </article>
 
         <article class="fenix-module-card fenix-module-card--core fenix-module-card--book-builder">
@@ -53,16 +53,13 @@
           <span class="fenix-module-status fenix-module-status-production">GŁÓWNY SKŁADACZ</span>
           <h2>Book Builder</h2>
           <p>Składanie pełnej książki: Koszyk Feniksa, teksty, strony dodatkowe, kolejność, ustawienia projektu i finalny eksport PDF.</p>
-          <a class="fenix-module-link" href="mbg.html#workspace-builder">Otwórz Book Builder</a>
+          <a class="fenix-module-link" href="book-builder.html">Otwórz Book Builder</a>
         </article>
       </div>
     </section>
 
     <section class="fenix-launcher-section" aria-labelledby="fenixPageProducersHeading">
-      <div class="fenix-launcher-section-heading">
-        <span>PAGE PRODUCERS</span>
-        <h2 id="fenixPageProducersHeading">Moduły tworzenia stron</h2>
-      </div>
+      <div class="fenix-launcher-section-heading"><span>PAGE PRODUCERS</span><h2 id="fenixPageProducersHeading">Moduły tworzenia stron</h2></div>
       <div class="fenix-launcher-grid" aria-label="Moduły tworzenia stron">
         <article class="fenix-module-card"><div class="fenix-module-marker">03</div><span class="fenix-module-status fenix-module-status-new">Nowy / Testowy</span><h2>Complete the Picture</h2><p>Producent stron. Dodaje gotowe strony do Koszyka Feniksa albo eksportuje przenośny plik .fenixpack.</p><a class="fenix-module-link" href="modules/complete-picture/complete-picture.html">Otwórz</a></article>
         <article class="fenix-module-card"><div class="fenix-module-marker">04</div><span class="fenix-module-status fenix-module-status-new">MVP / .fenixpack ready</span><h2>Coloring Studio</h2><p>Producent stron. Dodaje gotowe kolorowanki do Koszyka Feniksa albo eksportuje przenośny plik .fenixpack.</p><a class="fenix-module-link" href="modules/coloring-studio/coloring-studio.html">Otwórz</a></article>
@@ -84,8 +81,6 @@
     </section>
   </main>
   <script src="shared/fenix-basket-status.js"></script>
-  <script>
-    (function(){var mount=document.getElementById('fenixThemeMount');if(mount&&window.FenixTheme)mount.appendChild(window.FenixTheme.createControl());})();
-  </script>
+  <script>(function(){var mount=document.getElementById('fenixThemeMount');if(mount&&window.FenixTheme)mount.appendChild(window.FenixTheme.createControl());})();</script>
 </body>
 </html>

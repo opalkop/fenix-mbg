@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Word Search Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="word-search-studio.css">
+</head>
+<body>
+<header class="header"><div class="brand"><img src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix"><div><small>FENIX</small><h1>Word Search Studio</h1><p>Wykreślanki oparte na silniku przygotowanym wcześniej dla Lukrecji w BrandPlay.</p></div></div><div class="head-actions"><span class="badge">300 DPI</span><span class="badge">.fenixpack ready</span><a href="../../index.html">← Powrót do Feniksa</a><a href="../../basket-manager.html">Koszyk Feniksa</a></div></header>
+<main>
+<section class="basket"><div data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div></section>
+<section class="status"><strong>Status:</strong> <span id="wsStatus">Gotowe do pracy.</span></section>
+<section class="workspace">
+<aside class="card controls"><h2>Treść wykreślanki</h2>
+<label><span>Tytuł strony</span><input id="wsTitle" value="Word Search"></label>
+<label><span>Instrukcja</span><input id="wsInstruction" value="Find all the hidden words."></label>
+<label><span>Język liter</span><select id="wsLanguage"><option value="EN" selected>Angielski</option><option value="PL">Polski</option></select></label>
+<label><span>Słowa – jedno w wierszu</span><textarea id="wsWords" rows="10">COFFEE
+CAKE
+COOKIE
+CREAM
+SWEET
+TREAT
+SMILE
+CAFE</textarea></label>
+<div class="two"><label><span>Kolumny</span><input id="wsCols" type="number" min="8" max="18" value="12"></label><label><span>Wiersze</span><input id="wsRows" type="number" min="8" max="24" value="14"></label></div>
+<label><span>Poziom</span><select id="wsDifficulty"><option value="easy">Łatwy: poziomo i pionowo</option><option value="medium" selected>Średni: także po skosie</option><option value="hard">Trudny: również wspak</option></select></label>
+<label><span>Styl siatki</span><select id="wsStyle"><option value="classic" selected>Klasyczna kratka</option><option value="soft">Lekka, bez linii</option></select></label>
+<label><span>Seed / wariant</span><input id="wsSeed" type="number" min="1" max="999999" value="1307"></label>
+<label class="check"><input id="wsShowTitle" type="checkbox" checked><span>Pokaż tytuł</span></label>
+<label class="check"><input id="wsShowInstruction" type="checkbox" checked><span>Pokaż instrukcję</span></label>
+<label class="check"><input id="wsShowProgress" type="checkbox" checked><span>Pokaż „Found __ / liczba słów”</span></label>
+<label class="check"><input id="wsShowSolution" type="checkbox"><span>Pokaż rozwiązanie</span></label>
+</aside>
+<article class="card preview"><div class="preview-top"><div><h2>Podgląd strony</h2><p>Format 8.5×11 cala. Eksport 2550×3300 px.</p></div><strong id="wsSummary">12×14 · Medium</strong></div><div class="paper"><canvas id="wsCanvas" width="765" height="990"></canvas></div><p id="wsMessage">Wykreślanka jest gotowa.</p></article>
+<aside class="card actions"><h2>Eksport i warianty</h2><label><span>Liczba wariantów</span><input id="wsVariantCount" type="number" min="1" max="20" value="5"></label><button id="wsRefresh">Odśwież podgląd</button><button id="wsRandomize" class="secondary">Losuj nowy wariant</button><button id="wsExportPng" class="secondary">Eksportuj PNG 300 DPI</button><button id="wsAddBasket" class="secondary">Dodaj stronę do Koszyka</button><button id="wsAddVariants" class="secondary">Dodaj warianty do Koszyka</button><button id="wsExportPack" class="secondary">Eksportuj .fenixpack</button><p class="note">Aby zrobić strony rozwiązań, włącz „Pokaż rozwiązanie” i dodaj drugi zestaw wariantów z tym samym seedem.</p></aside>
+</section></main>
+<script src="../../shared/fenix-basket-status.js"></script>
+<script src="word-search-studio.js"></script>
+</body></html>

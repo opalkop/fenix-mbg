@@ -67,6 +67,18 @@
     });
   }
 
+  function loadMbgWorkspaceShell() {
+    const path = String(window.location.pathname || "").toLowerCase();
+    if (!path.endsWith("/mbg.html") && !path.endsWith("mbg.html")) return;
+    if (document.querySelector('script[data-mbg-unified-shell]')) return;
+
+    const script = document.createElement("script");
+    script.src = "shared/mbg-unified-shell.js";
+    script.async = false;
+    script.dataset.mbgUnifiedShell = "true";
+    document.head.appendChild(script);
+  }
+
   async function getFenixBasketSummary() {
     const summary = createEmptySummary();
 
@@ -145,6 +157,7 @@
   window.getFenixBasketSummary = getFenixBasketSummary;
   window.refreshFenixBasketStatusWidgets = refreshFenixBasketStatusWidgets;
 
+  loadMbgWorkspaceShell();
   document.addEventListener("DOMContentLoaded", refreshFenixBasketStatusWidgets);
   window.addEventListener("focus", refreshFenixBasketStatusWidgets);
   document.addEventListener("visibilitychange", function () {

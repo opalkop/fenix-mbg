@@ -8,6 +8,9 @@
   --fenix-line:#34445b;
   --fenix-accent:#f4b75d;
   --fenix-accent-2:#61dcff;
+  --fenix-input-bg:#202c3b;
+  --fenix-input-text:#f7fbff;
+  --fenix-placeholder:#8796aa;
   --fenix-shadow:0 18px 48px rgba(0,0,0,.34);
 }
 html[data-fenix-theme="light"]{
@@ -20,6 +23,9 @@ html[data-fenix-theme="light"]{
   --fenix-line:#cbd6e3;
   --fenix-accent:#b85f15;
   --fenix-accent-2:#087da5;
+  --fenix-input-bg:#ffffff;
+  --fenix-input-text:#172033;
+  --fenix-placeholder:#7a8798;
   --fenix-shadow:0 16px 38px rgba(28,45,70,.14);
 }
 html[data-fenix-theme="dark"]{
@@ -32,6 +38,9 @@ html[data-fenix-theme="dark"]{
   --fenix-line:#465264;
   --fenix-accent:#e5a64b;
   --fenix-accent-2:#77cce8;
+  --fenix-input-bg:#303846;
+  --fenix-input-text:#ffffff;
+  --fenix-placeholder:#9ba7b7;
 }
 html[data-fenix-theme="fenix"]{
   color-scheme:dark;
@@ -43,14 +52,30 @@ html[data-fenix-theme="fenix"]{
   --fenix-line:#31465f;
   --fenix-accent:#ffc46d;
   --fenix-accent-2:#6be5ff;
+  --fenix-input-bg:#1d2b3d;
+  --fenix-input-text:#f8fcff;
+  --fenix-placeholder:#8fa0b7;
 }
 @media(prefers-color-scheme:light){
   html[data-fenix-theme="system"]{
     color-scheme:light;
-    --fenix-bg:#edf2f7;--fenix-surface:#fff;--fenix-surface-2:#f4f7fb;--fenix-text:#172033;--fenix-muted:#5e6d82;--fenix-line:#cbd6e3;--fenix-accent:#b85f15;--fenix-accent-2:#087da5;--fenix-shadow:0 16px 38px rgba(28,45,70,.14)
+    --fenix-bg:#edf2f7;--fenix-surface:#fff;--fenix-surface-2:#f4f7fb;--fenix-text:#172033;--fenix-muted:#5e6d82;--fenix-line:#cbd6e3;--fenix-accent:#b85f15;--fenix-accent-2:#087da5;--fenix-input-bg:#fff;--fenix-input-text:#172033;--fenix-placeholder:#7a8798;--fenix-shadow:0 16px 38px rgba(28,45,70,.14)
   }
 }
 .fenix-theme-control{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 9px;border:1px solid var(--fenix-line);border-radius:11px;background:var(--fenix-surface-2);color:var(--fenix-text)}
 .fenix-theme-control label{margin:0!important;font-size:11px!important;font-weight:850!important;color:var(--fenix-muted)!important}
 .fenix-theme-control select{width:auto!important;min-width:126px!important;margin:0!important;padding:7px 28px 7px 9px!important;border-radius:8px!important;border:1px solid var(--fenix-line)!important;background:var(--fenix-surface)!important;color:var(--fenix-text)!important;font-size:12px!important;box-shadow:none!important}
 html[data-fenix-theme="light"] body,html[data-fenix-theme="system"] body{transition:background .18s ease,color .18s ease}
+
+/* Global contrast layer: overrides legacy hard-coded colors without changing module logic. */
+body{color:var(--fenix-text)}
+:where(.fenix-dashboard,.fenix-workspace-shell,.workflow-toolbar,.workflow-group,.group-body,.card,.fenix-global-basket,.fenix-launcher-intro,.fenix-dashboard-group,.fenix-dashboard-hero){color:var(--fenix-text)}
+:where(.workflow-group,.card,.fenix-workspace-shell,.fenix-dashboard,.fenix-dashboard-group,.fenix-dashboard-hero) :where(h1,h2,h3,h4,h5,h6,strong,b,legend,label,summary){color:var(--fenix-text)!important}
+:where(.workflow-group,.card,.fenix-workspace-shell,.fenix-dashboard,.fenix-dashboard-group,.fenix-dashboard-hero) :where(p,small,.note,.help,.description,.workflow-desc,.workflow-group>summary span){color:var(--fenix-muted)!important}
+:where(input,textarea,select){background:var(--fenix-input-bg)!important;color:var(--fenix-input-text)!important;border-color:var(--fenix-line)!important;caret-color:var(--fenix-input-text)}
+:where(input,textarea)::placeholder{color:var(--fenix-placeholder)!important;opacity:1}
+select option,select optgroup{background:var(--fenix-surface)!important;color:var(--fenix-text)!important}
+:where(input,textarea,select):disabled{opacity:.72;color:var(--fenix-muted)!important;background:color-mix(in srgb,var(--fenix-input-bg) 72%,var(--fenix-bg))!important}
+:where(.secondary-btn,.fenix-workspace-action,.fenix-app-shell-button){color:var(--fenix-text)!important;background:var(--fenix-surface-2)!important;border-color:var(--fenix-line)!important}
+:where(a:not(.fenix-module-link):not(.fenix-app-tile)){color:var(--fenix-accent-2)}
+:where(.badge,.workflow-toolbar span,.fenix-basket-status-widget span,.fenix-dashboard-basket span){color:var(--fenix-text)!important}

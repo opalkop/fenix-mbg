@@ -41,6 +41,14 @@
     var separator=base.indexOf("?")>=0?"&":"?";
     window.location.href=base+separator+"basketPageId="+encodeURIComponent(page.id);
   }
+  function openPdfGenerator(){
+    var included=Number($("basketIncluded").textContent||0);
+    if(!included){
+      alert("Koszyk nie zawiera żadnej strony włączonej do książki. Zaznacz przynajmniej jedną stronę przed generowaniem PDF.");
+      return;
+    }
+    window.location.href="mbg.html?view=builder#workflow-output";
+  }
 
   function card(page,index,pages){
     var item=document.createElement("article");item.className="basket-card"+(page.includeInBook===false?" is-disabled":"");
@@ -72,10 +80,13 @@
   }
 
   function render(pages){
+    var includedCount=pages.filter(function(p){return p.includeInBook!==false;}).length;
     $("basketTotal").textContent=pages.length;
-    $("basketIncluded").textContent=pages.filter(function(p){return p.includeInBook!==false;}).length;
+    $("basketIncluded").textContent=includedCount;
     $("basketEditable").textContent=pages.filter(editable).length;
     $("basketEmpty").hidden=pages.length>0;
+    $("basketExportStatus").textContent=pages.length?includedCount+" z "+pages.length+" stron zostanie przekazanych do generatora PDF.":"Koszyk jest pusty — dodaj strony przed generowaniem PDF.";
+    $("basketGeneratePdf").disabled=includedCount===0;
     var list=$("basketList");list.replaceChildren();
     pages.forEach(function(page,index){list.appendChild(card(page,index,pages));});
   }
@@ -84,6 +95,7 @@
   document.addEventListener("DOMContentLoaded",function(){
     $("basketRefresh").addEventListener("click",load);
     $("basketClear").addEventListener("click",function(){if(confirm("Wyczyścić cały Koszyk Feniksa?"))window.FenixBasket.clearPages().then(load);});
+    $("basketGeneratePdf").addEventListener("click",openPdfGenerator);
     $("basketPreviewClose").addEventListener("click",function(){$("basketPreview").close();});
     load();
   });

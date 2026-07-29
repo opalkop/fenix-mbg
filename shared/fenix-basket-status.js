@@ -38,6 +38,7 @@
     if (sourceModule === "dot-to-dot-studio") return "Dot to Dot Studio";
     if (sourceModule === "hidden-objects-studio") return "Hidden Objects Studio";
     if (sourceModule === "logic-studio") return "Logic Studio";
+    if (sourceModule === "word-search-studio") return "Word Search Studio";
     if (sourceModule === "direct-png") return "Import PNG";
     return sourceModule || "Inne / import";
   }

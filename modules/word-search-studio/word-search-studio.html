@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FENIX - Word Search Studio</title>
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="word-search-studio.css">
+</head>
+<body class="word-search-page">
+  <header class="word-search-header">
+    <div class="word-search-brand">
+      <img class="word-search-logo" src="../../ui-assets/fenix/svg/fenix-logo.svg" alt="Fenix logo">
+      <div>
+        <p class="word-search-kicker">FENIX</p>
+        <h1>Word Search Studio</h1>
+        <p>Generator wykreślanek do książek Activity Book z rozwiązaniami i obsługą Koszyka Feniksa.</p>
+      </div>
+    </div>
+    <div class="word-search-header-actions">
+      <span class="word-search-badge">MVP+</span>
+      <span class="word-search-badge word-search-badge-pack">Koszyk + edycja</span>
+      <a class="word-search-back-link" href="../../index.html">← Powrót do Fenixa</a>
+      <a class="word-search-back-link" href="../../basket.html">Otwórz Koszyk</a>
+    </div>
+  </header>
+
+  <main class="word-search-main">
+    <section class="word-search-global-basket" aria-label="Status Koszyka Feniksa">
+      <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
+      <p>Gotowe strony 2550×3300 px trafiają do wspólnego Koszyka. Z Koszyka możesz wrócić do edycji tej wykreślanki.</p>
+    </section>
+
+    <section class="word-search-status" aria-label="Status modułu">
+      <strong>Status:</strong> <span id="wordSearchStatusText">Gotowe do pracy.</span>
+    </section>
+
+    <section class="word-search-workspace" aria-label="Obszar roboczy Word Search Studio">
+      <aside class="word-search-card word-search-settings-panel">
+        <div class="word-search-section-heading">
+          <h2>Treść wykreślanki</h2>
+          <p>Interfejs jest po polsku, a słowa i tekst strony możesz wpisywać po angielsku.</p>
+        </div>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Teksty strony</legend>
+          <label class="word-search-check-field"><input id="wordSearchShowTitle" type="checkbox" checked><span>Pokaż tytuł</span></label>
+          <label class="word-search-field"><span>Tytuł strony</span><input id="wordSearchTitle" type="text" maxlength="80" value="Ocean Word Search"></label>
+          <label class="word-search-field"><span>Instrukcja</span><input id="wordSearchInstruction" type="text" maxlength="130" value="Find and circle all the ocean words."></label>
+          <label class="word-search-check-field"><input id="wordSearchShowWordList" type="checkbox" checked><span>Pokaż listę słów</span></label>
+          <label class="word-search-field"><span>Słowa — jedno w każdym wierszu</span><textarea id="wordSearchWords" rows="14" spellcheck="false">DOLPHIN
+SHARK
+TURTLE
+OCTOPUS
+WHALE
+SEAHORSE
+CRAB
+STARFISH
+JELLYFISH
+CLOWNFISH
+CORAL
+SHELL
+SEAWEED
+ANCHOR
+PEARL
+OCEAN
+WAVE
+FISH
+TREASURE
+BUBBLES</textarea></label>
+          <p class="word-search-note">Generator usuwa spacje i znaki inne niż A–Z. Powtórzenia są automatycznie pomijane.</p>
+        </fieldset>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Siatka i trudność</legend>
+          <label class="word-search-field"><span>Poziom trudności</span><select id="wordSearchDifficulty"><option value="easy">Łatwy — poziomo i pionowo</option><option value="medium" selected>Średni — także po skosie</option><option value="hard">Trudny — także wspak</option></select></label>
+          <label class="word-search-range-field"><span>Rozmiar siatki</span><input id="wordSearchGridSize" type="range" min="8" max="20" value="14"><output id="wordSearchGridSizeValue">14×14</output><input id="wordSearchGridSizeNumber" class="word-search-number-input" type="number" min="8" max="20" value="14"></label>
+          <label class="word-search-range-field"><span>Maksymalna liczba słów</span><input id="wordSearchMaxWords" type="range" min="4" max="20" value="12"><output id="wordSearchMaxWordsValue">12</output><input id="wordSearchMaxWordsNumber" class="word-search-number-input" type="number" min="4" max="20" value="12"></label>
+          <label class="word-search-range-field"><span>Seed / układ</span><input id="wordSearchSeed" type="range" min="1" max="99999" value="1"><output id="wordSearchSeedValue">1</output><input id="wordSearchSeedNumber" class="word-search-number-input" type="number" min="1" max="99999" value="1"></label>
+          <button class="word-search-button word-search-button-secondary" id="wordSearchRandomize" type="button">Losuj nowy układ</button>
+        </fieldset>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Dekoracje opcjonalne</legend>
+          <label class="word-search-field"><span>Assety DECO SVG/PNG</span><input id="wordSearchDecoFiles" type="file" accept="image/png,image/svg+xml,.png,.svg" multiple></label>
+          <div id="wordSearchDecoList" class="word-search-deco-list"><p>Brak dekoracji.</p></div>
+          <label class="word-search-range-field"><span>Liczba dekoracji</span><input id="wordSearchDecoCount" type="range" min="0" max="4" value="0"><output id="wordSearchDecoCountValue">0</output><input id="wordSearchDecoCountNumber" class="word-search-number-input" type="number" min="0" max="4" value="0"></label>
+          <label class="word-search-range-field"><span>Skala dekoracji</span><input id="wordSearchDecoScale" type="range" min="10" max="30" value="18"><output id="wordSearchDecoScaleValue">18%</output><input id="wordSearchDecoScaleNumber" class="word-search-number-input" type="number" min="10" max="30" value="18"></label>
+          <button class="word-search-button word-search-button-danger" id="wordSearchClearDeco" type="button">Wyczyść dekoracje</button>
+        </fieldset>
+      </aside>
+
+      <article class="word-search-card word-search-preview-card">
+        <div class="word-search-preview-top">
+          <div class="word-search-section-heading"><h2>Podgląd strony</h2><p>Format roboczy 8.5×11. Eksport tworzy PNG 2550×3300 px.</p></div>
+          <div class="word-search-active-summary"><span id="wordSearchPreviewSummary">14×14 · Medium</span><strong id="wordSearchPlacedSummary">0 słów</strong></div>
+        </div>
+        <div class="word-search-preview-switch" role="group" aria-label="Tryb podglądu">
+          <button id="wordSearchPreviewPuzzle" class="is-active" type="button">Zadanie</button>
+          <button id="wordSearchPreviewSolution" type="button">Rozwiązanie</button>
+        </div>
+        <div class="word-search-page-preview"><canvas id="wordSearchPreviewCanvas" width="765" height="990" aria-label="Podgląd wykreślanki"></canvas></div>
+        <p class="word-search-message" id="wordSearchMessage">Wykreślanka jest gotowa.</p>
+      </article>
+
+      <aside class="word-search-card word-search-export-panel">
+        <div class="word-search-section-heading"><h2>Wygląd i eksport</h2><p>Strona zadania oraz rozwiązanie mogą być dodawane oddzielnie.</p></div>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Wygląd strony</legend>
+          <label class="word-search-range-field"><span>Wielkość liter</span><input id="wordSearchLetterScale" type="range" min="65" max="110" value="92"><output id="wordSearchLetterScaleValue">92%</output><input id="wordSearchLetterScaleNumber" class="word-search-number-input" type="number" min="65" max="110" value="92"></label>
+          <label class="word-search-range-field"><span>Grubość ramki siatki</span><input id="wordSearchGridLine" type="range" min="1" max="8" value="3"><output id="wordSearchGridLineValue">3 px</output><input id="wordSearchGridLineNumber" class="word-search-number-input" type="number" min="1" max="8" value="3"></label>
+          <label class="word-search-check-field"><input id="wordSearchShowGridCells" type="checkbox" checked><span>Pokaż linie między polami</span></label>
+          <label class="word-search-field"><span>Kolumny listy słów</span><select id="wordSearchWordColumns"><option value="2" selected>2 kolumny</option><option value="3">3 kolumny</option><option value="4">4 kolumny</option></select></label>
+        </fieldset>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Warianty</legend>
+          <label class="word-search-range-field"><span>Liczba wariantów</span><input id="wordSearchVariantCount" type="range" min="1" max="20" value="5"><output id="wordSearchVariantCountValue">5</output><input id="wordSearchVariantCountNumber" class="word-search-number-input" type="number" min="1" max="20" value="5"></label>
+          <label class="word-search-check-field"><input id="wordSearchVariantsIncludeSolutions" type="checkbox"><span>Do wariantów dodawaj też rozwiązania</span></label>
+        </fieldset>
+
+        <fieldset class="word-search-settings-group">
+          <legend>Eksport / Koszyk</legend>
+          <div class="word-search-actions">
+            <button class="word-search-button" id="wordSearchRefreshPreview" type="button">Odśwież podgląd</button>
+            <button class="word-search-button word-search-button-secondary" id="wordSearchExportPng" type="button">Eksportuj widoczną stronę PNG</button>
+            <button class="word-search-button word-search-button-secondary" id="wordSearchAddPuzzleToBasket" type="button">Dodaj zadanie do Koszyka</button>
+            <button class="word-search-button word-search-button-secondary" id="wordSearchAddSolutionToBasket" type="button">Dodaj rozwiązanie do Koszyka</button>
+            <button class="word-search-button word-search-button-secondary" id="wordSearchAddVariantsToBasket" type="button">Dodaj warianty do Koszyka</button>
+            <button class="word-search-button word-search-button-success" id="wordSearchUpdateBasketPage" type="button" hidden>Aktualizuj edytowaną stronę w Koszyku</button>
+          </div>
+        </fieldset>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../shared/fenix-basket-status.js"></script>
+  <script src="word-search-studio.js"></script>
+</body>
+</html>

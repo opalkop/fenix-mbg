@@ -29,13 +29,30 @@
       <div>
         <span class="fenix-eyebrow">ETAP 2 / ORGANIZACJA</span>
         <h2>Strony projektu</h2>
-        <p>Sprawdź strony, usuń zbędne elementy i przekaż gotowy zestaw do składania książki.</p>
+        <p>Podglądaj strony, zmieniaj kolejność, wracaj do edycji i przygotuj komplet do Book Buildera.</p>
       </div>
       <div class="basket-toolbar-actions">
         <button id="refreshBasket" class="fenix-secondary-button" type="button">Odśwież</button>
         <button id="clearBasket" class="fenix-danger-button" type="button">Wyczyść koszyk</button>
         <a class="fenix-module-link" href="mbg.html">Przejdź do Book Buildera →</a>
       </div>
+    </section>
+
+    <section class="basket-transfer" aria-labelledby="basketTransferHeading">
+      <div class="basket-transfer-copy">
+        <span class="fenix-eyebrow">BACKUP / PRACA NA INNYM PC</span>
+        <h2 id="basketTransferHeading">Zapis i przywracanie projektu</h2>
+        <p>Plik <strong>.fenixbasket</strong> zawiera gotowe PNG stron, kolejność oraz dostępne dane edycyjne modułów.</p>
+      </div>
+      <div class="basket-transfer-controls">
+        <label class="basket-field"><span>Nazwa projektu</span><input id="basketProjectName" type="text" value="ocean-activity-book" maxlength="80"></label>
+        <button id="exportBasket" class="fenix-primary-button" type="button">Eksportuj .fenixbasket</button>
+        <label class="basket-file-button" for="importBasketFile">Wybierz plik .fenixbasket</label>
+        <input id="importBasketFile" type="file" accept=".fenixbasket,.json,application/json" hidden>
+        <label class="basket-field"><span>Tryb importu</span><select id="importBasketMode"><option value="replace">Zastąp obecny koszyk</option><option value="append">Dołącz do obecnego koszyka</option></select></label>
+        <button id="importBasket" class="fenix-secondary-button" type="button" disabled>Importuj projekt</button>
+      </div>
+      <p id="basketTransferStatus" class="basket-transfer-status" aria-live="polite">Gotowe. Najpierw wyeksportuj bieżący koszyk jako kopię bezpieczeństwa.</p>
     </section>
 
     <section class="basket-summary" aria-live="polite">
@@ -51,6 +68,17 @@
 
     <section id="basketGrid" class="basket-grid" aria-label="Strony w Koszyku Feniksa"></section>
   </main>
+
+  <div id="basketPreviewModal" class="basket-preview-modal" hidden>
+    <div class="basket-preview-backdrop" data-preview-close></div>
+    <section class="basket-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="basketPreviewTitle">
+      <header class="basket-preview-header">
+        <div><span class="fenix-eyebrow">PODGLĄD STRONY</span><h2 id="basketPreviewTitle">Strona</h2><p id="basketPreviewMeta"></p></div>
+        <button id="basketPreviewClose" class="fenix-secondary-button" type="button">Zamknij</button>
+      </header>
+      <div class="basket-preview-stage"><img id="basketPreviewImage" alt="Pełny podgląd strony z Koszyka Feniksa"></div>
+    </section>
+  </div>
 
   <script src="shared/fenix-basket-status.js"></script>
   <script src="shared/fenix-basket-manager.js"></script>

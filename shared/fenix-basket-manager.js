@@ -8,7 +8,8 @@
   const FORMAT_VERSION=1;
   const EDIT_MODULES={
     "complete-picture":"modules/complete-picture/complete-picture.html",
-    "coloring-studio":"modules/coloring-studio/coloring-studio.html"
+    "coloring-studio":"modules/coloring-studio/coloring-studio.html",
+    "word-search-studio":"modules/word-search-studio/word-search-studio.html"
   };
   const state={pages:[],objectUrls:new Set(),previewUrl:"",importFile:null};
 

@@ -135,4 +135,17 @@
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) refreshFenixBasketStatusWidgets();
   });
+
+  function loadBookBuilderFixes() {
+    if (!document.getElementById("includeShapeTracerPages") || document.getElementById("mbgBookBuilderFixLoader")) return;
+    const script = document.createElement("script");
+    script.id = "mbgBookBuilderFixLoader";
+    script.src = "shared/mbg-book-builder-fixes.js?v=20260729-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    window.setTimeout(loadBookBuilderFixes, 0);
+  });
 })();

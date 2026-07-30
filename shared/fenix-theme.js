@@ -52,15 +52,32 @@
     return mode;
   }
 
-  function ensureThemeStylesheet() {
-    if (document.querySelector('link[data-fenix-theme-styles]')) return;
+  function stylesheetUrl(relativePath, fallbackPath) {
+    return ownScript && ownScript.src
+      ? new URL(relativePath, ownScript.src).href
+      : fallbackPath;
+  }
+
+  function ensureStylesheet(attributeName, relativePath, fallbackPath) {
+    if (document.querySelector("link[" + attributeName + "]")) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.dataset.fenixThemeStyles = "true";
-    link.href = ownScript && ownScript.src
-      ? new URL("../styles/fenix-theme.css?v=20260730-2", ownScript.src).href
-      : "styles/fenix-theme.css?v=20260730-2";
+    link.setAttribute(attributeName, "true");
+    link.href = stylesheetUrl(relativePath, fallbackPath);
     document.head.appendChild(link);
+  }
+
+  function ensureThemeStylesheets() {
+    ensureStylesheet(
+      "data-fenix-theme-styles",
+      "../styles/fenix-theme.css?v=20260730-3",
+      "styles/fenix-theme.css?v=20260730-3"
+    );
+    ensureStylesheet(
+      "data-fenix-bp-ui-styles",
+      "../styles/fenix-bp-ui.css?v=20260730-1",
+      "styles/fenix-bp-ui.css?v=20260730-1"
+    );
   }
 
   function updateControls(mode) {
@@ -100,6 +117,7 @@
       "[class$='-studio-header-actions']",
       "[class$='-header-actions']",
       ".ag-nav",
+      ".hero-identity",
       ".hero-badges",
       ".fenix-launcher-header",
       "body > header",
@@ -145,12 +163,12 @@
   }
 
   function initialize() {
-    ensureThemeStylesheet();
+    ensureThemeStylesheets();
     applyTheme(safeReadMode(), { persist: false });
     createThemeControl();
   }
 
-  ensureThemeStylesheet();
+  ensureThemeStylesheets();
   applyTheme(safeReadMode(), { persist: false });
 
   if (document.readyState === "loading") {

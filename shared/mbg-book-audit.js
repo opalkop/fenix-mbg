@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "2026.07.30-4";
+  const VERSION = "2026.07.30-5";
   const SOURCE_LABELS = {
     "complete-picture": "Complete the Picture",
     "coloring-studio": "Coloring Studio",
@@ -50,6 +50,10 @@
     return !!(page && (page.blob || page.dataUrl));
   }
 
+  function runtimeMbg() {
+    return window.MBG && typeof window.MBG === "object" ? window.MBG : null;
+  }
+
   function coloringAssetCount(settings) {
     try {
       if (typeof window.getColoringSourceAssets === "function") {
@@ -63,7 +67,13 @@
   }
 
   function qrAssetCount() {
-    return window.MBG && Array.isArray(window.MBG.qrAssets) ? window.MBG.qrAssets.length : 0;
+    const mbg = runtimeMbg();
+    return mbg && Array.isArray(mbg.qrAssets) ? mbg.qrAssets.length : 0;
+  }
+
+  function hasCreatorMark() {
+    const mbg = runtimeMbg();
+    return !!(mbg && mbg.assets && mbg.assets.creatorMark);
   }
 
   function pageCategory(page) {
@@ -91,14 +101,24 @@
       blank: page.role === "certificate-blank-back" ? "Pusta strona za certyfikatem" : "Pusta strona"
     };
 
-    return { key: page.type || "unknown", label: fixed[page.type] || ("Inny typ: " + (page.type || "brak")) };
+    return {
+      key: page.type || "unknown",
+      label: fixed[page.type] || ("Inny typ: " + (page.type || "brak"))
+    };
   }
 
-  function shouldSkipPlanPage(page, settings) {
-    if (page.type === "coloring" && coloringAssetCount(settings) === 0) {
-      return "Legacy coloring jest włączone, ale nie ma zgodnych assetów — eksport pominie te strony.";
+  function createRenderContext(settings) {
+    return {
+      legacyColoringAssets: coloringAssetCount(settings),
+      qrAssets: qrAssetCount()
+    };
+  }
+
+  function skipReasonForPage(page, context) {
+    if (page.type === "coloring" && context.legacyColoringAssets === 0) {
+      return "Legacy coloring jest włączone, ale nie ma zgodnych assetów — eksport pominie cały ten blok.";
     }
-    if (page.type === "qr" && qrAssetCount() === 0) {
+    if (page.type === "qr" && context.qrAssets === 0) {
       return "Strona QR jest włączona, ale nie wczytano assetu QR — eksport ją pominie.";
     }
     if (page.type === "fenix_basket_page" && !hasRenderableBasketImage(page)) {
@@ -109,12 +129,13 @@
 
   function simulatePhysicalPdf(settings) {
     const rawPlan = typeof window.buildBookPagePlan === "function" ? (window.buildBookPagePlan(settings) || []) : [];
+    const context = createRenderContext(settings);
     const effective = [];
     const skipped = [];
     let pdfPageCount = 0;
 
     rawPlan.forEach(function (page) {
-      const skipReason = shouldSkipPlanPage(page, settings);
+      const skipReason = skipReasonForPage(page, context);
       if (skipReason) {
         skipped.push({ page: page, reason: skipReason });
         return;
@@ -134,7 +155,13 @@
       effective.push(Object.assign({}, page, { pageNumber: pdfPageCount }));
     });
 
-    return { rawPlan: rawPlan, effective: effective, skipped: skipped, total: pdfPageCount };
+    return {
+      rawPlan: rawPlan,
+      effective: effective,
+      skipped: skipped,
+      total: pdfPageCount,
+      context: context
+    };
   }
 
   function formatRanges(numbers) {
@@ -160,18 +187,29 @@
   function collectRows(effectivePlan) {
     const rows = new Map();
     effectivePlan.forEach(function (page) {
-      let category;
-      if (page.auditAutoInserted) {
-        category = { key: "blank:auto-before-certificate", label: "Automatyczna pusta przed certyfikatem" };
-      } else {
-        category = pageCategory(page);
-      }
+      const category = page.auditAutoInserted
+        ? { key: "blank:auto-before-certificate", label: "Automatyczna pusta przed certyfikatem" }
+        : pageCategory(page);
       if (!rows.has(category.key)) rows.set(category.key, { label: category.label, count: 0, pages: [] });
       const row = rows.get(category.key);
       row.count += 1;
       row.pages.push(page.pageNumber);
     });
     return Array.from(rows.values());
+  }
+
+  function pagePairId(page) {
+    return page.wordSearchPairId || (page.editSnapshot && page.editSnapshot.wordSearchPairId) || "";
+  }
+
+  function pagePairSeed(page) {
+    if (page.wordSearchPairSeed !== undefined) return page.wordSearchPairSeed;
+    if (page.editSnapshot && page.editSnapshot.wordSearchPairSeed !== undefined) return page.editSnapshot.wordSearchPairSeed;
+    return page.editSnapshot && page.editSnapshot.settings ? page.editSnapshot.settings.seed : undefined;
+  }
+
+  function pagePartnerId(page) {
+    return page.wordSearchPartnerId || (page.editSnapshot && page.editSnapshot.wordSearchPartnerId) || "";
   }
 
   function auditWordSearchPages(pages) {
@@ -184,7 +222,7 @@
 
     included.forEach(function (page) {
       const role = isSolutionPage(page) ? "solution" : "puzzle";
-      const pairId = page.wordSearchPairId || (page.editSnapshot && page.editSnapshot.wordSearchPairId) || "";
+      const pairId = pagePairId(page);
       if (!pairId) {
         if (role === "solution") unpairedSolutions += 1;
         else unpairedPuzzles += 1;
@@ -197,9 +235,22 @@
     let validPairs = 0;
     let orphanPairs = 0;
     let duplicatePairRoles = 0;
+    let seedMismatches = 0;
+    let brokenPartnerLinks = 0;
+
     pairs.forEach(function (pair) {
-      if (pair.puzzles.length === 1 && pair.solutions.length === 1) validPairs += 1;
-      else {
+      if (pair.puzzles.length === 1 && pair.solutions.length === 1) {
+        const puzzle = pair.puzzles[0];
+        const solution = pair.solutions[0];
+        const puzzleSeed = pagePairSeed(puzzle);
+        const solutionSeed = pagePairSeed(solution);
+        const seedsMatch = puzzleSeed === undefined || solutionSeed === undefined || String(puzzleSeed) === String(solutionSeed);
+        const linksMatch = (!pagePartnerId(puzzle) || pagePartnerId(puzzle) === solution.id) &&
+          (!pagePartnerId(solution) || pagePartnerId(solution) === puzzle.id);
+        if (!seedsMatch) seedMismatches += 1;
+        if (!linksMatch) brokenPartnerLinks += 1;
+        if (seedsMatch && linksMatch) validPairs += 1;
+      } else {
         orphanPairs += 1;
         if (pair.puzzles.length > 1 || pair.solutions.length > 1) duplicatePairRoles += 1;
       }
@@ -212,12 +263,20 @@
       orphanPairs: orphanPairs,
       duplicatePairRoles: duplicatePairRoles,
       unpairedPuzzles: unpairedPuzzles,
-      unpairedSolutions: unpairedSolutions
+      unpairedSolutions: unpairedSolutions,
+      seedMismatches: seedMismatches,
+      brokenPartnerLinks: brokenPartnerLinks
     };
   }
 
+  function hasBasketSource(pages, sourceModule) {
+    return pages.some(function (page) {
+      return page.includeInBook !== false && page.sourceModule === sourceModule && !isSolutionPage(page);
+    });
+  }
+
   function buildWarnings(settings, simulation, basketPages, wordSearchAudit) {
-    const warnings = [];
+    const warnings = new Set();
     const includedBasket = basketPages.filter(function (page) { return page.includeInBook !== false; });
     const includedSolutions = includedBasket.filter(isSolutionPage);
     const ids = new Set();
@@ -229,16 +288,32 @@
       ids.add(page.id);
     });
 
-    simulation.skipped.forEach(function (item) { warnings.push(item.reason); });
-    if (duplicateIds.size) warnings.push("Koszyk zawiera powtórzone identyfikatory stron: " + duplicateIds.size + ".");
-    if (!settings.fenixBasketEnabled && includedBasket.length) warnings.push("Koszyk ma " + includedBasket.length + " włączonych stron, ale blok Koszyka w Book Builderze jest wyłączony.");
-    if (!settings.includeSolutions && includedSolutions.length) warnings.push("Koszyk ma " + includedSolutions.length + " stron rozwiązań, ale globalny przełącznik rozwiązań jest wyłączony.");
-    if (wordSearchAudit.unpairedPuzzles) warnings.push("Word Search: " + wordSearchAudit.unpairedPuzzles + " zadanie/zadania nie mają identyfikatora pary 1:1.");
-    if (wordSearchAudit.unpairedSolutions) warnings.push("Word Search: " + wordSearchAudit.unpairedSolutions + " rozwiązanie/rozwiązania nie mają identyfikatora pary 1:1.");
-    if (wordSearchAudit.orphanPairs) warnings.push("Word Search: " + wordSearchAudit.orphanPairs + " para/pary są niekompletne albo niejednoznaczne.");
-    if (wordSearchAudit.duplicatePairRoles) warnings.push("Word Search: wykryto więcej niż jedno zadanie lub rozwiązanie z tym samym identyfikatorem pary.");
+    simulation.skipped.forEach(function (item) { warnings.add(item.reason); });
+    if (duplicateIds.size) warnings.add("Koszyk zawiera powtórzone identyfikatory stron: " + duplicateIds.size + ".");
+    if (!settings.fenixBasketEnabled && includedBasket.length) warnings.add("Koszyk ma " + includedBasket.length + " włączonych stron, ale blok Koszyka w Book Builderze jest wyłączony.");
+    if (!settings.includeSolutions && includedSolutions.length) warnings.add("Koszyk ma " + includedSolutions.length + " stron rozwiązań, ale globalny przełącznik rozwiązań jest wyłączony.");
 
-    return warnings;
+    if (wordSearchAudit.unpairedPuzzles) warnings.add("Word Search: " + wordSearchAudit.unpairedPuzzles + " zadanie/zadania nie mają identyfikatora pary 1:1.");
+    if (wordSearchAudit.unpairedSolutions) warnings.add("Word Search: " + wordSearchAudit.unpairedSolutions + " rozwiązanie/rozwiązania nie mają identyfikatora pary 1:1.");
+    if (wordSearchAudit.orphanPairs) warnings.add("Word Search: " + wordSearchAudit.orphanPairs + " para/pary są niekompletne albo niejednoznaczne.");
+    if (wordSearchAudit.duplicatePairRoles) warnings.add("Word Search: wykryto więcej niż jedno zadanie lub rozwiązanie z tym samym identyfikatorem pary.");
+    if (wordSearchAudit.seedMismatches) warnings.add("Word Search: " + wordSearchAudit.seedMismatches + " para/pary mają różne seedy zadania i rozwiązania.");
+    if (wordSearchAudit.brokenPartnerLinks) warnings.add("Word Search: " + wordSearchAudit.brokenPartnerLinks + " para/pary mają niespójne odnośniki między zadaniem a rozwiązaniem.");
+
+    const mazeCount = Number(settings.mazeCount || 0);
+    const trackerFooter = String(settings.missionTrackerFooter || "");
+    const trackerNumber = trackerFooter.match(/\b(\d+)\b/);
+    if (settings.includeMissionTracker && settings.missionTrackerUseAutoCount && trackerNumber && Number(trackerNumber[1]) !== mazeCount) {
+      warnings.add("Tracker ma " + mazeCount + " gwiazdek, ale tekst stopki mówi o " + trackerNumber[1] + ".");
+    }
+    if (/\bcount\b/i.test(String(settings.howToLines || "")) && !hasBasketSource(basketPages, "math-studio")) {
+      warnings.add("Instrukcja zawiera słowo „count”, ale w Koszyku nie ma zadań z Math Studio.");
+    }
+    if (settings.certificateUseCreatorMark && !hasCreatorMark()) {
+      warnings.add("Znak autora jest włączony, ale nie wczytano grafiki podpisu / Creator Mark.");
+    }
+
+    return Array.from(warnings);
   }
 
   function ensurePanel() {
@@ -281,7 +356,7 @@
     const title = document.createElement("strong");
     title.textContent = "Planowana książka: " + simulation.total + " stron";
     const subtitle = document.createElement("p");
-    subtitle.textContent = "Bilans uwzględnia kolejność, strony z Koszyka, rozwiązania, pomijane elementy oraz automatyczną pustą stronę przed certyfikatem.";
+    subtitle.textContent = "Bilans pokazuje faktyczną kolejność, numery stron, pomijane elementy oraz obie strony techniczne certyfikatu.";
     titleWrap.append(eyebrow, title, subtitle);
     const status = document.createElement("span");
     status.className = "mbg-book-audit-status";
@@ -316,8 +391,8 @@
 
     const meta = document.createElement("div");
     meta.className = "mbg-book-audit-meta";
-    meta.innerHTML = "<strong>Koszyk:</strong> " + includedBasket + " włączonych · " + excludedBasket + " wyłączonych" +
-      " <span>•</span> <strong>Word Search:</strong> " + wordSearchAudit.puzzles + " zadań · " + wordSearchAudit.solutions + " rozwiązań · " + wordSearchAudit.validPairs + " poprawnych par 1:1";
+    meta.innerHTML = "<strong>Koszyk zapisany:</strong> " + includedBasket + " włączonych · " + excludedBasket + " wyłączonych" +
+      " <span>•</span> <strong>Word Search w Koszyku:</strong> " + wordSearchAudit.puzzles + " zadań · " + wordSearchAudit.solutions + " rozwiązań · " + wordSearchAudit.validPairs + " poprawnych par 1:1";
     panel.appendChild(meta);
 
     const total = document.createElement("div");
@@ -352,7 +427,7 @@
     const style = document.createElement("style");
     style.id = "mbgBookAuditStyles";
     style.textContent = [
-      "#mbgFinalPlanSummary,#mbgQaConsistencyPanel{display:none!important}",
+      "#mbgFinalPlanSummary,#mbgQaConsistencyPanel,#mbgFixVersionBadge,#mbgQaFixVersionBadge,#wordSearchOrderFixBadge{display:none!important}",
       ".mbg-book-audit-panel{margin:0 0 18px;padding:18px;border:1px solid rgba(70,220,160,.48);border-left:5px solid rgba(70,220,160,.92);border-radius:14px;background:linear-gradient(180deg,rgba(20,63,54,.70),rgba(11,25,31,.96));color:#effff8;box-shadow:0 16px 36px rgba(0,0,0,.24)}",
       ".mbg-book-audit-panel.has-warning{border-color:rgba(255,190,98,.60);border-left-color:#ffc46d;background:linear-gradient(180deg,rgba(78,52,24,.72),rgba(28,24,24,.97))}",
       ".mbg-book-audit-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}",

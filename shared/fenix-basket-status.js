@@ -34,8 +34,22 @@
     document.head.appendChild(script);
   }
 
+  function loadMazeStudioWorkspace() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    if (new URLSearchParams(window.location.search).get("fenixMode") !== "maze-studio") return;
+    if (document.getElementById("mazeStudioWorkspaceLoader")) return;
+    const script = document.createElement("script");
+    script.id = "mazeStudioWorkspaceLoader";
+    script.src = CURRENT_SCRIPT_URL
+      ? new URL("maze-studio-workspace.js?v=20260730-1", CURRENT_SCRIPT_URL).href
+      : "shared/maze-studio-workspace.js?v=20260730-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
   loadSharedTheme();
   loadMbgModeSplitSynchronously();
+  loadMazeStudioWorkspace();
 
   function openBasketDb() {
     return new Promise(function (resolve, reject) {

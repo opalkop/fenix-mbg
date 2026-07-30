@@ -2,7 +2,19 @@
   "use strict";
 
   if (window.FenixMbgMode === "maze-studio" || new URLSearchParams(location.search).get("fenixMode") === "maze-studio") return;
+  const ownScript = document.currentScript;
   let attempts = 0;
+
+  function loadBookBuilderWorkspace() {
+    if (document.getElementById("bookBuilderWorkspaceLoader")) return;
+    const script = document.createElement("script");
+    script.id = "bookBuilderWorkspaceLoader";
+    script.src = ownScript && ownScript.src
+      ? new URL("book-builder-workspace.js?v=20260730-1", ownScript.src).href
+      : "shared/book-builder-workspace.js?v=20260730-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
 
   function isBasketSolution(page) {
     return !!(page && page.type === "fenix_basket_page" && (page.bookSection === "solutions" || page.isSolution === true));
@@ -94,7 +106,7 @@
         const banner = document.createElement("section");
         banner.id = "mbgBasketOnlyBanner";
         banner.className = "warning";
-        banner.innerHTML = '<strong>Book Builder = skład książki.</strong> Labirynty i rozwiązania 1:1 twórz w <a href="modules/maze-studio/maze-studio.html">Maze Studio</a>. Tutaj trafiają wyłącznie gotowe strony z Koszyka Feniksa.';
+        banner.innerHTML = "<strong>Book Builder = skład książki.</strong> Labirynty i rozwiązania 1:1 przygotuj wcześniej w Maze Studio. Tutaj trafiają wyłącznie gotowe strony z Koszyka Feniksa.";
         workflow.insertAdjacentElement("afterend", banner);
       }
     }
@@ -114,5 +126,6 @@
     if (window.FenixBookAudit && window.FenixBookAudit.refresh) window.FenixBookAudit.refresh();
     console.info("FENIX Book Builder: tryb składania wyłącznie z Koszyka aktywny.");
   }
+  loadBookBuilderWorkspace();
   install();
 })();

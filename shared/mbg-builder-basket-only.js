@@ -57,6 +57,11 @@
     window.readSettings = patched;
   }
   function cleanupUi() {
+    document.title = "Book Builder — Fenix";
+    const heading = document.querySelector("header h1");
+    if (heading) heading.textContent = "Book Builder";
+    const assetGroup = document.querySelector(".group-assets");
+    if (assetGroup) assetGroup.hidden = true;
     const activeBlocks = document.querySelector(".active-book-blocks");
     if (activeBlocks) activeBlocks.hidden = true;
     const basketControl = document.getElementById("fenixBasketEnabled");
@@ -76,6 +81,13 @@
       if (mazeOnly) mazeOnly.remove();
       if (previewType.value === "maze-only") previewType.value = "mixed";
     }
+    const generateBox = document.querySelector(".generate-box");
+    if (generateBox) {
+      const firstParagraph = generateBox.querySelector("p:not(#statusText)");
+      if (firstParagraph) firstParagraph.textContent = "Sprawdź bilans stron w audycie, a następnie wygeneruj finalny PDF.";
+    }
+    const exportDescription = document.querySelector(".group-output .card .note");
+    if (exportDescription) exportDescription.textContent = "Eksport PDF składa strony początkowe, gotowe strony z Koszyka oraz wybrane strony końcowe.";
     if (!document.getElementById("mbgBasketOnlyBanner")) {
       const workflow = document.querySelector(".book-builder-workflow");
       if (workflow && workflow.parentElement) {

@@ -10,8 +10,8 @@
     const script = document.createElement("script");
     script.id = "bookBuilderWorkspaceLoader";
     script.src = ownScript && ownScript.src
-      ? new URL("book-builder-workspace.js?v=20260730-1", ownScript.src).href
-      : "shared/book-builder-workspace.js?v=20260730-1";
+      ? new URL("book-builder-workspace.js?v=20260730-2", ownScript.src).href
+      : "shared/book-builder-workspace.js?v=20260730-2";
     script.defer = true;
     document.head.appendChild(script);
   }
@@ -75,7 +75,7 @@
     const assetGroup = document.querySelector(".group-assets");
     if (assetGroup) assetGroup.hidden = true;
     const activeBlocks = document.querySelector(".active-book-blocks");
-    if (activeBlocks) activeBlocks.hidden = true;
+    if (activeBlocks) activeBlocks.hidden = false;
     const basketControl = document.getElementById("fenixBasketEnabled");
     if (basketControl) {
       basketControl.value = "true";

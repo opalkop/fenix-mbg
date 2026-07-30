@@ -203,7 +203,7 @@
       appendScript("mbgBookBuilderFixLoader", "shared/mbg-book-builder-fixes.js?v=20260729-1", function () {
         appendScript("mbgBookBuilderQaFixLoader", "shared/mbg-book-builder-qa-fixes.js?v=20260730-2", function () {
           appendScript("mbgWordSearchOrderFixLoader", "shared/mbg-word-search-order-fix.js?v=20260730-4", function () {
-            appendScript("mbgBuilderBasketOnlyLoader", "shared/mbg-builder-basket-only.js?v=20260730-1", function () {
+            appendScript("mbgBuilderBasketOnlyLoader", "shared/mbg-builder-basket-only.js?v=20260730-2", function () {
               appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-5", function () {
                 appendScript("mbgMazeAuditLoader", "shared/mbg-maze-audit.js?v=20260730-1");
               });

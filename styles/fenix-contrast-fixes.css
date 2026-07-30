@@ -1,0 +1,53 @@
+/* Final contrast safeguards for controls placed on dark Fenix headers and disabled actions. */
+
+html[data-fenix-theme] .fenix-theme-control .fenix-theme-label {
+  color: #dff7ff !important;
+  -webkit-text-fill-color: #dff7ff !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html[data-fenix-theme] .fenix-theme-control .fenix-theme-current {
+  color: #d5e4f2 !important;
+  -webkit-text-fill-color: #d5e4f2 !important;
+  opacity: 1 !important;
+}
+
+html[data-fenix-theme] .fenix-danger-button,
+html[data-fenix-theme] .basket-card-actions .is-danger {
+  border-color: #8f222b !important;
+  background: #b52b35 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+html[data-fenix-theme] .fenix-danger-button:hover:not(:disabled),
+html[data-fenix-theme] .basket-card-actions .is-danger:hover:not(:disabled) {
+  border-color: #741820 !important;
+  background: #92212a !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html[data-fenix-theme="light"] button:disabled,
+html[data-fenix-theme="light"] .fenix-danger-button:disabled {
+  border-color: #b9c4d1 !important;
+  background: #e5eaf0 !important;
+  color: #4b5868 !important;
+  -webkit-text-fill-color: #4b5868 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+html[data-fenix-theme="dark"] button:disabled,
+html[data-fenix-theme="dark"] .fenix-danger-button:disabled {
+  border-color: #4d5b6d !important;
+  background: #283342 !important;
+  color: #b9c6d6 !important;
+  -webkit-text-fill-color: #b9c6d6 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}

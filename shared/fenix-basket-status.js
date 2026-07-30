@@ -1,9 +1,23 @@
 (function () {
   "use strict";
 
+  const CURRENT_SCRIPT_URL = document.currentScript && document.currentScript.src ? document.currentScript.src : "";
   const DB_NAME = "fenixBookBasketDb";
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
+
+  function loadSharedTheme() {
+    if (document.getElementById("fenixSharedThemeLoader")) return;
+    const script = document.createElement("script");
+    script.id = "fenixSharedThemeLoader";
+    script.src = CURRENT_SCRIPT_URL
+      ? new URL("fenix-theme.js?v=20260730-1", CURRENT_SCRIPT_URL).href
+      : "shared/fenix-theme.js?v=20260730-1";
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
+  loadSharedTheme();
 
   function openBasketDb() {
     return new Promise(function (resolve, reject) {

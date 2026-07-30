@@ -1,9 +1,55 @@
 (function () {
   "use strict";
 
+  const CURRENT_SCRIPT_URL = document.currentScript && document.currentScript.src ? document.currentScript.src : "";
   const DB_NAME = "fenixBookBasketDb";
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
+
+  function loadSharedTheme() {
+    if (document.getElementById("fenixSharedThemeLoader")) return;
+    const script = document.createElement("script");
+    script.id = "fenixSharedThemeLoader";
+    script.src = CURRENT_SCRIPT_URL
+      ? new URL("fenix-theme.js?v=20260730-2", CURRENT_SCRIPT_URL).href
+      : "shared/fenix-theme.js?v=20260730-2";
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
+  function loadMbgModeSplitSynchronously() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    if (document.getElementById("mbgModeSplitLoader")) return;
+    const src = CURRENT_SCRIPT_URL
+      ? new URL("mbg-mode-split.js?v=20260730-1", CURRENT_SCRIPT_URL).href
+      : "shared/mbg-mode-split.js?v=20260730-1";
+    if (document.readyState === "loading") {
+      document.write('<script id="mbgModeSplitLoader" src="' + src.replace(/"/g, "&quot;") + '"><\/script>');
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "mbgModeSplitLoader";
+    script.src = src;
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
+  function loadMazeStudioWorkspace() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    if (new URLSearchParams(window.location.search).get("fenixMode") !== "maze-studio") return;
+    if (document.getElementById("mazeStudioWorkspaceLoader")) return;
+    const script = document.createElement("script");
+    script.id = "mazeStudioWorkspaceLoader";
+    script.src = CURRENT_SCRIPT_URL
+      ? new URL("maze-studio-workspace.js?v=20260730-1", CURRENT_SCRIPT_URL).href
+      : "shared/maze-studio-workspace.js?v=20260730-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  loadSharedTheme();
+  loadMbgModeSplitSynchronously();
+  loadMazeStudioWorkspace();
 
   function openBasketDb() {
     return new Promise(function (resolve, reject) {
@@ -29,6 +75,7 @@
   }
 
   function getSourceLabel(sourceModule) {
+    if (sourceModule === "maze-studio") return "Maze Studio";
     if (sourceModule === "complete-picture") return "Complete the Picture";
     if (sourceModule === "coloring-studio") return "Coloring Studio";
     if (sourceModule === "tracing-studio") return "Tracing Studio";
@@ -134,5 +181,40 @@
   window.addEventListener("focus", refreshFenixBasketStatusWidgets);
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) refreshFenixBasketStatusWidgets();
+  });
+
+  function appendScript(id, src, onload) {
+    if (document.getElementById(id)) {
+      if (onload) onload();
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = src;
+    script.defer = true;
+    if (onload) script.addEventListener("load", onload, { once: true });
+    document.head.appendChild(script);
+  }
+
+  function loadBookBuilderFixes() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    if (window.FenixMbgMode === "maze-studio") return;
+    appendScript("mbgGlobalBridgeLoader", "shared/mbg-global-bridge.js?v=20260730-1", function () {
+      appendScript("mbgBookBuilderFixLoader", "shared/mbg-book-builder-fixes.js?v=20260729-1", function () {
+        appendScript("mbgBookBuilderQaFixLoader", "shared/mbg-book-builder-qa-fixes.js?v=20260730-2", function () {
+          appendScript("mbgWordSearchOrderFixLoader", "shared/mbg-word-search-order-fix.js?v=20260730-4", function () {
+            appendScript("mbgBuilderBasketOnlyLoader", "shared/mbg-builder-basket-only.js?v=20260730-2", function () {
+              appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-5", function () {
+                appendScript("mbgMazeAuditLoader", "shared/mbg-maze-audit.js?v=20260730-1");
+              });
+            });
+          });
+        });
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    window.setTimeout(loadBookBuilderFixes, 0);
   });
 })();

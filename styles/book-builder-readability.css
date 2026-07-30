@@ -1,0 +1,435 @@
+/* Book Builder readability pass — clearer overview, basket contents and audit warnings. */
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 {
+  --bb-strong-ink: #172033;
+  --bb-soft-ink: #46566b;
+  --bb-panel-tint: #f6f9fc;
+  --bb-info-bg: #eaf7fa;
+  --bb-info-line: #8ec9d5;
+  --bb-success-bg: #e8f6ee;
+  --bb-success-ink: #17623a;
+  --bb-warning-bg: #fff4e5;
+  --bb-warning-line: #e78a2f;
+  --bb-warning-ink: #7a3508;
+}
+
+html[data-fenix-theme="dark"] body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 {
+  --bb-strong-ink: #f8fafc;
+  --bb-soft-ink: #c3cfdd;
+  --bb-panel-tint: #1a2636;
+  --bb-info-bg: #17303a;
+  --bb-info-line: #4b8290;
+  --bb-success-bg: #173a2a;
+  --bb-success-ink: #a9edc5;
+  --bb-warning-bg: #3a2818;
+  --bb-warning-line: #d58a39;
+  --bb-warning-ink: #ffe0b6;
+}
+
+/* WORKFLOW — five visible steps rather than faint horizontal text. */
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-overview .book-builder-workflow {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  padding: 18px !important;
+  border: 1px solid var(--fenix-ui-line-strong) !important;
+  border-left: 5px solid var(--fenix-ui-primary) !important;
+  background: var(--fenix-ui-panel) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-workflow > strong {
+  grid-column: 1 / -1 !important;
+  margin: 0 0 2px !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 19px !important;
+  line-height: 1.2 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-workflow-step {
+  position: relative;
+  min-height: 70px;
+  display: flex !important;
+  align-items: center;
+  padding: 12px 12px 12px 43px !important;
+  border: 1px solid var(--fenix-ui-line) !important;
+  border-radius: 11px !important;
+  background: var(--bb-panel-tint) !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-workflow-step::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  background: var(--fenix-ui-primary) !important;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+/* ACTIVE BLOCKS — heading and chips become a real current-plan panel. */
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-overview .active-book-blocks {
+  grid-column: 1 / -1 !important;
+  display: block !important;
+  padding: 18px !important;
+  border: 1px solid var(--fenix-ui-line-strong) !important;
+  border-left: 5px solid var(--fenix-ui-info) !important;
+  background: var(--fenix-ui-panel) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .active-book-blocks > strong {
+  display: block !important;
+  margin: 0 !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 19px !important;
+  line-height: 1.2 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-overview-help {
+  margin: 6px 0 13px !important;
+  color: var(--bb-soft-ink) !important;
+  -webkit-text-fill-color: var(--bb-soft-ink) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .active-book-blocks-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .active-book-chip {
+  min-height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 7px 11px !important;
+  border: 1px solid var(--fenix-ui-line-strong) !important;
+  border-radius: 999px !important;
+  background: var(--fenix-ui-panel-strong) !important;
+  color: var(--bb-soft-ink) !important;
+  -webkit-text-fill-color: var(--bb-soft-ink) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1.2 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .active-book-chip.is-enabled {
+  border-color: #6eaf8c !important;
+  background: var(--bb-success-bg) !important;
+  color: var(--bb-success-ink) !important;
+  -webkit-text-fill-color: var(--bb-success-ink) !important;
+}
+
+/* BASKET CONTENT — readable light cards, larger metadata and actions. */
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-panel {
+  border: 1px solid var(--fenix-ui-line-strong) !important;
+  background: var(--fenix-ui-panel) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-panel > h2 {
+  margin-bottom: 7px !important;
+  padding-bottom: 11px !important;
+  border-bottom: 2px solid var(--fenix-ui-primary-soft) !important;
+  font-size: 22px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-panel > .note {
+  margin: 0 0 12px !important;
+  color: var(--bb-soft-ink) !important;
+  -webkit-text-fill-color: var(--bb-soft-ink) !important;
+  font-size: 13px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-list-heading {
+  margin: 16px 0 10px;
+  padding: 13px 14px;
+  border: 1px solid var(--bb-info-line);
+  border-radius: 11px;
+  background: var(--bb-info-bg);
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-list-heading strong {
+  display: block;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 16px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-basket-list-heading p {
+  margin: 4px 0 0;
+  color: var(--bb-soft-ink) !important;
+  -webkit-text-fill-color: var(--bb-soft-ink) !important;
+  font-size: 12px !important;
+  line-height: 1.45;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 #fenixBasketStatus {
+  margin: 11px 0 !important;
+  padding: 11px 13px !important;
+  border: 1px solid var(--bb-info-line) !important;
+  border-radius: 10px !important;
+  background: var(--bb-info-bg) !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-summary {
+  padding: 11px 13px !important;
+  border: 1px solid var(--fenix-ui-line) !important;
+  border-radius: 10px !important;
+  background: var(--bb-panel-tint) !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-list {
+  max-height: 720px !important;
+  display: grid !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  overflow: auto !important;
+  border: 1px solid var(--fenix-ui-line-strong) !important;
+  border-radius: 12px !important;
+  background: var(--fenix-ui-panel-strong) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-item {
+  display: grid !important;
+  grid-template-columns: 88px minmax(0, 1fr) 118px !important;
+  gap: 12px !important;
+  align-items: start !important;
+  padding: 12px !important;
+  border: 1px solid var(--fenix-ui-line) !important;
+  border-radius: 11px !important;
+  background: var(--fenix-ui-panel) !important;
+  color: var(--bb-strong-ink) !important;
+  box-shadow: 0 3px 10px rgba(31, 41, 55, .06) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-item.is-skipped {
+  opacity: .72 !important;
+  border-style: dashed !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-thumb {
+  width: 88px !important;
+  height: 114px !important;
+  object-fit: contain !important;
+  border: 1px solid var(--fenix-ui-line) !important;
+  border-radius: 7px !important;
+  background: #fff !important;
+  cursor: zoom-in;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-meta {
+  min-width: 0;
+  display: grid !important;
+  gap: 6px !important;
+  color: var(--bb-soft-ink) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-meta > strong {
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-title-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 7px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-title-row input {
+  min-height: 38px !important;
+  font-size: 12px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-title-row button {
+  min-height: 38px !important;
+  padding: 7px 9px !important;
+  font-size: 11px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 :where(.fenix-basket-source,.fenix-basket-include-status,.fenix-basket-edit-status) {
+  width: fit-content;
+  min-height: 27px;
+  display: inline-flex !important;
+  align-items: center;
+  padding: 5px 8px !important;
+  border: 1px solid var(--fenix-ui-line) !important;
+  border-radius: 999px !important;
+  background: var(--bb-panel-tint) !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-include-status:not(.is-skipped),
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-edit-status.is-editable {
+  border-color: #6eaf8c !important;
+  background: var(--bb-success-bg) !important;
+  color: var(--bb-success-ink) !important;
+  -webkit-text-fill-color: var(--bb-success-ink) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-include {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 2px 0 !important;
+  color: var(--bb-strong-ink) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-actions button {
+  width: 100% !important;
+  min-height: 34px !important;
+  padding: 6px 8px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-locked-note,
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-warning {
+  padding: 8px 9px !important;
+  border: 1px solid var(--bb-warning-line) !important;
+  border-radius: 8px !important;
+  background: var(--bb-warning-bg) !important;
+  color: var(--bb-warning-ink) !important;
+  -webkit-text-fill-color: var(--bb-warning-ink) !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+/* AUDIT — warnings and status must be impossible to miss. */
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 #mbgBookAuditPanel {
+  padding: 20px !important;
+  border-width: 2px !important;
+  border-left-width: 6px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-head strong {
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 23px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-head p,
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-meta {
+  color: var(--bb-soft-ink) !important;
+  -webkit-text-fill-color: var(--bb-soft-ink) !important;
+  font-size: 13px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-status {
+  min-height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-panel.has-warning .mbg-book-audit-status {
+  border-color: #a9470e !important;
+  background: #b45309 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-row {
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  color: var(--bb-strong-ink) !important;
+  -webkit-text-fill-color: var(--bb-strong-ink) !important;
+  font-size: 13px !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-warnings {
+  margin-top: 14px !important;
+  padding: 15px 16px !important;
+  border: 2px solid var(--bb-warning-line) !important;
+  border-left-width: 6px !important;
+  background: var(--bb-warning-bg) !important;
+  color: var(--bb-warning-ink) !important;
+  -webkit-text-fill-color: var(--bb-warning-ink) !important;
+  box-shadow: 0 6px 18px rgba(146, 64, 14, .12) !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-warnings > strong {
+  margin-bottom: 9px !important;
+  color: var(--bb-warning-ink) !important;
+  -webkit-text-fill-color: var(--bb-warning-ink) !important;
+  font-size: 17px !important;
+  line-height: 1.25 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-warnings ul {
+  margin: 0 !important;
+  padding-left: 23px !important;
+  color: var(--bb-warning-ink) !important;
+  -webkit-text-fill-color: var(--bb-warning-ink) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+}
+
+body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .mbg-book-audit-warnings li + li {
+  margin-top: 6px !important;
+}
+
+@media (max-width: 1180px) {
+  body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-overview .book-builder-workflow {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .book-builder-overview .book-builder-workflow {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-item {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+  }
+
+  body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-thumb {
+    width: 72px !important;
+    height: 94px !important;
+  }
+
+  body.fenix-book-builder-only-mode.fenix-book-builder-workspace-v2 .fenix-basket-actions {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}

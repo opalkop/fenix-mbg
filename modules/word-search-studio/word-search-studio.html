@@ -6,6 +6,18 @@
   <title>FENIX - Word Search Studio</title>
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="word-search-studio.css">
+  <style>
+    .word-search-primary-action{order:-2}
+    .word-search-pair-update{order:-1}
+    .word-search-manual-actions{margin-top:2px;border:1px solid var(--line,#33465b);border-radius:9px;background:rgba(7,13,23,.22);overflow:hidden}
+    .word-search-manual-actions summary{cursor:pointer;padding:10px 12px;color:var(--muted,#9fb0c2);font-size:12px;font-weight:900;list-style:none}
+    .word-search-manual-actions summary::-webkit-details-marker{display:none}
+    .word-search-manual-actions summary::before{content:"▸";display:inline-block;margin-right:7px}
+    .word-search-manual-actions[open] summary::before{content:"▾"}
+    .word-search-manual-actions-grid{display:grid;gap:8px;padding:0 10px 10px}
+    html[data-fenix-theme="light"] .word-search-manual-actions{background:#f8fafc;border-color:#cbd5e1}
+    html[data-fenix-theme="light"] .word-search-manual-actions summary{color:#64748b}
+  </style>
 </head>
 <body class="word-search-page">
   <header class="word-search-header">
@@ -19,7 +31,7 @@
     </div>
     <div class="word-search-header-actions">
       <span class="word-search-badge">MVP+</span>
-      <span class="word-search-badge word-search-badge-pack">Koszyk + edycja</span>
+      <span class="word-search-badge word-search-badge-pack">Koszyk + edycja 1:1</span>
       <a class="word-search-back-link" href="../../index.html">← Powrót do Fenixa</a>
       <a class="word-search-back-link" href="../../basket.html">Otwórz Koszyk</a>
     </div>
@@ -28,7 +40,7 @@
   <main class="word-search-main">
     <section class="word-search-global-basket" aria-label="Status Koszyka Feniksa">
       <div class="fenix-basket-status-widget" data-fenix-basket-status>Odczytywanie Koszyka Feniksa...</div>
-      <p>Gotowe strony 2550×3300 px trafiają do wspólnego Koszyka. Z Koszyka możesz wrócić do edycji tej wykreślanki.</p>
+      <p>Gotowe strony 2550×3300 px trafiają do wspólnego Koszyka. Nowe zadania można zapisywać razem z odpowiadającym rozwiązaniem 1:1.</p>
     </section>
 
     <section class="word-search-status" aria-label="Status modułu">
@@ -104,7 +116,7 @@ BUBBLES</textarea></label>
       </article>
 
       <aside class="word-search-card word-search-export-panel">
-        <div class="word-search-section-heading"><h2>Wygląd i eksport</h2><p>Strona zadania oraz rozwiązanie mogą być dodawane oddzielnie.</p></div>
+        <div class="word-search-section-heading"><h2>Wygląd i eksport</h2><p>Zapis 1:1 tworzy zadanie i rozwiązanie z identycznym seedem.</p></div>
 
         <fieldset class="word-search-settings-group">
           <legend>Wygląd strony</legend>
@@ -124,12 +136,20 @@ BUBBLES</textarea></label>
           <legend>Eksport / Koszyk</legend>
           <div class="word-search-actions">
             <button class="word-search-button" id="wordSearchRefreshPreview" type="button">Odśwież podgląd</button>
-            <button class="word-search-button word-search-button-secondary" id="wordSearchExportPng" type="button">Eksportuj widoczną stronę PNG</button>
-            <button class="word-search-button word-search-button-secondary" id="wordSearchAddPuzzleToBasket" type="button">Dodaj zadanie do Koszyka</button>
-            <button class="word-search-button word-search-button-secondary" id="wordSearchAddSolutionToBasket" type="button">Dodaj rozwiązanie do Koszyka</button>
+            <button class="word-search-button word-search-button-success word-search-primary-action" id="wordSearchAddPairToBasket" type="button">Dodaj zadanie + rozwiązanie 1:1</button>
+            <button class="word-search-button word-search-button-success word-search-pair-update" id="wordSearchUpdatePairInBasket" type="button" hidden>Zaktualizuj zadanie + rozwiązanie 1:1</button>
             <button class="word-search-button word-search-button-secondary" id="wordSearchAddVariantsToBasket" type="button">Dodaj warianty do Koszyka</button>
-            <button class="word-search-button word-search-button-success" id="wordSearchUpdateBasketPage" type="button" hidden>Aktualizuj edytowaną stronę w Koszyku</button>
+            <details class="word-search-manual-actions">
+              <summary>Opcje ręczne — tylko jedna strona</summary>
+              <div class="word-search-manual-actions-grid">
+                <button class="word-search-button word-search-button-secondary" id="wordSearchExportPng" type="button">Eksportuj widoczną stronę PNG</button>
+                <button class="word-search-button word-search-button-secondary" id="wordSearchAddPuzzleToBasket" type="button">Dodaj samo zadanie</button>
+                <button class="word-search-button word-search-button-secondary" id="wordSearchAddSolutionToBasket" type="button">Dodaj samo rozwiązanie</button>
+                <button class="word-search-button word-search-button-secondary" id="wordSearchUpdateBasketPage" type="button" hidden>Aktualizuj tylko edytowaną stronę</button>
+              </div>
+            </details>
           </div>
+          <p id="wordSearchPairingNote" class="word-search-note">Zalecany jest zapis 1:1. Opcje ręczne służą tylko do świadomego zapisania pojedynczej strony bez pary.</p>
         </fieldset>
       </aside>
     </section>
@@ -137,5 +157,7 @@ BUBBLES</textarea></label>
 
   <script src="../../shared/fenix-basket-status.js"></script>
   <script src="word-search-studio.js"></script>
+  <script src="word-search-qa-fixes.js?v=20260730-2"></script>
+  <script src="word-search-pairing.js?v=20260730-4"></script>
 </body>
 </html>

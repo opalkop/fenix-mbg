@@ -1,0 +1,492 @@
+/* FENIX shared UI themes: light / dark / system */
+
+html[data-fenix-theme="light"] {
+  color-scheme: light;
+  --fenix-page: #edf2f7;
+  --fenix-page-top: #f8fafc;
+  --fenix-surface: #ffffff;
+  --fenix-surface-soft: #f7f9fc;
+  --fenix-surface-raised: #ffffff;
+  --fenix-border: #cbd5e1;
+  --fenix-border-strong: #94a3b8;
+  --fenix-text: #172033;
+  --fenix-muted: #64748b;
+  --fenix-header: #172033;
+  --fenix-header-soft: #23304a;
+  --fenix-orange: #e87917;
+  --fenix-orange-hover: #f59e0b;
+  --fenix-cyan: #0e7490;
+  --fenix-cyan-soft: rgba(14, 116, 144, .09);
+  --fenix-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+  --fenix-shadow-strong: 0 18px 46px rgba(15, 23, 42, .14);
+
+  --launcher-bg: var(--fenix-page);
+  --launcher-panel: var(--fenix-surface);
+  --launcher-panel-raised: var(--fenix-surface-raised);
+  --launcher-border: var(--fenix-border);
+  --launcher-text: var(--fenix-text);
+  --launcher-muted: var(--fenix-muted);
+  --launcher-accent: var(--fenix-orange);
+  --launcher-accent-hover: var(--fenix-orange-hover);
+
+  --bg: var(--fenix-page);
+  --panel: var(--fenix-surface);
+  --panel2: var(--fenix-surface-soft);
+  --line: var(--fenix-border);
+  --text: var(--fenix-text);
+  --muted: var(--fenix-muted);
+  --cyan: var(--fenix-cyan);
+  --orange: var(--fenix-orange-hover);
+  --page: var(--fenix-page);
+  --panel-soft: var(--fenix-surface-soft);
+  --panel-tint: #fbfdff;
+  --line-strong: var(--fenix-border-strong);
+  --dark: var(--fenix-header);
+  --accent: var(--fenix-orange);
+  --accent-soft: rgba(232, 121, 23, .11);
+  --accent-dark: #9a3412;
+  --shadow: var(--fenix-shadow);
+  --shadow-strong: var(--fenix-shadow-strong);
+
+  --complete-bg: var(--fenix-page);
+  --complete-surface: var(--fenix-surface);
+  --complete-surface-raised: var(--fenix-surface-soft);
+  --complete-border: var(--fenix-border);
+  --complete-text: var(--fenix-text);
+  --complete-muted: var(--fenix-muted);
+  --complete-cyan: var(--fenix-cyan);
+
+  --coloring-bg: var(--fenix-page);
+  --coloring-surface: var(--fenix-surface);
+  --coloring-surface-raised: var(--fenix-surface-soft);
+  --coloring-border: var(--fenix-border);
+  --coloring-text: var(--fenix-text);
+  --coloring-muted: var(--fenix-muted);
+  --coloring-cyan: var(--fenix-cyan);
+
+  --tracing-bg: var(--fenix-page);
+  --tracing-surface: var(--fenix-surface);
+  --tracing-surface-raised: var(--fenix-surface-soft);
+  --tracing-border: var(--fenix-border);
+  --tracing-text: var(--fenix-text);
+  --tracing-muted: var(--fenix-muted);
+  --tracing-cyan: var(--fenix-cyan);
+
+  --matching-bg: var(--fenix-page);
+  --matching-surface: var(--fenix-surface);
+  --matching-surface-raised: var(--fenix-surface-soft);
+  --matching-border: var(--fenix-border);
+  --matching-text: var(--fenix-text);
+  --matching-muted: var(--fenix-muted);
+  --matching-cyan: var(--fenix-cyan);
+
+  --alphabet-bg: var(--fenix-page);
+  --alphabet-surface: var(--fenix-surface);
+  --alphabet-surface-raised: var(--fenix-surface-soft);
+  --alphabet-border: var(--fenix-border);
+  --alphabet-text: var(--fenix-text);
+  --alphabet-muted: var(--fenix-muted);
+  --alphabet-cyan: var(--fenix-cyan);
+
+  --math-bg: var(--fenix-page);
+  --math-surface: var(--fenix-surface);
+  --math-surface-raised: var(--fenix-surface-soft);
+  --math-border: var(--fenix-border);
+  --math-text: var(--fenix-text);
+  --math-muted: var(--fenix-muted);
+  --math-cyan: var(--fenix-cyan);
+
+  --dot-bg: var(--fenix-page);
+  --dot-surface: var(--fenix-surface);
+  --dot-surface-raised: var(--fenix-surface-soft);
+  --dot-border: var(--fenix-border);
+  --dot-text: var(--fenix-text);
+  --dot-muted: var(--fenix-muted);
+  --dot-cyan: var(--fenix-cyan);
+
+  --hidden-bg: var(--fenix-page);
+  --hidden-surface: var(--fenix-surface);
+  --hidden-surface-raised: var(--fenix-surface-soft);
+  --hidden-border: var(--fenix-border);
+  --hidden-text: var(--fenix-text);
+  --hidden-muted: var(--fenix-muted);
+  --hidden-cyan: var(--fenix-cyan);
+
+  --logic-bg: var(--fenix-page);
+  --logic-surface: var(--fenix-surface);
+  --logic-surface-raised: var(--fenix-surface-soft);
+  --logic-border: var(--fenix-border);
+  --logic-text: var(--fenix-text);
+  --logic-muted: var(--fenix-muted);
+  --logic-cyan: var(--fenix-cyan);
+
+  --ag-bg: var(--fenix-page);
+  --ag-panel: var(--fenix-surface-soft);
+  --ag-panel-strong: var(--fenix-surface);
+  --ag-ink: var(--fenix-text);
+  --ag-muted: var(--fenix-muted);
+  --ag-line: var(--fenix-border);
+}
+
+html[data-fenix-theme="dark"] {
+  color-scheme: dark;
+  --fenix-page: #070c15;
+  --fenix-page-top: #0d1522;
+  --fenix-surface: #121c2b;
+  --fenix-surface-soft: #172437;
+  --fenix-surface-raised: #1d2b40;
+  --fenix-border: #3b4c63;
+  --fenix-border-strong: #64748b;
+  --fenix-text: #f4f8ff;
+  --fenix-muted: #a9b7ca;
+  --fenix-header: #07101d;
+  --fenix-header-soft: #142138;
+  --fenix-orange: #f47b20;
+  --fenix-orange-hover: #ff9c52;
+  --fenix-cyan: #6be5ff;
+  --fenix-cyan-soft: rgba(107, 229, 255, .10);
+  --fenix-shadow: 0 14px 34px rgba(0, 0, 0, .28);
+  --fenix-shadow-strong: 0 26px 62px rgba(0, 0, 0, .42);
+}
+
+html[data-fenix-theme="light"] body,
+html[data-fenix-theme="light"] .fenix-launcher-page,
+html[data-fenix-theme="light"] .word-search-page,
+html[data-fenix-theme="light"] .complete-picture-page,
+html[data-fenix-theme="light"] .coloring-studio-page,
+html[data-fenix-theme="light"] .tracing-studio-page,
+html[data-fenix-theme="light"] .matching-studio-page,
+html[data-fenix-theme="light"] .alphabet-studio-page,
+html[data-fenix-theme="light"] .math-studio-page,
+html[data-fenix-theme="light"] .dot-studio-page,
+html[data-fenix-theme="light"] .hidden-studio-page,
+html[data-fenix-theme="light"] .logic-studio-page,
+html[data-fenix-theme="light"] .ag-page {
+  background:
+    radial-gradient(circle at 8% 0, rgba(14, 116, 144, .08), transparent 28rem),
+    radial-gradient(circle at 92% 0, rgba(232, 121, 23, .08), transparent 30rem),
+    linear-gradient(180deg, var(--fenix-page-top), var(--fenix-page)) !important;
+  color: var(--fenix-text) !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-launcher-header,
+  .word-search-header,
+  .complete-picture-header,
+  .coloring-studio-header,
+  .tracing-studio-header,
+  .matching-studio-header,
+  .alphabet-studio-header,
+  .math-studio-header,
+  .dot-studio-header,
+  .hidden-studio-header,
+  .logic-studio-header,
+  .ag-header,
+  body > header
+) {
+  background:
+    linear-gradient(115deg, rgba(14, 116, 144, .13), transparent 36%),
+    linear-gradient(245deg, rgba(232, 121, 23, .15), transparent 40%),
+    linear-gradient(135deg, var(--fenix-header), var(--fenix-header-soft)) !important;
+  border-bottom-color: rgba(245, 158, 11, .66) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, .22) !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-launcher-header,
+  .word-search-header,
+  .complete-picture-header,
+  .coloring-studio-header,
+  .tracing-studio-header,
+  .matching-studio-header,
+  .alphabet-studio-header,
+  .math-studio-header,
+  .dot-studio-header,
+  .hidden-studio-header,
+  .logic-studio-header,
+  .ag-header,
+  body > header
+) :where(h1,h2,h3,strong) {
+  color: #ffffff !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-launcher-header,
+  .word-search-header,
+  .complete-picture-header,
+  .coloring-studio-header,
+  .tracing-studio-header,
+  .matching-studio-header,
+  .alphabet-studio-header,
+  .math-studio-header,
+  .dot-studio-header,
+  .hidden-studio-header,
+  .logic-studio-header,
+  .ag-header,
+  body > header
+) p {
+  color: #dbe7f5 !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-module-card,
+  .basket-toolbar,
+  .basket-transfer,
+  .basket-summary-number,
+  .basket-source-list,
+  .basket-card,
+  .basket-empty,
+  .word-search-card,
+  .word-search-global-basket,
+  .word-search-status,
+  .complete-picture-card,
+  .coloring-studio-card,
+  .tracing-studio-card,
+  .matching-studio-card,
+  .alphabet-studio-card,
+  .math-studio-card,
+  .dot-studio-card,
+  .hidden-studio-card,
+  .logic-studio-card,
+  .ag-panel,
+  .ag-notice,
+  .workflow-toolbar,
+  .workflow-group,
+  .card
+) {
+  background: var(--fenix-surface) !important;
+  border-color: var(--fenix-border) !important;
+  color: var(--fenix-text) !important;
+  box-shadow: var(--fenix-shadow) !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-module-card--basket,
+  .fenix-module-card--builder,
+  .fenix-module-card--asset-lab
+) {
+  background:
+    linear-gradient(135deg, rgba(14, 116, 144, .07), transparent 48%),
+    var(--fenix-surface) !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  fieldset,
+  .word-search-settings-group,
+  .group-body,
+  .ag-mode-switch,
+  .workflow-group > summary,
+  .basket-preview-header
+) {
+  background: var(--fenix-surface-soft) !important;
+  border-color: var(--fenix-border) !important;
+  color: var(--fenix-text) !important;
+}
+
+html[data-fenix-theme="light"] .workflow-group > summary {
+  border-bottom-color: var(--fenix-border) !important;
+  box-shadow: none !important;
+}
+
+html[data-fenix-theme="light"] .workflow-group[open] > summary {
+  background: linear-gradient(90deg, rgba(14, 116, 144, .10), var(--fenix-surface-soft)) !important;
+}
+
+html[data-fenix-theme="light"] :where(h1,h2,h3,h4,legend,label,strong) {
+  color: var(--fenix-text);
+}
+
+html[data-fenix-theme="light"] :where(
+  .note,
+  [class$="-note"],
+  [class*="-section-heading"] p,
+  [class*="-brand"] p:last-child,
+  .basket-toolbar p,
+  .basket-transfer p,
+  .basket-card p,
+  .fenix-module-card p,
+  .workflow-group > summary span,
+  .ag-small
+) {
+  color: var(--fenix-muted) !important;
+}
+
+html[data-fenix-theme="light"] :where(input,textarea,select) {
+  background: #ffffff !important;
+  border-color: var(--fenix-border-strong) !important;
+  color: var(--fenix-text) !important;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, .04) !important;
+}
+
+html[data-fenix-theme="light"] :where(input,textarea,select):hover {
+  background: #ffffff !important;
+  border-color: #64748b !important;
+}
+
+html[data-fenix-theme="light"] :where(input,textarea,select):focus {
+  background: #ffffff !important;
+  border-color: var(--fenix-orange) !important;
+  outline: 3px solid rgba(232, 121, 23, .17) !important;
+  box-shadow: 0 0 0 1px rgba(232, 121, 23, .12) !important;
+}
+
+html[data-fenix-theme="light"] input[type="checkbox"],
+html[data-fenix-theme="light"] input[type="radio"],
+html[data-fenix-theme="light"] input[type="range"] {
+  accent-color: var(--fenix-orange);
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-secondary-button,
+  .basket-card-actions button,
+  .basket-card-actions a,
+  [class$="-back-link"],
+  [class*="-button-secondary"],
+  .secondary-btn,
+  .btn-secondary
+) {
+  background: #f8fafc !important;
+  border-color: var(--fenix-border-strong) !important;
+  color: var(--fenix-text) !important;
+  box-shadow: 0 2px 0 #cbd5e1 !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .fenix-basket-status-widget,
+  .fenix-basket-status-widget span,
+  .basket-source-list span,
+  .fenix-flow span,
+  [class$="-badge"]
+) {
+  border-color: rgba(14, 116, 144, .28) !important;
+  background: var(--fenix-cyan-soft) !important;
+  color: #155e75 !important;
+}
+
+html[data-fenix-theme="light"] :where(
+  .word-search-page-preview,
+  [class$="-page-preview"],
+  [class$="-preview-frame"],
+  .preview-wrap,
+  .basket-preview-stage
+) {
+  background: #dfe6ee !important;
+  border-color: var(--fenix-border-strong) !important;
+}
+
+html[data-fenix-theme="light"] :where(canvas,.basket-card-preview,.basket-preview-stage img) {
+  background: #ffffff !important;
+}
+
+html[data-fenix-theme="light"] .basket-preview-dialog {
+  background: var(--fenix-surface) !important;
+  border-color: var(--fenix-border-strong) !important;
+}
+
+html[data-fenix-theme="light"] .basket-preview-backdrop {
+  background: rgba(15, 23, 42, .72) !important;
+}
+
+html[data-fenix-theme="dark"] body {
+  background:
+    radial-gradient(circle at 8% 0, rgba(107, 229, 255, .10), transparent 30rem),
+    radial-gradient(circle at 92% 0, rgba(244, 123, 32, .11), transparent 32rem),
+    linear-gradient(180deg, var(--fenix-page-top), var(--fenix-page)) !important;
+}
+
+.fenix-theme-host {
+  min-width: 0;
+}
+
+.fenix-launcher-brand.fenix-theme-host {
+  flex-wrap: wrap;
+}
+
+.fenix-theme-control {
+  position: relative;
+  z-index: 120;
+  display: inline-grid;
+  grid-template-columns: auto minmax(112px, auto);
+  grid-template-areas: "label select" "current current";
+  align-items: center;
+  gap: 3px 8px;
+  min-width: 176px;
+  margin-left: auto;
+  padding: 8px 10px;
+  border: 1px solid rgba(107, 229, 255, .35);
+  border-radius: 12px;
+  background: rgba(7, 16, 29, .86);
+  color: #f8fafc;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.fenix-theme-label {
+  grid-area: label;
+  margin: 0 !important;
+  color: #a5f3fc !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.fenix-theme-control select {
+  grid-area: select;
+  width: 100%;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 6px 28px 6px 9px !important;
+  border: 1px solid rgba(148, 163, 184, .58) !important;
+  border-radius: 8px !important;
+  background: #111c2c !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+}
+
+.fenix-theme-control select:focus {
+  border-color: #6be5ff !important;
+  outline: 2px solid rgba(107, 229, 255, .25) !important;
+}
+
+.fenix-theme-current {
+  grid-area: current;
+  color: #b9c8da;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fenix-theme-control--floating {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+}
+
+@media (max-width: 760px) {
+  .fenix-theme-control {
+    width: 100%;
+    min-width: 0;
+    margin: 4px 0 0;
+  }
+
+  .fenix-launcher-brand .fenix-theme-control {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

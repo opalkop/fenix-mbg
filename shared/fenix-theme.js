@@ -2,13 +2,34 @@
   "use strict";
 
   const STORAGE_KEY = "fenix-ui-theme";
+  const WINDOW_NAME_TOKEN = /\|\|FENIX_THEME=(light|dark|system)\|\|/;
   const VALID_MODES = new Set(["light", "dark", "system"]);
   const systemTheme = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
   const ownScript = document.currentScript || Array.from(document.scripts).find(function (script) {
     return /\/shared\/fenix-theme\.js(?:\?|$)/.test(script.src || "");
   });
 
+  function readWindowMode() {
+    try {
+      const match = String(window.name || "").match(WINDOW_NAME_TOKEN);
+      return match && VALID_MODES.has(match[1]) ? match[1] : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function writeWindowMode(mode) {
+    try {
+      const current = String(window.name || "").replace(WINDOW_NAME_TOKEN, "");
+      window.name = current + "||FENIX_THEME=" + mode + "||";
+    } catch (error) {
+      console.warn("FENIX: nie udało się zapisać motywu w bieżącej karcie.", error);
+    }
+  }
+
   function safeReadMode() {
+    const tabMode = readWindowMode();
+    if (tabMode) return tabMode;
     try {
       const saved = localStorage.getItem(STORAGE_KEY) || "light";
       return VALID_MODES.has(saved) ? saved : "light";
@@ -18,6 +39,7 @@
   }
 
   function safeWriteMode(mode) {
+    writeWindowMode(mode);
     try {
       localStorage.setItem(STORAGE_KEY, mode);
     } catch (error) {
@@ -36,8 +58,8 @@
     link.rel = "stylesheet";
     link.dataset.fenixThemeStyles = "true";
     link.href = ownScript && ownScript.src
-      ? new URL("../styles/fenix-theme.css?v=20260730-1", ownScript.src).href
-      : "styles/fenix-theme.css?v=20260730-1";
+      ? new URL("../styles/fenix-theme.css?v=20260730-2", ownScript.src).href
+      : "styles/fenix-theme.css?v=20260730-2";
     document.head.appendChild(link);
   }
 
@@ -63,6 +85,7 @@
     document.documentElement.style.colorScheme = resolved;
 
     if (opts.persist !== false) safeWriteMode(nextMode);
+    else writeWindowMode(nextMode);
     updateControls(nextMode);
 
     window.dispatchEvent(new CustomEvent("fenix-theme-change", {
@@ -145,7 +168,9 @@
   }
 
   window.addEventListener("storage", function (event) {
-    if (event.key === STORAGE_KEY) applyTheme(safeReadMode(), { persist: false });
+    if (event.key === STORAGE_KEY && VALID_MODES.has(event.newValue)) {
+      applyTheme(event.newValue, { persist: false });
+    }
   });
 
   window.FenixTheme = {

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maze Studio — Fenix</title>
+  <meta name="color-scheme" content="light dark">
+</head>
+<body>
+  <p>Uruchamianie Maze Studio…</p>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      params.set("fenixMode", "maze-studio");
+      location.replace("../../mbg.html?" + params.toString());
+    })();
+  </script>
+  <noscript><a href="../../mbg.html?fenixMode=maze-studio">Otwórz Maze Studio</a></noscript>
+</body>
+</html>

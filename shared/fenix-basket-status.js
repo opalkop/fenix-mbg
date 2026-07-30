@@ -17,7 +17,25 @@
     document.head.appendChild(script);
   }
 
+  function loadMbgModeSplitSynchronously() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    if (document.getElementById("mbgModeSplitLoader")) return;
+    const src = CURRENT_SCRIPT_URL
+      ? new URL("mbg-mode-split.js?v=20260730-1", CURRENT_SCRIPT_URL).href
+      : "shared/mbg-mode-split.js?v=20260730-1";
+    if (document.readyState === "loading") {
+      document.write('<script id="mbgModeSplitLoader" src="' + src.replace(/"/g, "&quot;") + '"><\/script>');
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "mbgModeSplitLoader";
+    script.src = src;
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
   loadSharedTheme();
+  loadMbgModeSplitSynchronously();
 
   function openBasketDb() {
     return new Promise(function (resolve, reject) {
@@ -43,6 +61,7 @@
   }
 
   function getSourceLabel(sourceModule) {
+    if (sourceModule === "maze-studio") return "Maze Studio";
     if (sourceModule === "complete-picture") return "Complete the Picture";
     if (sourceModule === "coloring-studio") return "Coloring Studio";
     if (sourceModule === "tracing-studio") return "Tracing Studio";
@@ -165,11 +184,16 @@
 
   function loadBookBuilderFixes() {
     if (!document.getElementById("includeShapeTracerPages")) return;
+    if (window.FenixMbgMode === "maze-studio") return;
     appendScript("mbgGlobalBridgeLoader", "shared/mbg-global-bridge.js?v=20260730-1", function () {
       appendScript("mbgBookBuilderFixLoader", "shared/mbg-book-builder-fixes.js?v=20260729-1", function () {
         appendScript("mbgBookBuilderQaFixLoader", "shared/mbg-book-builder-qa-fixes.js?v=20260730-2", function () {
           appendScript("mbgWordSearchOrderFixLoader", "shared/mbg-word-search-order-fix.js?v=20260730-4", function () {
-            appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-5");
+            appendScript("mbgBuilderBasketOnlyLoader", "shared/mbg-builder-basket-only.js?v=20260730-1", function () {
+              appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-5", function () {
+                appendScript("mbgMazeAuditLoader", "shared/mbg-maze-audit.js?v=20260730-1");
+              });
+            });
           });
         });
       });

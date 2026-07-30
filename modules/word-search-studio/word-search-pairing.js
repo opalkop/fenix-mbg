@@ -18,6 +18,21 @@
   function setBusy(value){busy=value;["wordSearchAddPairToBasket","wordSearchUpdatePairInBasket"].forEach(function(id){const node=el(id);if(node)node.disabled=value})}
   function getNewPages(before,after){const ids=new Set(before.map(function(page){return page.id}));return after.filter(function(page){return !ids.has(page.id)})}
   function linkPair(puzzle,solution,pairId){puzzle.wordSearchPairId=pairId;puzzle.wordSearchPairRole="puzzle";puzzle.wordSearchPartnerId=solution.id;puzzle.bookSection="activities";puzzle.isSolution=false;solution.wordSearchPairId=pairId;solution.wordSearchPairRole="solution";solution.wordSearchPartnerId=puzzle.id;solution.bookSection="solutions";solution.isSolution=true}
+  function createActionButton(id,text,className){const node=document.createElement("button");node.id=id;node.type="button";node.textContent=text;node.className=className;return node}
+  function ensureControls(){
+    const actions=document.querySelector(".word-search-actions");if(!actions)return;
+    if(!el("wordSearchAddPairToBasket")){
+      const add=createActionButton("wordSearchAddPairToBasket","Dodaj zadanie + rozwiązanie 1:1","word-search-button word-search-button-success");
+      const variants=el("wordSearchAddVariantsToBasket");actions.insertBefore(add,variants||null);
+    }
+    if(!el("wordSearchUpdatePairInBasket")){
+      const update=createActionButton("wordSearchUpdatePairInBasket","Zaktualizuj zadanie + rozwiązanie 1:1","word-search-button word-search-button-success");
+      update.hidden=true;actions.appendChild(update);
+    }
+    if(!el("wordSearchPairingNote")){
+      const note=document.createElement("p");note.id="wordSearchPairingNote";note.className="word-search-note";note.textContent="Tryb 1:1 zapisuje zadanie i rozwiązanie z identycznym seedem. Book Builder umieszcza rozwiązanie po rozwiązaniach labiryntów.";actions.parentElement.appendChild(note);
+    }
+  }
 
   async function addPair(){
     if(busy)return;
@@ -53,25 +68,17 @@
       if(!current||current.pageType!=="word_search")throw new Error("Aktualizacja pary 1:1 jest dostępna po otwarciu strony zadania, nie strony rozwiązania.");
       const pairId=current.wordSearchPairId||createPairId();
       const oldPartner=before.find(function(page){return page.wordSearchPairId===pairId&&page.pageType==="word_search_solution"});
-
       el("wordSearchPreviewPuzzle").click();await sleep(150);
       await clickAndWait("wordSearchUpdateBasketPage",/Zaktualizowano stronę/i);
-
       const idsBeforeSolution=new Set((await getAllPages()).map(function(page){return page.id}));
       el("wordSearchPreviewSolution").click();await sleep(150);
       await clickAndWait("wordSearchAddSolutionToBasket",/Dodano rozwiązanie/i);
-
       const after=await getAllPages();
       const updatedPuzzle=after.find(function(page){return page.id===editedId});
       const tempSolution=after.find(function(page){return !idsBeforeSolution.has(page.id)&&page.pageType==="word_search_solution"});
       if(!updatedPuzzle||!tempSolution)throw new Error("Nie udało się utworzyć nowego rozwiązania dla edytowanego zadania.");
-
-      let finalSolution=tempSolution;
-      const deleteIds=[];
-      if(oldPartner){
-        finalSolution=Object.assign({},oldPartner,tempSolution,{id:oldPartner.id,order:oldPartner.order,basketOrder:oldPartner.basketOrder,createdAt:oldPartner.createdAt||tempSolution.createdAt});
-        deleteIds.push(tempSolution.id);
-      }
+      let finalSolution=tempSolution;const deleteIds=[];
+      if(oldPartner){finalSolution=Object.assign({},oldPartner,tempSolution,{id:oldPartner.id,order:oldPartner.order,basketOrder:oldPartner.basketOrder,createdAt:oldPartner.createdAt||tempSolution.createdAt});deleteIds.push(tempSolution.id)}
       linkPair(updatedPuzzle,finalSolution,pairId);
       await writePages([updatedPuzzle,finalSolution],deleteIds);
       el("wordSearchPreviewPuzzle").click();
@@ -82,12 +89,11 @@
   }
 
   async function install(){
+    ensureControls();
     const add=el("wordSearchAddPairToBasket");if(add)add.addEventListener("click",addPair);
     const update=el("wordSearchUpdatePairInBasket");if(update)update.addEventListener("click",updatePair);
     const editedId=new URLSearchParams(location.search).get("editBasketPage");
-    if(editedId&&update){
-      try{const pages=await getAllPages();const page=pages.find(function(item){return item.id===editedId});update.hidden=!(page&&page.pageType==="word_search");}catch(error){console.error(error)}
-    }
+    if(editedId&&update){try{const pages=await getAllPages();const page=pages.find(function(item){return item.id===editedId});update.hidden=!(page&&page.pageType==="word_search")}catch(error){console.error(error)}}
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install);else install();

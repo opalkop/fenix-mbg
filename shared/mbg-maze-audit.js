@@ -3,17 +3,25 @@
 
   if (new URLSearchParams(location.search).get("fenixMode") === "maze-studio") return;
   let scheduled = false;
+  const observer = new MutationObserver(schedule);
 
+  function observe() {
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
   function getPages() {
     if (typeof window.getAvailableFenixPages !== "function") return [];
     return (window.getAvailableFenixPages() || []).filter(function (page) { return page && page.includeInBook !== false && page.sourceModule === "maze-studio"; });
   }
   function audit() {
     scheduled = false;
+    observer.disconnect();
     const panel = document.getElementById("mbgBookAuditPanel");
-    if (!panel) return;
+    if (!panel) { observe(); return; }
     const old = document.getElementById("mbgMazePairAudit");
     if (old) old.remove();
+    panel.querySelectorAll(".mbg-book-audit-row span:first-child").forEach(function (node) {
+      node.textContent = String(node.textContent || "").replace(/^maze-studio\b/i, "Maze Studio");
+    });
     const pages = getPages();
     const pairs = new Map();
     let unpaired = 0;
@@ -43,16 +51,18 @@
     const total = panel.querySelector(".mbg-book-audit-total");
     panel.insertBefore(node, total || null);
     if (broken || unpaired) panel.classList.add("has-warning");
+    observe();
   }
   function schedule() {
     if (scheduled) return;
     scheduled = true;
     setTimeout(audit, 0);
   }
-  const observer = new MutationObserver(schedule);
-  document.addEventListener("DOMContentLoaded", function () {
-    observer.observe(document.body, { childList: true, subtree: true });
+  function boot() {
+    observe();
     schedule();
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
   window.addEventListener("focus", schedule);
 })();

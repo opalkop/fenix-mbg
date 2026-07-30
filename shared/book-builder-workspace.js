@@ -7,15 +7,28 @@
   const ownScript = document.currentScript;
   let overviewObserver = null;
 
+  function stylesheetUrl(fileName) {
+    return ownScript && ownScript.src
+      ? new URL("../styles/" + fileName, ownScript.src).href
+      : "styles/" + fileName;
+  }
+
   function ensureStylesheet() {
-    if (document.querySelector('link[data-book-builder-workspace-styles]')) return;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.dataset.bookBuilderWorkspaceStyles = "true";
-    link.href = ownScript && ownScript.src
-      ? new URL("../styles/book-builder-workspace.css?v=20260730-1", ownScript.src).href
-      : "styles/book-builder-workspace.css?v=20260730-1";
-    document.head.appendChild(link);
+    if (!document.querySelector('link[data-book-builder-workspace-styles]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.dataset.bookBuilderWorkspaceStyles = "true";
+      link.href = stylesheetUrl("book-builder-workspace.css?v=20260730-1");
+      document.head.appendChild(link);
+    }
+
+    if (!document.querySelector('link[data-book-builder-readability-styles]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.dataset.bookBuilderReadabilityStyles = "true";
+      link.href = stylesheetUrl("book-builder-readability.css?v=20260730-1");
+      document.head.appendChild(link);
+    }
   }
 
   function createLink(href, text, className) {
@@ -69,6 +82,19 @@
     });
   }
 
+  function addBasketListHeading(panel) {
+    const list = document.getElementById("fenixBasketList");
+    if (!list || panel.querySelector(".book-builder-basket-list-heading")) return;
+
+    const heading = document.createElement("div");
+    heading.className = "book-builder-basket-list-heading";
+    heading.innerHTML = [
+      "<strong>Strony zapisane w Koszyku</strong>",
+      "<p>Każda pozycja poniżej jest gotową stroną PNG. Tutaj wybierasz, czy ma trafić do książki; pełną edycję i kolejność wykonujesz w Koszyku Feniksa.</p>"
+    ].join("");
+    list.parentElement.insertBefore(heading, list);
+  }
+
   function simplifyFenixPagesGroup() {
     const group = document.getElementById("workflow-fenix-pages");
     if (!group || group.dataset.bookBuilderSimplified === "true") return;
@@ -117,6 +143,7 @@
     if (status) panel.insertBefore(actions, status);
     else panel.appendChild(actions);
 
+    addBasketListHeading(panel);
     collapseEmptyRows(panel);
   }
 
@@ -131,6 +158,31 @@
       '<a href="#workflow-preview">D. Podgląd</a>',
       '<a href="#workflow-export">E. Audyt i PDF</a>'
     ].join("");
+  }
+
+  function enhanceOverview() {
+    const workflow = document.querySelector(".book-builder-workflow");
+    if (workflow) {
+      const title = workflow.querySelector("strong");
+      if (title) title.textContent = "Workflow Book Buildera";
+      workflow.querySelectorAll(":scope > span").forEach(function (step, index) {
+        step.classList.add("book-builder-workflow-step");
+        step.dataset.step = String(index + 1);
+      });
+    }
+
+    const active = document.querySelector(".active-book-blocks");
+    if (active) {
+      const title = active.querySelector(":scope > strong");
+      if (title) title.textContent = "Aktywne elementy finalnego PDF";
+      if (!active.querySelector(".book-builder-overview-help")) {
+        const help = document.createElement("p");
+        help.className = "book-builder-overview-help";
+        help.textContent = "Włączone elementy trafią do planu książki. Dokładne liczby i numery stron pokazuje audyt finalnego PDF.";
+        const list = active.querySelector(".active-book-blocks-list");
+        active.insertBefore(help, list || null);
+      }
+    }
   }
 
   function createColumn(className, eyebrow, title, description) {
@@ -153,6 +205,7 @@
       if (node && node.parentElement !== overview) overview.appendChild(node);
     });
     if (overview.parentElement !== main) main.insertBefore(overview, grid);
+    enhanceOverview();
   }
 
   function buildWorkspace() {
@@ -230,6 +283,7 @@
     overviewObserver = new MutationObserver(function () {
       collectOverviewNodes(overview, main, grid);
       simplifyGlobalBasket();
+      enhanceOverview();
     });
     overviewObserver.observe(main, { childList: true, subtree: false });
 

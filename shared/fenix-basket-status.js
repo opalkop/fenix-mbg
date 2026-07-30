@@ -136,13 +136,24 @@
     if (!document.hidden) refreshFenixBasketStatusWidgets();
   });
 
-  function loadBookBuilderFixes() {
-    if (!document.getElementById("includeShapeTracerPages") || document.getElementById("mbgBookBuilderFixLoader")) return;
+  function appendScript(id, src, onload) {
+    if (document.getElementById(id)) {
+      if (onload) onload();
+      return;
+    }
     const script = document.createElement("script");
-    script.id = "mbgBookBuilderFixLoader";
-    script.src = "shared/mbg-book-builder-fixes.js?v=20260729-1";
+    script.id = id;
+    script.src = src;
     script.defer = true;
+    if (onload) script.addEventListener("load", onload, { once: true });
     document.head.appendChild(script);
+  }
+
+  function loadBookBuilderFixes() {
+    if (!document.getElementById("includeShapeTracerPages")) return;
+    appendScript("mbgBookBuilderFixLoader", "shared/mbg-book-builder-fixes.js?v=20260729-1", function () {
+      appendScript("mbgBookBuilderQaFixLoader", "shared/mbg-book-builder-qa-fixes.js?v=20260730-2");
+    });
   }
 
   document.addEventListener("DOMContentLoaded", function () {

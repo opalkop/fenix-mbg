@@ -56,6 +56,37 @@
     patched.__fenixBasketOnlyOriginal = original;
     window.readSettings = patched;
   }
+  function cleanupUi() {
+    const activeBlocks = document.querySelector(".active-book-blocks");
+    if (activeBlocks) activeBlocks.hidden = true;
+    const basketControl = document.getElementById("fenixBasketEnabled");
+    if (basketControl) {
+      basketControl.value = "true";
+      basketControl.disabled = true;
+      basketControl.dispatchEvent(new Event("change", { bubbles: true }));
+      const host = basketControl.closest(".mbg-option-card") || basketControl.parentElement;
+      if (host) {
+        const status = host.querySelector(".mbg-option-description");
+        if (status) status.textContent = "Book Builder zawsze składa gotowe strony z Koszyka Feniksa.";
+      }
+    }
+    const previewType = document.getElementById("previewPageType");
+    if (previewType) {
+      const mazeOnly = previewType.querySelector('option[value="maze-only"]');
+      if (mazeOnly) mazeOnly.remove();
+      if (previewType.value === "maze-only") previewType.value = "mixed";
+    }
+    if (!document.getElementById("mbgBasketOnlyBanner")) {
+      const workflow = document.querySelector(".book-builder-workflow");
+      if (workflow && workflow.parentElement) {
+        const banner = document.createElement("section");
+        banner.id = "mbgBasketOnlyBanner";
+        banner.className = "warning";
+        banner.innerHTML = '<strong>Book Builder = skład książki.</strong> Labirynty i rozwiązania 1:1 twórz w <a href="modules/maze-studio/maze-studio.html">Maze Studio</a>. Tutaj trafiają wyłącznie gotowe strony z Koszyka Feniksa.';
+        workflow.insertAdjacentElement("afterend", banner);
+      }
+    }
+  }
   function install() {
     attempts += 1;
     if (typeof window.buildBookPagePlan !== "function" || typeof window.readSettings !== "function") {
@@ -66,6 +97,7 @@
     patchPlanner("buildBookPagePlan");
     patchPlanner("buildPreviewPagePlan");
     patchPlanner("buildMixedPreviewPages");
+    cleanupUi();
     window.normalizeFenixBasketOnlyBookPlan = normalizePlan;
     if (window.FenixBookAudit && window.FenixBookAudit.refresh) window.FenixBookAudit.refresh();
     console.info("FENIX Book Builder: tryb składania wyłącznie z Koszyka aktywny.");

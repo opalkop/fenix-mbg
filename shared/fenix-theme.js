@@ -78,6 +78,11 @@
       "../styles/fenix-bp-ui.css?v=20260730-1",
       "styles/fenix-bp-ui.css?v=20260730-1"
     );
+    ensureStylesheet(
+      "data-fenix-contrast-styles",
+      "../styles/fenix-contrast-fixes.css?v=20260730-1",
+      "styles/fenix-contrast-fixes.css?v=20260730-1"
+    );
   }
 
   function updateControls(mode) {

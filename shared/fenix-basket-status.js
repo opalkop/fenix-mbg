@@ -169,7 +169,7 @@
       appendScript("mbgBookBuilderFixLoader", "shared/mbg-book-builder-fixes.js?v=20260729-1", function () {
         appendScript("mbgBookBuilderQaFixLoader", "shared/mbg-book-builder-qa-fixes.js?v=20260730-2", function () {
           appendScript("mbgWordSearchOrderFixLoader", "shared/mbg-word-search-order-fix.js?v=20260730-4", function () {
-            appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-4");
+            appendScript("mbgBookAuditLoader", "shared/mbg-book-audit.js?v=20260730-5");
           });
         });
       });

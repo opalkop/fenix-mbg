@@ -1,0 +1,38 @@
+name: Fenix functional checks
+
+on:
+  push:
+    branches:
+      - stabilize/fenix-working-flow
+  pull_request:
+    branches:
+      - fix/book-builder-solution-order
+      - mbg-fenix
+
+permissions:
+  contents: read
+
+jobs:
+  functional-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run functional tests
+        run: node --test tests/*.test.js
+
+      - name: Check critical JavaScript syntax
+        run: |
+          node --check shared/fenix-production-flow.js
+          node --check shared/fenix-basket-integrity.js
+          node --check shared/mbg-mode-split.js
+          node --check modules/word-search-studio/word-search-pairing.js
+          node --check shared/fenix-basket-manager.js
+          node --check shared/mbg-maze-audit.js

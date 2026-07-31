@@ -58,9 +58,18 @@
     scheduled = true;
     setTimeout(audit, 0);
   }
+  function loadProductionFlow() {
+    if (document.getElementById("fenixProductionFlowLoader")) return;
+    const script = document.createElement("script");
+    script.id = "fenixProductionFlowLoader";
+    script.src = "shared/fenix-production-flow.js?v=20260731-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
   function boot() {
     observe();
     schedule();
+    loadProductionFlow();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

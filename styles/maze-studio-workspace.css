@@ -15,7 +15,7 @@ body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .grid {
   width: 100% !important;
   max-width: none !important;
   display: grid !important;
-  grid-template-columns: minmax(420px, 520px) minmax(620px, 1fr) !important;
+  grid-template-columns: minmax(480px, .78fr) minmax(680px, 1.22fr) !important;
   gap: 20px !important;
   align-items: start !important;
   margin: 0 !important;
@@ -96,6 +96,10 @@ body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .grid > :not(.maze-studio-ed
 }
 
 .maze-studio-panel-hidden {
+  display: none !important;
+}
+
+.maze-studio-editor-column > [hidden] {
   display: none !important;
 }
 
@@ -185,6 +189,24 @@ body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .maze-studio-actions {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 9px !important;
+}
+
+body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .maze-studio-basket-link {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border: 1px solid var(--fenix-ui-line-strong);
+  border-radius: 10px;
+  color: var(--fenix-ui-ink);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .maze-studio-basket-link:hover {
+  border-color: var(--fenix-ui-primary);
+  color: var(--fenix-ui-primary-hover);
 }
 
 body.fenix-maze-studio-mode.fenix-maze-workspace-v2 .maze-studio-actions > * {

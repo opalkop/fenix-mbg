@@ -455,30 +455,6 @@
     host.appendChild(badge);
   }
 
-  function injectStyles() {
-    if (document.getElementById("mbgBookBuilderFixStyles")) return;
-    const style = document.createElement("style");
-    style.id = "mbgBookBuilderFixStyles";
-    style.textContent = [
-      ".mbg-option-card{position:relative!important;padding-top:48px!important;transition:border-color .18s ease,background .18s ease,opacity .18s ease!important}",
-      ".mbg-option-card .mbg-option-status{position:absolute!important;top:12px!important;right:12px!important;display:inline-flex!important;align-items:center!important;min-height:28px!important;padding:5px 10px!important;border-radius:999px!important;font-size:12px!important;font-weight:900!important;letter-spacing:.01em!important}",
-      ".mbg-option-card.is-enabled{border-color:rgba(70,220,160,.62)!important;background:linear-gradient(180deg,rgba(31,74,65,.38),rgba(19,27,40,.98))!important;opacity:1!important}",
-      ".mbg-option-card.is-enabled .mbg-option-status{color:#c9ffe9!important;background:rgba(30,160,105,.24)!important;border:1px solid rgba(70,220,160,.52)!important}",
-      ".mbg-option-card.is-disabled{border-color:rgba(142,160,184,.34)!important;background:linear-gradient(180deg,rgba(29,39,53,.72),rgba(17,24,35,.94))!important;opacity:.84!important}",
-      ".mbg-option-card.is-disabled .mbg-option-status{color:#e4e9f1!important;background:rgba(95,109,130,.28)!important;border:1px solid rgba(142,160,184,.48)!important}",
-      ".legacy-feature-disabled{opacity:.80!important;border-color:rgba(142,160,184,.28)!important}",
-      ".mbg-final-plan-summary{margin:0 0 16px;padding:16px 18px;border:1px solid rgba(85,214,255,.38);border-left:5px solid rgba(85,214,255,.88);border-radius:12px;background:linear-gradient(180deg,rgba(18,47,65,.70),rgba(13,25,39,.92));color:#eefaff;box-shadow:0 12px 28px rgba(0,0,0,.20)}",
-      ".mbg-final-plan-summary.has-warning{border-color:rgba(255,190,98,.62);border-left-color:#ffc46d;background:linear-gradient(180deg,rgba(76,50,21,.62),rgba(29,25,23,.94))}",
-      ".mbg-final-plan-summary strong{display:block;margin-bottom:8px;font-size:16px}",
-      ".mbg-final-plan-summary p{margin:5px 0;line-height:1.5}",
-      ".fenix-auto-section-badge{display:inline-flex;margin-top:8px;padding:5px 9px;border-radius:999px;background:rgba(85,214,255,.12);border:1px solid rgba(85,214,255,.34);color:#dff8ff;font-size:12px;font-weight:850}",
-      ".fenix-basket-item.is-solution-page{border-left:4px solid rgba(177,140,255,.82)!important}",
-      ".fenix-basket-item.is-solution-page .fenix-auto-section-badge{background:rgba(177,140,255,.16);border-color:rgba(177,140,255,.44);color:#eee5ff}",
-      ".fenix-placement-explanation{padding:9px 10px;border-radius:8px;background:rgba(85,214,255,.07);border:1px solid rgba(85,214,255,.20)}",
-      ".mbg-fix-version-badge{display:inline-flex!important;align-items:center!important;padding:5px 9px!important;border-radius:999px!important;background:rgba(70,220,160,.16)!important;border:1px solid rgba(70,220,160,.42)!important;color:#c9ffe9!important;font-size:12px!important;font-weight:900!important}"
-    ].join("\n");
-    document.head.appendChild(style);
-  }
 
   function install() {
     if (installed) return;
@@ -543,7 +519,6 @@
       };
     }
 
-    injectStyles();
     installVersionBadge();
     explainBasketPlacement();
     updateOptionUi();

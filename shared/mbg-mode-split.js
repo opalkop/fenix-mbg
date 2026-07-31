@@ -372,10 +372,6 @@
       el("mazeStudioUpdatePair").addEventListener("click", updatePair);
     }
 
-    const style = document.createElement("style");
-    style.id = "mazeStudioModeStyles";
-    style.textContent = '.fenix-maze-studio-mode .grid{max-width:1420px;margin:0 auto}.maze-studio-pair-card{border-left-color:rgba(85,240,214,.9)!important}.maze-studio-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}.maze-studio-basket-link{display:inline-flex;align-items:center;min-height:42px;padding:9px 13px;border:1px solid rgba(99,220,255,.45);border-radius:9px;color:inherit;text-decoration:none;font-weight:850}.maze-studio-basket-link:hover{border-color:rgba(99,220,255,.9)}';
-    document.head.appendChild(style);
   }
   async function loadEditedPage() {
     const id = params.get("editBasketPage");

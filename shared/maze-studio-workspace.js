@@ -59,6 +59,7 @@
       const group = editor.querySelector(PANEL_MAP[key]);
       if (!group) return;
       const active = key === next;
+      group.hidden = !active;
       group.classList.toggle("maze-studio-panel-hidden", !active);
       if (active) group.open = true;
     });

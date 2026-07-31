@@ -234,19 +234,6 @@
     }
   }
 
-  function injectStyles() {
-    if (el("mbgQaFixStyles")) return;
-    const style = document.createElement("style");
-    style.id = "mbgQaFixStyles";
-    style.textContent = [
-      ".mbg-qa-consistency-panel{margin:0 0 16px;padding:14px 17px;border-radius:11px;border:1px solid rgba(70,220,160,.42);border-left:5px solid rgba(70,220,160,.88);background:linear-gradient(180deg,rgba(24,67,54,.62),rgba(14,27,31,.94));color:#eafff5}",
-      ".mbg-qa-consistency-panel.has-warning{border-color:rgba(255,190,98,.60);border-left-color:#ffc46d;background:linear-gradient(180deg,rgba(76,50,21,.62),rgba(29,25,23,.94));color:#fff2d7}",
-      ".mbg-qa-consistency-panel strong{display:block;margin-bottom:7px}",
-      ".mbg-qa-consistency-panel p,.mbg-qa-consistency-panel ul{margin:5px 0;line-height:1.5}",
-      ".mbg-qa-consistency-panel ul{padding-left:22px}"
-    ].join("\n");
-    document.head.appendChild(style);
-  }
 
   function install() {
     if (installed) return;
@@ -258,7 +245,6 @@
 
     installed = true;
     injectContentControls();
-    injectStyles();
 
     const previousReadSettings = window.readSettings;
     window.readSettings = function () {

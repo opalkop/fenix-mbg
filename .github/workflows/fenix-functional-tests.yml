@@ -32,6 +32,7 @@ jobs:
         run: |
           node --check shared/fenix-production-flow.js
           node --check shared/fenix-basket-integrity.js
+          node --check shared/fenix-basket-transfer-v2.js
           node --check shared/mbg-mode-split.js
           node --check shared/maze-studio-workspace.js
           node --check shared/maze-studio-numbering-fix.js

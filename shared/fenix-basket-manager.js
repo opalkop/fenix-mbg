@@ -1,131 +1,431 @@
-(function(){
+(function () {
   "use strict";
 
-  const DB_NAME="fenixBookBasketDb";
-  const STORE_NAME="pages";
-  const DB_VERSION=1;
-  const FORMAT="fenix-basket";
-  const FORMAT_VERSION=1;
-  const EDIT_MODULES={
-    "maze-studio":"modules/maze-studio/maze-studio.html",
-    "complete-picture":"modules/complete-picture/complete-picture.html",
-    "coloring-studio":"modules/coloring-studio/coloring-studio.html",
-    "word-search-studio":"modules/word-search-studio/word-search-studio.html"
+  const DB_NAME = "fenixBookBasketDb";
+  const STORE_NAME = "pages";
+  const DB_VERSION = 1;
+  const EDIT_MODULES = {
+    "maze-studio": "modules/maze-studio/maze-studio.html",
+    "complete-picture": "modules/complete-picture/complete-picture.html",
+    "coloring-studio": "modules/coloring-studio/coloring-studio.html",
+    "word-search-studio": "modules/word-search-studio/word-search-studio.html"
   };
-  const state={pages:[],objectUrls:new Set(),previewUrl:"",importFile:null,renderToken:0};
+  const state = {
+    pages: [],
+    previewUrl: "",
+    renderToken: 0
+  };
 
-  function el(id){return document.getElementById(id)}
-  function openDb(){return new Promise(function(resolve,reject){const request=indexedDB.open(DB_NAME,DB_VERSION);request.onupgradeneeded=function(){const db=request.result;if(!db.objectStoreNames.contains(STORE_NAME))db.createObjectStore(STORE_NAME,{keyPath:"id"})};request.onsuccess=function(){resolve(request.result)};request.onerror=function(){reject(request.error||new Error("Nie udało się otworzyć Koszyka Feniksa."))}})}
-  async function readPages(){const db=await openDb();try{return await new Promise(function(resolve,reject){const tx=db.transaction(STORE_NAME,"readonly");const req=tx.objectStore(STORE_NAME).getAll();req.onsuccess=function(){resolve(req.result||[])};req.onerror=function(){reject(req.error)}})}finally{db.close()}}
-  async function writePages(pages,clearFirst){const db=await openDb();try{await new Promise(function(resolve,reject){const tx=db.transaction(STORE_NAME,"readwrite");const store=tx.objectStore(STORE_NAME);if(clearFirst)store.clear();pages.forEach(function(page){store.put(page)});tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error||new Error("Błąd zapisu Koszyka Feniksa."))}})}finally{db.close()}}
-  async function deletePage(id){const db=await openDb();try{await new Promise(function(resolve,reject){const tx=db.transaction(STORE_NAME,"readwrite");tx.objectStore(STORE_NAME).delete(id);tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error)}})}finally{db.close()}}
-  async function deletePages(ids){const unique=Array.from(new Set((ids||[]).filter(Boolean)));const db=await openDb();try{await new Promise(function(resolve,reject){const tx=db.transaction(STORE_NAME,"readwrite");const store=tx.objectStore(STORE_NAME);unique.forEach(function(id){store.delete(id)});tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error)}})}finally{db.close()}}
-  async function clearPages(){const db=await openDb();try{await new Promise(function(resolve,reject){const tx=db.transaction(STORE_NAME,"readwrite");tx.objectStore(STORE_NAME).clear();tx.oncomplete=resolve;tx.onerror=function(){reject(tx.error)}})}finally{db.close()}}
+  function el(id) { return document.getElementById(id); }
 
-  function sourceLabel(page){const source=page.sourceModule||"other";return window.FenixBasketStatus?window.FenixBasketStatus.getSourceLabel(source):source}
-  function pageTitle(page,index){return page.title||page.name||page.fileName||(sourceLabel(page)+" — strona "+(index+1))}
-  function sortPages(pages){return pages.sort(function(a,b){const ao=Number.isFinite(a.basketOrder)?a.basketOrder:(Number.isFinite(a.order)?a.order:999999);const bo=Number.isFinite(b.basketOrder)?b.basketOrder:(Number.isFinite(b.order)?b.order:999999);if(ao!==bo)return ao-bo;return String(a.createdAt||a.id||"").localeCompare(String(b.createdAt||b.id||""))})}
-  function revokeUrl(url){if(!url||String(url).indexOf("blob:")!==0)return;try{URL.revokeObjectURL(url)}catch(error){}state.objectUrls.delete(url)}
-  function revokeUrls(){state.objectUrls.forEach(function(url){try{URL.revokeObjectURL(url)}catch(error){}});state.objectUrls.clear();state.previewUrl=""}
-  function previewSource(page){const strings=[page.thumbnail,page.preview,page.previewUrl,page.dataUrl,page.pngDataUrl,page.imageData,page.image];const text=strings.find(function(v){return typeof v==="string"&&v.indexOf("data:image")===0});if(text)return text;const blobs=[page.blob,page.pngBlob,page.imageBlob,page.file];const blob=blobs.find(function(v){return typeof Blob!=="undefined"&&v instanceof Blob});if(blob){const url=URL.createObjectURL(blob);state.objectUrls.add(url);return url}return ""}
-  function pairPartnerId(page){return page.mazePartnerId||page.wordSearchPartnerId||(page.editSnapshot&&(page.editSnapshot.mazePartnerId||page.editSnapshot.wordSearchPartnerId))||""}
-  function pairRole(page){return page.mazePairRole||page.wordSearchPairRole||(page.editSnapshot&&(page.editSnapshot.mazePairRole||page.editSnapshot.wordSearchPairRole))||""}
-  function pairId(page){return page.mazePairId||page.wordSearchPairId||(page.editSnapshot&&(page.editSnapshot.mazePairId||page.editSnapshot.wordSearchPairId))||""}
-  function isPaired(page){return !!pairId(page)}
-
-  function renderSourceSummary(pages){const root=el("basketSources");root.textContent="";const counts={};pages.forEach(function(page){const label=sourceLabel(page);counts[label]=(counts[label]||0)+1});Object.keys(counts).sort().forEach(function(label){const item=document.createElement("span");item.textContent=label+": "+counts[label];root.appendChild(item)})}
-  function button(text,className,handler){const node=document.createElement("button");node.type="button";node.textContent=text;if(className)node.className=className;node.addEventListener("click",handler);return node}
-
-  function setPreviewLoading(page,index){el("basketPreviewTitle").textContent=pageTitle(page,index);el("basketPreviewMeta").textContent="Pozycja "+(index+1)+" · "+sourceLabel(page)+" · wczytywanie podglądu…";const image=el("basketPreviewImage");image.removeAttribute("src");image.alt="Wczytywanie podglądu strony";el("basketPreviewModal").hidden=false;document.body.style.overflow="hidden"}
-  function openPreview(page,index){setPreviewLoading(page,index);window.setTimeout(function(){if(state.previewUrl)revokeUrl(state.previewUrl);const src=previewSource(page);if(!src){closePreview();setTransferStatus("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.",true);return}state.previewUrl=src.indexOf("blob:")===0?src:"";const image=el("basketPreviewImage");image.loading="eager";image.decoding="async";image.alt="Pełny podgląd strony z Koszyka Feniksa";image.src=src;el("basketPreviewMeta").textContent="Pozycja "+(index+1)+" · "+sourceLabel(page)+" · "+(page.width||"?")+"×"+(page.height||"?")+" · podgląd wczytany na żądanie"},0)}
-  function closePreview(){const image=el("basketPreviewImage");image.removeAttribute("src");el("basketPreviewModal").hidden=true;document.body.style.overflow="";if(state.previewUrl){revokeUrl(state.previewUrl);state.previewUrl=""}}
-  async function removePageOrPair(page){const partnerId=pairPartnerId(page);const paired=isPaired(page)&&partnerId;const message=paired?"Usunąć całą parę 1:1: zadanie i rozwiązanie?":"Usunąć tę stronę z Koszyka Feniksa?";if(!window.confirm(message))return;if(paired)await deletePages([page.id,partnerId]);else await deletePage(page.id);await render()}
-
-  function renderCard(page,index){
-    const card=document.createElement("article");
-    card.className="basket-card basket-card-light";
-
-    const preview=document.createElement("div");
-    preview.className="basket-card-preview basket-card-preview-light";
-    preview.tabIndex=0;
-    preview.setAttribute("role","button");
-    preview.setAttribute("aria-label","Wczytaj podgląd strony "+(index+1));
-    const previewLabel=document.createElement("span");
-    previewLabel.textContent="PODGLĄD NA ŻĄDANIE";
-    const previewNumber=document.createElement("strong");
-    previewNumber.textContent=index+1;
-    const previewHint=document.createElement("small");
-    previewHint.textContent="Kliknij, aby wczytać jedną stronę";
-    preview.append(previewLabel,previewNumber,previewHint);
-    preview.addEventListener("click",function(){openPreview(page,index)});
-    preview.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();openPreview(page,index)}});
-
-    const body=document.createElement("div");
-    body.className="basket-card-body";
-    const number=document.createElement("span");
-    number.className="basket-card-number";
-    number.textContent="Pozycja "+(index+1);
-    const title=document.createElement("h3");
-    title.textContent=pageTitle(page,index);
-    const source=document.createElement("p");
-    source.textContent=sourceLabel(page)+(isPaired(page)?" · PARA 1:1 · "+(pairRole(page)==="solution"?"ROZWIĄZANIE":"ZADANIE"):"");
-    const actions=document.createElement("div");
-    actions.className="basket-card-actions";
-    actions.appendChild(button("Podgląd","is-primary",function(){openPreview(page,index)}));
-    const editUrl=EDIT_MODULES[page.sourceModule];
-    if(editUrl&&page.editSnapshot){const edit=document.createElement("a");const targetId=pairRole(page)==="solution"&&pairPartnerId(page)?pairPartnerId(page):page.id;edit.href=editUrl+"?editBasketPage="+encodeURIComponent(targetId);edit.textContent=isPaired(page)?"Edytuj parę w module":"Edytuj w module";edit.className="is-primary";actions.appendChild(edit)}
-    actions.appendChild(button("↑ Wyżej","",function(){movePage(page.id,-1)}));
-    actions.appendChild(button("↓ Niżej","",function(){movePage(page.id,1)}));
-    if(!isPaired(page))actions.appendChild(button("Duplikuj","",function(){duplicatePage(page)}));
-    actions.appendChild(button(isPaired(page)?"Usuń parę":"Usuń","is-danger",function(){removePageOrPair(page)}));
-    body.append(number,title,source,actions);
-    card.append(preview,body);
-    return card
+  function openDb() {
+    return new Promise(function (resolve, reject) {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = function () {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: "id" });
+      };
+      request.onsuccess = function () { resolve(request.result); };
+      request.onerror = function () { reject(request.error || new Error("Nie udało się otworzyć Koszyka Feniksa.")); };
+    });
   }
 
-  async function movePage(id,delta){const pages=sortPages(await readPages());const index=pages.findIndex(function(p){return p.id===id});const target=index+delta;if(index<0||target<0||target>=pages.length)return;const temp=pages[index];pages[index]=pages[target];pages[target]=temp;pages.forEach(function(page,i){page.order=i;page.basketOrder=i});await writePages(pages,true);await render()}
-  async function duplicatePage(page){let copy;if(typeof structuredClone==="function")copy=structuredClone(page);else copy=await fromPortable(await toPortable(page));const now=new Date().toISOString();copy.id=createId();copy.createdAt=now;copy.updatedAt=now;copy.title=(page.title||page.name||page.fileName||"Strona")+" — kopia";const pages=sortPages(await readPages());copy.order=pages.length;copy.basketOrder=pages.length;await writePages([copy],false);await render()}
-  function createId(){return window.crypto&&crypto.randomUUID?crypto.randomUUID():"basket-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
+  function pairValue(page, directKey, snapshotKey) {
+    if (page && page[directKey] !== undefined && page[directKey] !== null && page[directKey] !== "") return page[directKey];
+    const snapshot = page && page.editSnapshot;
+    return snapshot && snapshot[snapshotKey || directKey] !== undefined ? snapshot[snapshotKey || directKey] : "";
+  }
 
-  async function render(){
-    const token=++state.renderToken;
-    closePreview();
-    revokeUrls();
-    const grid=el("basketGrid"),empty=el("basketEmpty"),total=el("basketTotal");
-    grid.textContent="";
-    total.textContent="…";
-    try{
-      const pages=sortPages(await readPages());
-      if(token!==state.renderToken)return;
-      state.pages=pages;
-      total.textContent=pages.length;
-      renderSourceSummary(pages);
-      empty.hidden=pages.length>0;
-      grid.hidden=pages.length===0;
-      const fragment=document.createDocumentFragment();
-      pages.forEach(function(page,index){fragment.appendChild(renderCard(page,index))});
-      grid.appendChild(fragment);
-      setTransferStatus("Tryb lekki koszyka: obrazy nie są ładowane automatycznie. Kliknij Podgląd przy wybranej stronie.",false,true);
-      if(window.FenixBasketStatus&&window.FenixBasketStatus.refresh)window.FenixBasketStatus.refresh()
-    }catch(error){
-      total.textContent="—";
-      empty.hidden=false;
-      empty.querySelector("h2").textContent="Nie udało się odczytać koszyka";
-      empty.querySelector("p").textContent=error&&error.message?error.message:"Nieznany błąd."
+  function metadataFromPage(page) {
+    return {
+      id: page.id,
+      sourceModule: page.sourceModule || "other",
+      pageType: page.pageType || "",
+      fileName: page.fileName || "",
+      title: page.title || page.name || "",
+      width: page.width || 0,
+      height: page.height || 0,
+      mimeType: page.mimeType || "",
+      createdAt: page.createdAt || "",
+      updatedAt: page.updatedAt || "",
+      order: page.order,
+      basketOrder: page.basketOrder,
+      includeInBook: page.includeInBook !== false,
+      bookSection: page.bookSection || "",
+      isSolution: page.isSolution === true,
+      mazePairId: pairValue(page, "mazePairId"),
+      mazePairRole: pairValue(page, "mazePairRole"),
+      mazePartnerId: pairValue(page, "mazePartnerId"),
+      wordSearchPairId: pairValue(page, "wordSearchPairId"),
+      wordSearchPairRole: pairValue(page, "wordSearchPairRole"),
+      wordSearchPartnerId: pairValue(page, "wordSearchPartnerId"),
+      hasEditSnapshot: !!(page.editSnapshot && typeof page.editSnapshot === "object")
+    };
+  }
+
+  async function readPageMetadata() {
+    const db = await openDb();
+    try {
+      return await new Promise(function (resolve, reject) {
+        const result = [];
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const request = tx.objectStore(STORE_NAME).openCursor();
+        request.onsuccess = function () {
+          const cursor = request.result;
+          if (!cursor) return;
+          result.push(metadataFromPage(cursor.value || {}));
+          cursor.continue();
+        };
+        request.onerror = function () { reject(request.error || new Error("Nie udało się odczytać Koszyka Feniksa.")); };
+        tx.oncomplete = function () { resolve(result); };
+        tx.onerror = function () { reject(tx.error || new Error("Błąd transakcji Koszyka Feniksa.")); };
+      });
+    } finally {
+      db.close();
     }
   }
 
-  function blobToDataUrl(blob){return new Promise(function(resolve,reject){const reader=new FileReader();reader.onload=function(){resolve(String(reader.result||""))};reader.onerror=function(){reject(reader.error||new Error("Błąd odczytu pliku."))};reader.readAsDataURL(blob)})}
-  function dataUrlToBlob(dataUrl){const parts=String(dataUrl||"").split(",");if(parts.length<2)throw new Error("Uszkodzone dane obrazu w pliku projektu.");const mimeMatch=parts[0].match(/data:([^;]+)/);const mime=mimeMatch?mimeMatch[1]:"application/octet-stream";const binary=atob(parts.slice(1).join(","));const bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return new Blob([bytes],{type:mime})}
-  async function toPortable(value){if(value===null||value===undefined)return value;if(typeof Blob!=="undefined"&&value instanceof Blob){return{$fenixType:value instanceof File?"File":"Blob",name:value.name||"",lastModified:value.lastModified||0,mimeType:value.type||"application/octet-stream",dataUrl:await blobToDataUrl(value)}}if(Array.isArray(value)){const out=[];for(const item of value)out.push(await toPortable(item));return out}if(typeof value==="object"){const out={};for(const key of Object.keys(value))out[key]=await toPortable(value[key]);return out}return value}
-  async function fromPortable(value){if(value===null||value===undefined)return value;if(Array.isArray(value)){const out=[];for(const item of value)out.push(await fromPortable(item));return out}if(typeof value==="object"&&value.$fenixType&&(value.$fenixType==="Blob"||value.$fenixType==="File")){const blob=dataUrlToBlob(value.dataUrl);if(value.$fenixType==="File"&&typeof File!=="undefined")return new File([blob],value.name||"asset",{type:value.mimeType||blob.type,lastModified:value.lastModified||Date.now()});return blob}if(typeof value==="object"){const out={};for(const key of Object.keys(value))out[key]=await fromPortable(value[key]);return out}return value}
-  function safeName(value){return String(value||"fenix-project").trim().toLowerCase().replace(/[^a-z0-9ąćęłńóśźż_-]+/gi,"-").replace(/^-+|-+$/g,"")||"fenix-project"}
-  function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1200)}
-  function setTransferStatus(message,isError,isSuccess){const node=el("basketTransferStatus");if(!node)return;node.textContent=message;node.classList.toggle("is-error",!!isError);node.classList.toggle("is-success",!!isSuccess)}
+  async function getPage(id) {
+    const db = await openDb();
+    try {
+      return await new Promise(function (resolve, reject) {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const request = tx.objectStore(STORE_NAME).get(id);
+        request.onsuccess = function () { resolve(request.result || null); };
+        request.onerror = function () { reject(request.error || new Error("Nie udało się odczytać strony z Koszyka.")); };
+      });
+    } finally {
+      db.close();
+    }
+  }
 
-  async function exportBasket(){const button=el("exportBasket");button.disabled=true;try{setTransferStatus("Przygotowywanie pliku projektu. Przy wielu stronach może to potrwać...",false,false);const pages=sortPages(await readPages());if(!pages.length)throw new Error("Koszyk jest pusty.");const portablePages=[];for(let i=0;i<pages.length;i++){setTransferStatus("Pakowanie strony "+(i+1)+" z "+pages.length+"...",false,false);portablePages.push(await toPortable(pages[i]))}const projectName=safeName(el("basketProjectName").value);const pack={format:FORMAT,version:FORMAT_VERSION,projectName:projectName,exportedAt:new Date().toISOString(),pageCount:portablePages.length,pages:portablePages};const blob=new Blob([JSON.stringify(pack)],{type:"application/json"});downloadBlob(blob,projectName+".fenixbasket");setTransferStatus("Wyeksportowano "+pages.length+" stron do "+projectName+".fenixbasket. Zachowaj ten plik jako backup.",false,true)}catch(error){setTransferStatus(error&&error.message?error.message:"Nie udało się wyeksportować koszyka.",true,false)}finally{button.disabled=false}}
+  async function putPages(pages) {
+    const db = await openDb();
+    try {
+      await new Promise(function (resolve, reject) {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        (pages || []).forEach(function (page) { if (page) store.put(page); });
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error || new Error("Błąd zapisu Koszyka Feniksa.")); };
+      });
+    } finally {
+      db.close();
+    }
+  }
 
-  async function importBasket(){const file=state.importFile;if(!file)return;const button=el("importBasket");button.disabled=true;try{setTransferStatus("Odczytywanie pliku projektu...",false,false);const pack=JSON.parse(await file.text());if(!pack||pack.format!==FORMAT||!Array.isArray(pack.pages))throw new Error("To nie jest prawidłowy plik .fenixbasket.");if(Number(pack.version)>FORMAT_VERSION)throw new Error("Plik pochodzi z nowszej, nieobsługiwanej wersji Feniksa.");const restored=[];for(let i=0;i<pack.pages.length;i++){setTransferStatus("Przywracanie strony "+(i+1)+" z "+pack.pages.length+"...",false,false);restored.push(await fromPortable(pack.pages[i]))}const mode=el("importBasketMode").value;if(mode==="replace"){if(!window.confirm("Zastąpić obecny Koszyk zawartością pliku?"))return;restored.forEach(function(page,index){page.order=index;page.basketOrder=index});await writePages(restored,true)}else{const existing=sortPages(await readPages());const used=new Set(existing.map(function(p){return p.id}));restored.forEach(function(page,index){if(!page.id||used.has(page.id))page.id=createId();used.add(page.id);page.order=existing.length+index;page.basketOrder=existing.length+index});await writePages(restored,false)}if(pack.projectName)el("basketProjectName").value=pack.projectName;await render();setTransferStatus("Zaimportowano "+restored.length+" stron. Projekt jest gotowy do dalszej pracy.",false,true)}catch(error){setTransferStatus(error&&error.message?error.message:"Nie udało się zaimportować projektu.",true,false)}finally{button.disabled=!state.importFile}}
+  async function deletePages(ids) {
+    const unique = Array.from(new Set((ids || []).filter(Boolean)));
+    const db = await openDb();
+    try {
+      await new Promise(function (resolve, reject) {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        unique.forEach(function (id) { store.delete(id); });
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error || new Error("Nie udało się usunąć strony z Koszyka.")); };
+      });
+    } finally {
+      db.close();
+    }
+  }
 
-  document.addEventListener("DOMContentLoaded",function(){el("refreshBasket").addEventListener("click",render);el("clearBasket").addEventListener("click",async function(){if(!window.confirm("Usunąć wszystkie strony z Koszyka Feniksa? Tej operacji nie można cofnąć."))return;await clearPages();await render()});el("exportBasket").addEventListener("click",exportBasket);el("importBasketFile").addEventListener("change",function(event){state.importFile=event.target.files&&event.target.files[0]||null;el("importBasket").disabled=!state.importFile;setTransferStatus(state.importFile?"Wybrano plik: "+state.importFile.name:"Nie wybrano pliku.",false,false)});el("importBasket").addEventListener("click",importBasket);el("basketPreviewClose").addEventListener("click",closePreview);document.querySelectorAll("[data-preview-close]").forEach(function(node){node.addEventListener("click",closePreview)});document.addEventListener("keydown",function(event){if(event.key==="Escape"&&!el("basketPreviewModal").hidden)closePreview()});window.addEventListener("beforeunload",revokeUrls);render()})
+  async function clearPages() {
+    const db = await openDb();
+    try {
+      await new Promise(function (resolve, reject) {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).clear();
+        tx.oncomplete = resolve;
+        tx.onerror = function () { reject(tx.error || new Error("Nie udało się wyczyścić Koszyka.")); };
+      });
+    } finally {
+      db.close();
+    }
+  }
+
+  function sourceLabel(page) {
+    const source = page.sourceModule || "other";
+    return window.FenixBasketStatus ? window.FenixBasketStatus.getSourceLabel(source) : source;
+  }
+
+  function pageTitle(page, index) {
+    return page.title || page.fileName || (sourceLabel(page) + " — strona " + (index + 1));
+  }
+
+  function orderValue(page, fallback) {
+    const basketOrder = Number(page && page.basketOrder);
+    if (Number.isFinite(basketOrder)) return basketOrder;
+    const order = Number(page && page.order);
+    if (Number.isFinite(order)) return order;
+    return Number(fallback) || 999999;
+  }
+
+  function sortPages(pages) {
+    return pages.sort(function (a, b) {
+      const diff = orderValue(a) - orderValue(b);
+      if (diff) return diff;
+      return String(a.createdAt || a.id || "").localeCompare(String(b.createdAt || b.id || ""));
+    });
+  }
+
+  function pairId(page) { return page.mazePairId || page.wordSearchPairId || ""; }
+  function pairRole(page) { return page.mazePairRole || page.wordSearchPairRole || (page.isSolution ? "solution" : "puzzle"); }
+  function pairPartnerId(page) { return page.mazePartnerId || page.wordSearchPartnerId || ""; }
+  function isPaired(page) { return !!pairId(page); }
+
+  function setTransferStatus(message, isError, isSuccess) {
+    const node = el("basketTransferStatus");
+    if (!node) return;
+    node.textContent = message;
+    node.classList.toggle("is-error", !!isError);
+    node.classList.toggle("is-success", !!isSuccess);
+  }
+
+  function renderSourceSummary(pages) {
+    const root = el("basketSources");
+    if (!root) return;
+    root.textContent = "";
+    const counts = {};
+    pages.forEach(function (page) {
+      const label = sourceLabel(page);
+      counts[label] = (counts[label] || 0) + 1;
+    });
+    Object.keys(counts).sort().forEach(function (label) {
+      const item = document.createElement("span");
+      item.textContent = label + ": " + counts[label];
+      root.appendChild(item);
+    });
+  }
+
+  function button(text, className, handler) {
+    const node = document.createElement("button");
+    node.type = "button";
+    node.textContent = text;
+    if (className) node.className = className;
+    node.addEventListener("click", handler);
+    return node;
+  }
+
+  function createId() {
+    return window.crypto && crypto.randomUUID
+      ? crypto.randomUUID()
+      : "basket-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+  }
+
+  function revokePreviewUrl() {
+    if (!state.previewUrl) return;
+    try { URL.revokeObjectURL(state.previewUrl); } catch (error) {}
+    state.previewUrl = "";
+  }
+
+  function previewSource(page) {
+    const strings = [page.thumbnail, page.preview, page.previewUrl, page.dataUrl, page.pngDataUrl, page.imageData, page.image];
+    const dataUrl = strings.find(function (value) { return typeof value === "string" && value.indexOf("data:image") === 0; });
+    if (dataUrl) return dataUrl;
+    const blobs = [page.blob, page.pngBlob, page.imageBlob, page.file];
+    const blob = blobs.find(function (value) { return typeof Blob !== "undefined" && value instanceof Blob; });
+    if (!blob) return "";
+    state.previewUrl = URL.createObjectURL(blob);
+    return state.previewUrl;
+  }
+
+  function closePreview() {
+    const image = el("basketPreviewImage");
+    if (image) image.removeAttribute("src");
+    const modal = el("basketPreviewModal");
+    if (modal) modal.hidden = true;
+    document.body.style.overflow = "";
+    revokePreviewUrl();
+  }
+
+  async function openPreview(page, index) {
+    const modal = el("basketPreviewModal");
+    const image = el("basketPreviewImage");
+    if (!modal || !image) return;
+
+    closePreview();
+    el("basketPreviewTitle").textContent = pageTitle(page, index);
+    el("basketPreviewMeta").textContent = "Pozycja " + (index + 1) + " · wczytywanie jednej strony…";
+    image.alt = "Wczytywanie podglądu strony";
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    try {
+      const fullPage = await getPage(page.id);
+      const src = fullPage ? previewSource(fullPage) : "";
+      if (!src) throw new Error("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.");
+      image.alt = "Pełny podgląd strony z Koszyka Feniksa";
+      image.src = src;
+      el("basketPreviewMeta").textContent = "Pozycja " + (index + 1) + " · " + sourceLabel(page) + " · " + (page.width || "?") + "×" + (page.height || "?");
+    } catch (error) {
+      closePreview();
+      setTransferStatus(error && error.message ? error.message : "Nie udało się wczytać podglądu.", true, false);
+    }
+  }
+
+  async function removePageOrPair(page) {
+    const partnerId = pairPartnerId(page);
+    const paired = isPaired(page) && partnerId;
+    const message = paired ? "Usunąć całą parę 1:1: zadanie i rozwiązanie?" : "Usunąć tę stronę z Koszyka Feniksa?";
+    if (!window.confirm(message)) return;
+    await deletePages(paired ? [page.id, partnerId] : [page.id]);
+    await render();
+  }
+
+  async function movePage(id, delta) {
+    const pages = state.pages.slice();
+    const index = pages.findIndex(function (page) { return page.id === id; });
+    const target = index + delta;
+    if (index < 0 || target < 0 || target >= pages.length) return;
+
+    const first = await getPage(pages[index].id);
+    const second = await getPage(pages[target].id);
+    if (!first || !second) return;
+
+    const firstOrder = orderValue(first, index);
+    const secondOrder = orderValue(second, target);
+    first.order = secondOrder;
+    first.basketOrder = secondOrder;
+    second.order = firstOrder;
+    second.basketOrder = firstOrder;
+    await putPages([first, second]);
+    await render();
+  }
+
+  async function duplicatePage(page) {
+    const original = await getPage(page.id);
+    if (!original) return;
+    const copy = typeof structuredClone === "function" ? structuredClone(original) : Object.assign({}, original);
+    const now = new Date().toISOString();
+    copy.id = createId();
+    copy.createdAt = now;
+    copy.updatedAt = now;
+    copy.title = (original.title || original.fileName || "Strona") + " — kopia";
+    copy.order = state.pages.length;
+    copy.basketOrder = state.pages.length;
+    delete copy.mazePairId;
+    delete copy.mazePairRole;
+    delete copy.mazePartnerId;
+    delete copy.wordSearchPairId;
+    delete copy.wordSearchPairRole;
+    delete copy.wordSearchPartnerId;
+    await putPages([copy]);
+    await render();
+  }
+
+  function renderCard(page, index) {
+    const card = document.createElement("article");
+    card.className = "basket-card basket-card-light";
+
+    const preview = document.createElement("div");
+    preview.className = "basket-card-preview basket-card-preview-light";
+    preview.tabIndex = 0;
+    preview.setAttribute("role", "button");
+    preview.setAttribute("aria-label", "Wczytaj podgląd strony " + (index + 1));
+    const label = document.createElement("span");
+    label.textContent = "PODGLĄD NA ŻĄDANIE";
+    const number = document.createElement("strong");
+    number.textContent = index + 1;
+    const hint = document.createElement("small");
+    hint.textContent = "Kliknij, aby wczytać jedną stronę";
+    preview.append(label, number, hint);
+    preview.addEventListener("click", function () { openPreview(page, index); });
+    preview.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPreview(page, index);
+      }
+    });
+
+    const body = document.createElement("div");
+    body.className = "basket-card-body";
+    const position = document.createElement("span");
+    position.className = "basket-card-number";
+    position.textContent = "Pozycja " + (index + 1);
+    const title = document.createElement("h3");
+    title.textContent = pageTitle(page, index);
+    const source = document.createElement("p");
+    source.textContent = sourceLabel(page) + (isPaired(page) ? " · PARA 1:1 · " + (pairRole(page) === "solution" ? "ROZWIĄZANIE" : "ZADANIE") : "");
+
+    const actions = document.createElement("div");
+    actions.className = "basket-card-actions";
+    actions.appendChild(button("Podgląd", "is-primary", function () { openPreview(page, index); }));
+
+    const editUrl = EDIT_MODULES[page.sourceModule];
+    if (editUrl && page.hasEditSnapshot) {
+      const edit = document.createElement("a");
+      const targetId = pairRole(page) === "solution" && pairPartnerId(page) ? pairPartnerId(page) : page.id;
+      edit.href = editUrl + "?editBasketPage=" + encodeURIComponent(targetId);
+      edit.textContent = isPaired(page) ? "Edytuj parę w module" : "Edytuj w module";
+      edit.className = "is-primary";
+      actions.appendChild(edit);
+    }
+
+    actions.appendChild(button("↑ Wyżej", "", function () { movePage(page.id, -1); }));
+    actions.appendChild(button("↓ Niżej", "", function () { movePage(page.id, 1); }));
+    if (!isPaired(page)) actions.appendChild(button("Duplikuj", "", function () { duplicatePage(page); }));
+    actions.appendChild(button(isPaired(page) ? "Usuń parę" : "Usuń", "is-danger", function () { removePageOrPair(page); }));
+
+    body.append(position, title, source, actions);
+    card.append(preview, body);
+    return card;
+  }
+
+  async function render() {
+    const token = ++state.renderToken;
+    closePreview();
+    const grid = el("basketGrid");
+    const empty = el("basketEmpty");
+    const total = el("basketTotal");
+    if (!grid || !empty || !total) return;
+
+    grid.textContent = "";
+    total.textContent = "…";
+    try {
+      const pages = sortPages(await readPageMetadata());
+      if (token !== state.renderToken) return;
+      state.pages = pages;
+      total.textContent = pages.length;
+      renderSourceSummary(pages);
+      empty.hidden = pages.length > 0;
+      grid.hidden = pages.length === 0;
+
+      const fragment = document.createDocumentFragment();
+      pages.forEach(function (page, index) { fragment.appendChild(renderCard(page, index)); });
+      grid.appendChild(fragment);
+      setTransferStatus("Tryb lekki: lista nie wczytuje wszystkich PNG. Podgląd otwiera tylko jedną wybraną stronę.", false, true);
+      if (window.FenixBasketStatus && window.FenixBasketStatus.refresh) window.FenixBasketStatus.refresh();
+    } catch (error) {
+      total.textContent = "—";
+      empty.hidden = false;
+      empty.querySelector("h2").textContent = "Nie udało się odczytać koszyka";
+      empty.querySelector("p").textContent = error && error.message ? error.message : "Nieznany błąd.";
+      setTransferStatus(error && error.message ? error.message : "Nie udało się wyrenderować Koszyka.", true, false);
+    }
+  }
+
+  function install() {
+    const refresh = el("refreshBasket");
+    if (refresh) refresh.addEventListener("click", render);
+    const clear = el("clearBasket");
+    if (clear) clear.addEventListener("click", async function () {
+      if (!window.confirm("Usunąć wszystkie strony z Koszyka Feniksa? Tej operacji nie można cofnąć.")) return;
+      await clearPages();
+      await render();
+    });
+    const close = el("basketPreviewClose");
+    if (close) close.addEventListener("click", closePreview);
+    document.querySelectorAll("[data-preview-close]").forEach(function (node) { node.addEventListener("click", closePreview); });
+    document.addEventListener("keydown", function (event) {
+      const modal = el("basketPreviewModal");
+      if (event.key === "Escape" && modal && !modal.hidden) closePreview();
+    });
+    window.addEventListener("beforeunload", revokePreviewUrl);
+    render();
+  }
+
+  window.FenixBasketManager = { render: render };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install, { once: true });
+  else install();
 })();

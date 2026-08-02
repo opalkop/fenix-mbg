@@ -39,8 +39,8 @@
     const script = document.createElement("script");
     script.id = "mazeStudioPreviewLockLoader";
     script.src = ownScript && ownScript.src
-      ? new URL("maze-studio-preview-lock.js?v=20260801-1", ownScript.src).href
-      : "shared/maze-studio-preview-lock.js?v=20260801-1";
+      ? new URL("maze-studio-preview-lock.js?v=20260802-1", ownScript.src).href
+      : "shared/maze-studio-preview-lock.js?v=20260802-1";
     script.defer = true;
     document.head.appendChild(script);
   }

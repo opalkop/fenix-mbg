@@ -12,7 +12,7 @@
     "coloring-studio":"modules/coloring-studio/coloring-studio.html",
     "word-search-studio":"modules/word-search-studio/word-search-studio.html"
   };
-  const state={pages:[],objectUrls:new Set(),previewUrl:"",importFile:null};
+  const state={pages:[],objectUrls:new Set(),previewUrl:"",importFile:null,renderToken:0};
 
   function el(id){return document.getElementById(id)}
   function openDb(){return new Promise(function(resolve,reject){const request=indexedDB.open(DB_NAME,DB_VERSION);request.onupgradeneeded=function(){const db=request.result;if(!db.objectStoreNames.contains(STORE_NAME))db.createObjectStore(STORE_NAME,{keyPath:"id"})};request.onsuccess=function(){resolve(request.result)};request.onerror=function(){reject(request.error||new Error("Nie udało się otworzyć Koszyka Feniksa."))}})}
@@ -25,7 +25,8 @@
   function sourceLabel(page){const source=page.sourceModule||"other";return window.FenixBasketStatus?window.FenixBasketStatus.getSourceLabel(source):source}
   function pageTitle(page,index){return page.title||page.name||page.fileName||(sourceLabel(page)+" — strona "+(index+1))}
   function sortPages(pages){return pages.sort(function(a,b){const ao=Number.isFinite(a.basketOrder)?a.basketOrder:(Number.isFinite(a.order)?a.order:999999);const bo=Number.isFinite(b.basketOrder)?b.basketOrder:(Number.isFinite(b.order)?b.order:999999);if(ao!==bo)return ao-bo;return String(a.createdAt||a.id||"").localeCompare(String(b.createdAt||b.id||""))})}
-  function revokeUrls(){state.objectUrls.forEach(function(url){URL.revokeObjectURL(url)});state.objectUrls.clear()}
+  function revokeUrl(url){if(!url||String(url).indexOf("blob:")!==0)return;try{URL.revokeObjectURL(url)}catch(error){}state.objectUrls.delete(url)}
+  function revokeUrls(){state.objectUrls.forEach(function(url){try{URL.revokeObjectURL(url)}catch(error){}});state.objectUrls.clear();state.previewUrl=""}
   function previewSource(page){const strings=[page.thumbnail,page.preview,page.previewUrl,page.dataUrl,page.pngDataUrl,page.imageData,page.image];const text=strings.find(function(v){return typeof v==="string"&&v.indexOf("data:image")===0});if(text)return text;const blobs=[page.blob,page.pngBlob,page.imageBlob,page.file];const blob=blobs.find(function(v){return typeof Blob!=="undefined"&&v instanceof Blob});if(blob){const url=URL.createObjectURL(blob);state.objectUrls.add(url);return url}return ""}
   function pairPartnerId(page){return page.mazePartnerId||page.wordSearchPartnerId||(page.editSnapshot&&(page.editSnapshot.mazePartnerId||page.editSnapshot.wordSearchPartnerId))||""}
   function pairRole(page){return page.mazePairRole||page.wordSearchPairRole||(page.editSnapshot&&(page.editSnapshot.mazePairRole||page.editSnapshot.wordSearchPairRole))||""}
@@ -35,22 +36,84 @@
   function renderSourceSummary(pages){const root=el("basketSources");root.textContent="";const counts={};pages.forEach(function(page){const label=sourceLabel(page);counts[label]=(counts[label]||0)+1});Object.keys(counts).sort().forEach(function(label){const item=document.createElement("span");item.textContent=label+": "+counts[label];root.appendChild(item)})}
   function button(text,className,handler){const node=document.createElement("button");node.type="button";node.textContent=text;if(className)node.className=className;node.addEventListener("click",handler);return node}
 
-  function openPreview(page,index,src){if(!src){setTransferStatus("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.",true);return}el("basketPreviewTitle").textContent=pageTitle(page,index);el("basketPreviewMeta").textContent="Pozycja "+(index+1)+" · "+sourceLabel(page)+" · "+(page.width||"?")+"×"+(page.height||"?");el("basketPreviewImage").src=src;el("basketPreviewModal").hidden=false;document.body.style.overflow="hidden"}
-  function closePreview(){el("basketPreviewModal").hidden=true;el("basketPreviewImage").removeAttribute("src");document.body.style.overflow=""}
+  function setPreviewLoading(page,index){el("basketPreviewTitle").textContent=pageTitle(page,index);el("basketPreviewMeta").textContent="Pozycja "+(index+1)+" · "+sourceLabel(page)+" · wczytywanie podglądu…";const image=el("basketPreviewImage");image.removeAttribute("src");image.alt="Wczytywanie podglądu strony";el("basketPreviewModal").hidden=false;document.body.style.overflow="hidden"}
+  function openPreview(page,index){setPreviewLoading(page,index);window.setTimeout(function(){if(state.previewUrl)revokeUrl(state.previewUrl);const src=previewSource(page);if(!src){closePreview();setTransferStatus("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.",true);return}state.previewUrl=src.indexOf("blob:")===0?src:"";const image=el("basketPreviewImage");image.loading="eager";image.decoding="async";image.alt="Pełny podgląd strony z Koszyka Feniksa";image.src=src;el("basketPreviewMeta").textContent="Pozycja "+(index+1)+" · "+sourceLabel(page)+" · "+(page.width||"?")+"×"+(page.height||"?")+" · podgląd wczytany na żądanie"},0)}
+  function closePreview(){const image=el("basketPreviewImage");image.removeAttribute("src");el("basketPreviewModal").hidden=true;document.body.style.overflow="";if(state.previewUrl){revokeUrl(state.previewUrl);state.previewUrl=""}}
   async function removePageOrPair(page){const partnerId=pairPartnerId(page);const paired=isPaired(page)&&partnerId;const message=paired?"Usunąć całą parę 1:1: zadanie i rozwiązanie?":"Usunąć tę stronę z Koszyka Feniksa?";if(!window.confirm(message))return;if(paired)await deletePages([page.id,partnerId]);else await deletePage(page.id);await render()}
 
-  function renderCard(page,index){const card=document.createElement("article");card.className="basket-card";const preview=document.createElement("div");preview.className="basket-card-preview";const src=previewSource(page);if(src){const img=document.createElement("img");img.src=src;img.alt="Podgląd strony "+(index+1);preview.appendChild(img);const badge=document.createElement("span");badge.className="basket-preview-badge";badge.textContent="Kliknij, aby powiększyć";preview.appendChild(badge);preview.addEventListener("click",function(){openPreview(page,index,src)})}else{preview.innerHTML="<span>STRONA</span><strong>"+(index+1)+"</strong>"}
-    const body=document.createElement("div");body.className="basket-card-body";const number=document.createElement("span");number.className="basket-card-number";number.textContent="Pozycja "+(index+1);const title=document.createElement("h3");title.textContent=pageTitle(page,index);const source=document.createElement("p");source.textContent=sourceLabel(page)+(isPaired(page)?" · PARA 1:1 · "+(pairRole(page)==="solution"?"ROZWIĄZANIE":"ZADANIE"):"");const actions=document.createElement("div");actions.className="basket-card-actions";
-    actions.appendChild(button("Podgląd","is-primary",function(){openPreview(page,index,src)}));
-    const editUrl=EDIT_MODULES[page.sourceModule];if(editUrl&&page.editSnapshot){const edit=document.createElement("a");const targetId=pairRole(page)==="solution"&&pairPartnerId(page)?pairPartnerId(page):page.id;edit.href=editUrl+"?editBasketPage="+encodeURIComponent(targetId);edit.textContent=isPaired(page)?"Edytuj parę w module":"Edytuj w module";edit.className="is-primary";actions.appendChild(edit)}
-    actions.appendChild(button("↑ Wyżej","",function(){movePage(page.id,-1)}));actions.appendChild(button("↓ Niżej","",function(){movePage(page.id,1)}));if(!isPaired(page))actions.appendChild(button("Duplikuj","",function(){duplicatePage(page)}));actions.appendChild(button(isPaired(page)?"Usuń parę":"Usuń","is-danger",function(){removePageOrPair(page)}));
-    body.append(number,title,source,actions);card.append(preview,body);return card}
+  function renderCard(page,index){
+    const card=document.createElement("article");
+    card.className="basket-card basket-card-light";
+
+    const preview=document.createElement("div");
+    preview.className="basket-card-preview basket-card-preview-light";
+    preview.tabIndex=0;
+    preview.setAttribute("role","button");
+    preview.setAttribute("aria-label","Wczytaj podgląd strony "+(index+1));
+    const previewLabel=document.createElement("span");
+    previewLabel.textContent="PODGLĄD NA ŻĄDANIE";
+    const previewNumber=document.createElement("strong");
+    previewNumber.textContent=index+1;
+    const previewHint=document.createElement("small");
+    previewHint.textContent="Kliknij, aby wczytać jedną stronę";
+    preview.append(previewLabel,previewNumber,previewHint);
+    preview.addEventListener("click",function(){openPreview(page,index)});
+    preview.addEventListener("keydown",function(event){if(event.key==="Enter"||event.key===" "){event.preventDefault();openPreview(page,index)}});
+
+    const body=document.createElement("div");
+    body.className="basket-card-body";
+    const number=document.createElement("span");
+    number.className="basket-card-number";
+    number.textContent="Pozycja "+(index+1);
+    const title=document.createElement("h3");
+    title.textContent=pageTitle(page,index);
+    const source=document.createElement("p");
+    source.textContent=sourceLabel(page)+(isPaired(page)?" · PARA 1:1 · "+(pairRole(page)==="solution"?"ROZWIĄZANIE":"ZADANIE"):"");
+    const actions=document.createElement("div");
+    actions.className="basket-card-actions";
+    actions.appendChild(button("Podgląd","is-primary",function(){openPreview(page,index)}));
+    const editUrl=EDIT_MODULES[page.sourceModule];
+    if(editUrl&&page.editSnapshot){const edit=document.createElement("a");const targetId=pairRole(page)==="solution"&&pairPartnerId(page)?pairPartnerId(page):page.id;edit.href=editUrl+"?editBasketPage="+encodeURIComponent(targetId);edit.textContent=isPaired(page)?"Edytuj parę w module":"Edytuj w module";edit.className="is-primary";actions.appendChild(edit)}
+    actions.appendChild(button("↑ Wyżej","",function(){movePage(page.id,-1)}));
+    actions.appendChild(button("↓ Niżej","",function(){movePage(page.id,1)}));
+    if(!isPaired(page))actions.appendChild(button("Duplikuj","",function(){duplicatePage(page)}));
+    actions.appendChild(button(isPaired(page)?"Usuń parę":"Usuń","is-danger",function(){removePageOrPair(page)}));
+    body.append(number,title,source,actions);
+    card.append(preview,body);
+    return card
+  }
 
   async function movePage(id,delta){const pages=sortPages(await readPages());const index=pages.findIndex(function(p){return p.id===id});const target=index+delta;if(index<0||target<0||target>=pages.length)return;const temp=pages[index];pages[index]=pages[target];pages[target]=temp;pages.forEach(function(page,i){page.order=i;page.basketOrder=i});await writePages(pages,true);await render()}
   async function duplicatePage(page){let copy;if(typeof structuredClone==="function")copy=structuredClone(page);else copy=await fromPortable(await toPortable(page));const now=new Date().toISOString();copy.id=createId();copy.createdAt=now;copy.updatedAt=now;copy.title=(page.title||page.name||page.fileName||"Strona")+" — kopia";const pages=sortPages(await readPages());copy.order=pages.length;copy.basketOrder=pages.length;await writePages([copy],false);await render()}
   function createId(){return window.crypto&&crypto.randomUUID?crypto.randomUUID():"basket-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
 
-  async function render(){revokeUrls();const grid=el("basketGrid"),empty=el("basketEmpty"),total=el("basketTotal");grid.textContent="";try{const pages=sortPages(await readPages());state.pages=pages;total.textContent=pages.length;renderSourceSummary(pages);empty.hidden=pages.length>0;grid.hidden=pages.length===0;pages.forEach(function(page,index){grid.appendChild(renderCard(page,index))});if(window.FenixBasketStatus&&window.FenixBasketStatus.refresh)window.FenixBasketStatus.refresh()}catch(error){total.textContent="—";empty.hidden=false;empty.querySelector("h2").textContent="Nie udało się odczytać koszyka";empty.querySelector("p").textContent=error&&error.message?error.message:"Nieznany błąd."}}
+  async function render(){
+    const token=++state.renderToken;
+    closePreview();
+    revokeUrls();
+    const grid=el("basketGrid"),empty=el("basketEmpty"),total=el("basketTotal");
+    grid.textContent="";
+    total.textContent="…";
+    try{
+      const pages=sortPages(await readPages());
+      if(token!==state.renderToken)return;
+      state.pages=pages;
+      total.textContent=pages.length;
+      renderSourceSummary(pages);
+      empty.hidden=pages.length>0;
+      grid.hidden=pages.length===0;
+      const fragment=document.createDocumentFragment();
+      pages.forEach(function(page,index){fragment.appendChild(renderCard(page,index))});
+      grid.appendChild(fragment);
+      setTransferStatus("Tryb lekki koszyka: obrazy nie są ładowane automatycznie. Kliknij Podgląd przy wybranej stronie.",false,true);
+      if(window.FenixBasketStatus&&window.FenixBasketStatus.refresh)window.FenixBasketStatus.refresh()
+    }catch(error){
+      total.textContent="—";
+      empty.hidden=false;
+      empty.querySelector("h2").textContent="Nie udało się odczytać koszyka";
+      empty.querySelector("p").textContent=error&&error.message?error.message:"Nieznany błąd."
+    }
+  }
 
   function blobToDataUrl(blob){return new Promise(function(resolve,reject){const reader=new FileReader();reader.onload=function(){resolve(String(reader.result||""))};reader.onerror=function(){reject(reader.error||new Error("Błąd odczytu pliku."))};reader.readAsDataURL(blob)})}
   function dataUrlToBlob(dataUrl){const parts=String(dataUrl||"").split(",");if(parts.length<2)throw new Error("Uszkodzone dane obrazu w pliku projektu.");const mimeMatch=parts[0].match(/data:([^;]+)/);const mime=mimeMatch?mimeMatch[1]:"application/octet-stream";const binary=atob(parts.slice(1).join(","));const bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return new Blob([bytes],{type:mime})}
@@ -58,7 +121,7 @@
   async function fromPortable(value){if(value===null||value===undefined)return value;if(Array.isArray(value)){const out=[];for(const item of value)out.push(await fromPortable(item));return out}if(typeof value==="object"&&value.$fenixType&&(value.$fenixType==="Blob"||value.$fenixType==="File")){const blob=dataUrlToBlob(value.dataUrl);if(value.$fenixType==="File"&&typeof File!=="undefined")return new File([blob],value.name||"asset",{type:value.mimeType||blob.type,lastModified:value.lastModified||Date.now()});return blob}if(typeof value==="object"){const out={};for(const key of Object.keys(value))out[key]=await fromPortable(value[key]);return out}return value}
   function safeName(value){return String(value||"fenix-project").trim().toLowerCase().replace(/[^a-z0-9ąćęłńóśźż_-]+/gi,"-").replace(/^-+|-+$/g,"")||"fenix-project"}
   function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1200)}
-  function setTransferStatus(message,isError,isSuccess){const node=el("basketTransferStatus");node.textContent=message;node.classList.toggle("is-error",!!isError);node.classList.toggle("is-success",!!isSuccess)}
+  function setTransferStatus(message,isError,isSuccess){const node=el("basketTransferStatus");if(!node)return;node.textContent=message;node.classList.toggle("is-error",!!isError);node.classList.toggle("is-success",!!isSuccess)}
 
   async function exportBasket(){const button=el("exportBasket");button.disabled=true;try{setTransferStatus("Przygotowywanie pliku projektu. Przy wielu stronach może to potrwać...",false,false);const pages=sortPages(await readPages());if(!pages.length)throw new Error("Koszyk jest pusty.");const portablePages=[];for(let i=0;i<pages.length;i++){setTransferStatus("Pakowanie strony "+(i+1)+" z "+pages.length+"...",false,false);portablePages.push(await toPortable(pages[i]))}const projectName=safeName(el("basketProjectName").value);const pack={format:FORMAT,version:FORMAT_VERSION,projectName:projectName,exportedAt:new Date().toISOString(),pageCount:portablePages.length,pages:portablePages};const blob=new Blob([JSON.stringify(pack)],{type:"application/json"});downloadBlob(blob,projectName+".fenixbasket");setTransferStatus("Wyeksportowano "+pages.length+" stron do "+projectName+".fenixbasket. Zachowaj ten plik jako backup.",false,true)}catch(error){setTransferStatus(error&&error.message?error.message:"Nie udało się wyeksportować koszyka.",true,false)}finally{button.disabled=false}}
 

@@ -4,16 +4,23 @@
   const DB_NAME = "fenixBookBasketDb";
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
+  const THUMB_WIDTH = 306;
+  const THUMB_HEIGHT = 396;
   const EDIT_MODULES = {
     "maze-studio": "modules/maze-studio/maze-studio.html",
     "complete-picture": "modules/complete-picture/complete-picture.html",
     "coloring-studio": "modules/coloring-studio/coloring-studio.html",
     "word-search-studio": "modules/word-search-studio/word-search-studio.html"
   };
+
   const state = {
     pages: [],
     previewUrl: "",
-    renderToken: 0
+    renderToken: 0,
+    thumbnailObserver: null,
+    thumbnailQueue: [],
+    thumbnailBusy: false,
+    thumbnailUrls: new Map()
   };
 
   function el(id) { return document.getElementById(id); }
@@ -213,21 +220,165 @@
       : "basket-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   }
 
+  function imagePayload(page) {
+    const strings = [page.thumbnail, page.preview, page.previewUrl, page.dataUrl, page.pngDataUrl, page.imageData, page.image];
+    const dataUrl = strings.find(function (value) { return typeof value === "string" && value.indexOf("data:image") === 0; });
+    if (dataUrl) return { src: dataUrl, revoke: false };
+    const blobs = [page.blob, page.pngBlob, page.imageBlob, page.file];
+    const blob = blobs.find(function (value) { return typeof Blob !== "undefined" && value instanceof Blob; });
+    if (!blob) return { src: "", revoke: false };
+    return { src: URL.createObjectURL(blob), revoke: true };
+  }
+
   function revokePreviewUrl() {
     if (!state.previewUrl) return;
     try { URL.revokeObjectURL(state.previewUrl); } catch (error) {}
     state.previewUrl = "";
   }
 
-  function previewSource(page) {
-    const strings = [page.thumbnail, page.preview, page.previewUrl, page.dataUrl, page.pngDataUrl, page.imageData, page.image];
-    const dataUrl = strings.find(function (value) { return typeof value === "string" && value.indexOf("data:image") === 0; });
-    if (dataUrl) return dataUrl;
-    const blobs = [page.blob, page.pngBlob, page.imageBlob, page.file];
-    const blob = blobs.find(function (value) { return typeof Blob !== "undefined" && value instanceof Blob; });
-    if (!blob) return "";
-    state.previewUrl = URL.createObjectURL(blob);
-    return state.previewUrl;
+  function revokeThumbnailUrls() {
+    state.thumbnailUrls.forEach(function (url) {
+      try { URL.revokeObjectURL(url); } catch (error) {}
+    });
+    state.thumbnailUrls.clear();
+  }
+
+  function resetThumbnailLoader() {
+    if (state.thumbnailObserver) state.thumbnailObserver.disconnect();
+    state.thumbnailObserver = null;
+    state.thumbnailQueue = [];
+    state.thumbnailBusy = false;
+    revokeThumbnailUrls();
+  }
+
+  function loadImage(src) {
+    return new Promise(function (resolve, reject) {
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = function () { resolve(image); };
+      image.onerror = function () { reject(new Error("Nie udało się odczytać obrazu strony.")); };
+      image.src = src;
+    });
+  }
+
+  function canvasToBlob(canvas, type, quality) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) {
+        if (blob) resolve(blob);
+        else reject(new Error("Nie udało się utworzyć miniatury."));
+      }, type || "image/jpeg", quality === undefined ? 0.78 : quality);
+    });
+  }
+
+  async function createThumbnailBlob(page) {
+    const payload = imagePayload(page);
+    if (!payload.src) throw new Error("Brak obrazu strony.");
+    let image;
+    try {
+      image = await loadImage(payload.src);
+      const canvas = document.createElement("canvas");
+      canvas.width = THUMB_WIDTH;
+      canvas.height = THUMB_HEIGHT;
+      const ctx = canvas.getContext("2d", { alpha: false });
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, THUMB_WIDTH, THUMB_HEIGHT);
+      const scale = Math.min(THUMB_WIDTH / image.naturalWidth, THUMB_HEIGHT / image.naturalHeight);
+      const width = Math.max(1, Math.round(image.naturalWidth * scale));
+      const height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const x = Math.round((THUMB_WIDTH - width) / 2);
+      const y = Math.round((THUMB_HEIGHT - height) / 2);
+      ctx.drawImage(image, x, y, width, height);
+      return await canvasToBlob(canvas, "image/jpeg", 0.8);
+    } finally {
+      if (image) image.removeAttribute("src");
+      if (payload.revoke) {
+        try { URL.revokeObjectURL(payload.src); } catch (error) {}
+      }
+    }
+  }
+
+  function showThumbnail(preview, page, index, blob) {
+    if (!preview.isConnected) return;
+    const oldUrl = state.thumbnailUrls.get(page.id);
+    if (oldUrl) {
+      try { URL.revokeObjectURL(oldUrl); } catch (error) {}
+    }
+    const url = URL.createObjectURL(blob);
+    state.thumbnailUrls.set(page.id, url);
+
+    const image = document.createElement("img");
+    image.className = "basket-card-thumbnail";
+    image.alt = "Miniatura strony " + (index + 1);
+    image.decoding = "async";
+    image.src = url;
+
+    const badge = document.createElement("span");
+    badge.className = "basket-preview-badge";
+    badge.textContent = "Kliknij, aby powiększyć";
+
+    preview.replaceChildren(image, badge);
+    preview.classList.remove("is-thumbnail-loading", "is-thumbnail-error");
+    preview.dataset.thumbnailState = "ready";
+  }
+
+  function showThumbnailError(preview, index) {
+    if (!preview.isConnected) return;
+    const label = document.createElement("span");
+    label.textContent = "PODGLĄD";
+    const number = document.createElement("strong");
+    number.textContent = index + 1;
+    const hint = document.createElement("small");
+    hint.textContent = "Kliknij, aby otworzyć pełną stronę";
+    preview.replaceChildren(label, number, hint);
+    preview.classList.remove("is-thumbnail-loading");
+    preview.classList.add("is-thumbnail-error");
+    preview.dataset.thumbnailState = "error";
+  }
+
+  async function processThumbnailQueue() {
+    if (state.thumbnailBusy) return;
+    const task = state.thumbnailQueue.shift();
+    if (!task) return;
+    state.thumbnailBusy = true;
+
+    try {
+      if (task.token !== state.renderToken || !task.preview.isConnected) return;
+      task.preview.classList.add("is-thumbnail-loading");
+      const fullPage = await getPage(task.page.id);
+      if (!fullPage) throw new Error("Nie znaleziono strony w Koszyku.");
+      const thumbnail = await createThumbnailBlob(fullPage);
+      if (task.token === state.renderToken) showThumbnail(task.preview, task.page, task.index, thumbnail);
+    } catch (error) {
+      if (task.token === state.renderToken) showThumbnailError(task.preview, task.index);
+      console.warn("FENIX: nie udało się utworzyć miniatury strony.", error);
+    } finally {
+      state.thumbnailBusy = false;
+      window.setTimeout(processThumbnailQueue, 35);
+    }
+  }
+
+  function queueThumbnail(page, index, preview, token) {
+    if (!preview || preview.dataset.thumbnailState !== "waiting") return;
+    preview.dataset.thumbnailState = "queued";
+    state.thumbnailQueue.push({ page: page, index: index, preview: preview, token: token });
+    processThumbnailQueue();
+  }
+
+  function installThumbnailObserver(token) {
+    if (state.thumbnailObserver) state.thumbnailObserver.disconnect();
+    state.thumbnailObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        const pageIndex = Number(entry.target.dataset.pageIndex);
+        const page = state.pages[pageIndex];
+        if (page) queueThumbnail(page, pageIndex, entry.target, token);
+      });
+    }, { root: null, rootMargin: "420px 0px", threshold: 0.01 });
+
+    document.querySelectorAll(".basket-card-preview[data-thumbnail-state='waiting']").forEach(function (preview) {
+      state.thumbnailObserver.observe(preview);
+    });
   }
 
   function closePreview() {
@@ -253,10 +404,11 @@
 
     try {
       const fullPage = await getPage(page.id);
-      const src = fullPage ? previewSource(fullPage) : "";
-      if (!src) throw new Error("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.");
+      const payload = fullPage ? imagePayload(fullPage) : { src: "", revoke: false };
+      if (!payload.src) throw new Error("Ta pozycja nie zawiera obrazu możliwego do wyświetlenia.");
+      if (payload.revoke) state.previewUrl = payload.src;
       image.alt = "Pełny podgląd strony z Koszyka Feniksa";
-      image.src = src;
+      image.src = payload.src;
       el("basketPreviewMeta").textContent = "Pozycja " + (index + 1) + " · " + sourceLabel(page) + " · " + (page.width || "?") + "×" + (page.height || "?");
     } catch (error) {
       closePreview();
@@ -321,15 +473,19 @@
     const preview = document.createElement("div");
     preview.className = "basket-card-preview basket-card-preview-light";
     preview.tabIndex = 0;
+    preview.dataset.pageIndex = String(index);
+    preview.dataset.thumbnailState = "waiting";
     preview.setAttribute("role", "button");
-    preview.setAttribute("aria-label", "Wczytaj podgląd strony " + (index + 1));
+    preview.setAttribute("aria-label", "Otwórz podgląd strony " + (index + 1));
+
     const label = document.createElement("span");
-    label.textContent = "PODGLĄD NA ŻĄDANIE";
+    label.textContent = "MINIATURA";
     const number = document.createElement("strong");
     number.textContent = index + 1;
     const hint = document.createElement("small");
-    hint.textContent = "Kliknij, aby wczytać jedną stronę";
+    hint.textContent = "Wczytywanie po pojawieniu się na ekranie";
     preview.append(label, number, hint);
+
     preview.addEventListener("click", function () { openPreview(page, index); });
     preview.addEventListener("keydown", function (event) {
       if (event.key === "Enter" || event.key === " ") {
@@ -375,6 +531,7 @@
   async function render() {
     const token = ++state.renderToken;
     closePreview();
+    resetThumbnailLoader();
     const grid = el("basketGrid");
     const empty = el("basketEmpty");
     const total = el("basketTotal");
@@ -394,7 +551,9 @@
       const fragment = document.createDocumentFragment();
       pages.forEach(function (page, index) { fragment.appendChild(renderCard(page, index)); });
       grid.appendChild(fragment);
-      setTransferStatus("Tryb lekki: lista nie wczytuje wszystkich PNG. Podgląd otwiera tylko jedną wybraną stronę.", false, true);
+
+      if (pages.length) installThumbnailObserver(token);
+      setTransferStatus("Bezpieczny podgląd włączony: lekkie miniatury są tworzone pojedynczo tylko dla widocznych kart.", false, true);
       if (window.FenixBasketStatus && window.FenixBasketStatus.refresh) window.FenixBasketStatus.refresh();
     } catch (error) {
       total.textContent = "—";
@@ -421,7 +580,10 @@
       const modal = el("basketPreviewModal");
       if (event.key === "Escape" && modal && !modal.hidden) closePreview();
     });
-    window.addEventListener("beforeunload", revokePreviewUrl);
+    window.addEventListener("beforeunload", function () {
+      revokePreviewUrl();
+      resetThumbnailLoader();
+    });
     render();
   }
 

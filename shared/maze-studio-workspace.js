@@ -28,8 +28,8 @@
     const script = document.createElement("script");
     script.id = "mazeStudioNumberingFixLoader";
     script.src = ownScript && ownScript.src
-      ? new URL("maze-studio-numbering-fix.js?v=20260801-1", ownScript.src).href
-      : "shared/maze-studio-numbering-fix.js?v=20260801-1";
+      ? new URL("maze-studio-numbering-fix.js?v=20260803-1", ownScript.src).href
+      : "shared/maze-studio-numbering-fix.js?v=20260803-1";
     script.defer = true;
     document.head.appendChild(script);
   }

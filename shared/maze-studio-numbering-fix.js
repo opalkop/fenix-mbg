@@ -4,7 +4,7 @@
   const params = new URLSearchParams(window.location.search);
   if (params.get("fenixMode") !== "maze-studio") return;
 
-  const VERSION = "2026.08.01-1";
+  const VERSION = "2026.08.03-1";
   const DB_NAME = "fenixBookBasketDb";
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
@@ -263,6 +263,42 @@
     return canvasToBlob(canvas);
   }
 
+  function patchMazeStudioPageLabels() {
+    const original = window.drawMazePage;
+    if (typeof original !== "function") return false;
+    if (original.__fenixMazeStudioLabelsPatched) return true;
+
+    const patched = function (ctx, settings, mazeData, isSolution) {
+      original.apply(this, arguments);
+
+      const number = String(mazeData && mazeData.index || "");
+      const mazeTitle = String(settings.mazePageTitle || "Maze");
+      const solutionTitle = String(settings.solutionTitle || "Solution");
+      const title = mazeTitle + " " + number + (isSolution ? " — " + solutionTitle : "");
+      const subtitle = isSolution
+        ? settings.solutionSubtitle || "Follow the dashed path to check your answer."
+        : settings.mazePageSubtitle || "Find the path through the maze!";
+
+      ctx.save();
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(260, 130, 2030, 330);
+      ctx.fillRect(300, 3040, 1950, 220);
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#111827";
+      ctx.font = "bold 62px Arial";
+      ctx.fillText(title, PAGE_W / 2, 260);
+      ctx.fillStyle = "#4b5563";
+      ctx.font = "34px Arial";
+      wrapText(ctx, subtitle, PAGE_W / 2, 355, 1700, 46, "center");
+      ctx.restore();
+    };
+
+    patched.__fenixMazeStudioLabelsPatched = true;
+    patched.__fenixMazeStudioLabelsOriginal = original;
+    window.drawMazePage = patched;
+    return true;
+  }
+
   async function buildPair(settings, mazeData, currentPairId, number, orderStart, existingPuzzle, existingSolution) {
     const results = await Promise.all([
       renderMazeBlob(settings, mazeData, false),
@@ -485,6 +521,7 @@
         typeof window.readSettings === "function" &&
         typeof window.createMazeData === "function" &&
         typeof window.drawMazePage === "function" &&
+        patchMazeStudioPageLabels() &&
         replaceActionButtons();
 
       if (!ready) {

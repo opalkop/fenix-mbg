@@ -83,7 +83,7 @@
       return false;
     }
 
-    const settings = state.settings || readSettings();
+    const settings = readSettings();
     canvas.width = (typeof MBG !== "undefined" && MBG.PAGE_W) || 2550;
     canvas.height = (typeof MBG !== "undefined" && MBG.PAGE_H) || 3300;
 

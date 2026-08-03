@@ -23,6 +23,28 @@
     document.head.appendChild(link);
   }
 
+  function loadNumberingFix() {
+    if (document.getElementById("mazeStudioNumberingFixLoader")) return;
+    const script = document.createElement("script");
+    script.id = "mazeStudioNumberingFixLoader";
+    script.src = ownScript && ownScript.src
+      ? new URL("maze-studio-numbering-fix.js?v=20260803-1", ownScript.src).href
+      : "shared/maze-studio-numbering-fix.js?v=20260803-1";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  function loadPreviewLock() {
+    if (document.getElementById("mazeStudioPreviewLockLoader")) return;
+    const script = document.createElement("script");
+    script.id = "mazeStudioPreviewLockLoader";
+    script.src = ownScript && ownScript.src
+      ? new URL("maze-studio-preview-lock.js?v=20260803-2", ownScript.src).href
+      : "shared/maze-studio-preview-lock.js?v=20260803-2";
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
   function readSavedPanel() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -156,6 +178,8 @@
 
   function initialize() {
     ensureStylesheet();
+    loadNumberingFix();
+    loadPreviewLock();
     let attempts = 0;
     const tryBuild = function () {
       attempts += 1;
